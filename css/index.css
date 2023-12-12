@@ -1,0 +1,57 @@
+main {
+    min-height: 100vh;
+    background: linear-gradient(black, rgba(0, 0, 0, 0.702)),
+                url(../img/background.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.manila {
+    width: 500px;
+    animation: circulation 5s linear;
+}
+
+.sbiz {
+    width: 500px;
+    background: linear-gradient(rgba(255, 255, 255, 0.106), rgba(255, 255, 255, 0.106));
+    border-radius: 25px;
+    padding: 15px;
+    animation: fromBottom 4s linear;
+}
+
+
+
+@keyframes circulation {
+    0% {
+        opacity: 0;
+        transform: rotateY(180deg);
+        
+    }
+
+
+    100% {
+        opacity: 1;
+        transform: rotateY(0deg);
+    }
+}
+
+@keyframes fromBottom {
+    0% {
+        opacity: 0;
+        transform: translateY(400px);
+    }
+
+
+    100% {
+        opacity: 1;
+        transform: translateY(0px);
+    }
+
+}

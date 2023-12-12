@@ -1,0 +1,67 @@
+/**************
+    Header
+***************/
+
+header {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    background-color: black;
+    justify-content: space-between;
+    align-items: center;
+    height: 80px;
+    border-bottom: 1px solid white;
+}
+
+header .logo img {
+    width: 80px;
+    margin-left: 15px;
+}
+
+/* Navigation */
+
+header nav {
+    margin-right: 15px;
+}
+
+header nav ul{
+    display: flex;
+    flex-direction: row;
+}
+
+header nav ul li {
+    list-style-type: none;
+    margin-right: 20px;
+    position: relative;
+
+}
+
+header nav ul li::before {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    background-color: #ebe206;
+    bottom: -10px;
+    transition: 0.3s all linear;
+}
+
+header nav ul li:hover::before {
+    width: 100%;
+}
+
+header nav ul li a{
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+}
+
+header nav ul li a:hover {
+    color: #ebe206;
+
+}
+
+/* Hamurger menu */
+.menu-icon {
+    display: none;
+}
