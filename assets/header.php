@@ -9,7 +9,7 @@
 
         <ul>
 
-            <li><a href="">Domov</a></li>
+            <li><a href="./index.php">Domov</a></li>
             <li><a href="">Liga</a></li>
             <li><a href="">Turnaje</a></li>
             <li><a href="./players-list.php">Zoznam hráčov</a></li>
