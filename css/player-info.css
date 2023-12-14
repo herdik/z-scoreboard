@@ -1,0 +1,33 @@
+main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    min-height: 100vh;
+    gap: 100px;;
+    background: linear-gradient(black, rgba(0, 0, 0, 0.702));
+    padding:20px 15px 0 15px;
+}
+
+.player-heading h1 {
+    font-size: 40px;
+    text-align: center;
+    margin: 50px 0;
+    color: white;
+}
+
+.one-player-box {
+    counter-reset: section;
+    margin: 0 auto;
+    border: 5px solid rgba(0, 0, 0, 0.608);
+    border-radius: 20px;
+    box-shadow: 0 0 10px 10px #888888;
+    padding: 15px;
+    background-color: rgba(246, 246, 246, 0.977);
+    color: black;
+    padding: 20px 50px;
+}
+
+.one-player-box h1 {
+    font-size: 32px; 
+}

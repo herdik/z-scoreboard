@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="./css/general.css">
     <link rel="stylesheet" href="./css/index.css">
     <link rel="stylesheet" href="./css/header.css">
+    <link rel="stylesheet" href="./css/footer.css">
     <link rel="stylesheet" href="./query/header-query.css">
 
     <script src="https://kit.fontawesome.com/ed8b583ef3.js" crossorigin="anonymous"></script>
@@ -28,6 +29,8 @@
         <img class="sbiz" src="./img/sbiz.png" alt="">
 
     </main>
+
+    <?php require "./assets/footer.php" ?>
     
 </body>
 </html>

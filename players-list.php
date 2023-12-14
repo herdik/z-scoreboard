@@ -30,6 +30,7 @@ $players = Player::getAllPlayers($connection, "player_Id, first_name, second_nam
 
     <link rel="stylesheet" href="./css/general.css">
     <link rel="stylesheet" href="./css/header.css">
+    <link rel="stylesheet" href="./css/footer.css">
     <link rel="stylesheet" href="./css/players-list.css">
     <link rel="stylesheet" href="./query/header-query.css">
 
@@ -71,7 +72,7 @@ $players = Player::getAllPlayers($connection, "player_Id, first_name, second_nam
 
     </main>
     
-
+    <?php require "./assets/footer.php" ?>
 
 </body>
 </html>
