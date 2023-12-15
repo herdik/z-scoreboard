@@ -2,11 +2,12 @@
 
 class Player {
 
+
     /**
      *
-     * Pridanie uživateľa do databáze
+     * ADD PLAYER/USER TO DATABASE
      *
-     * @param object $connection - připojení do databáze
+     * @param object $connection - database connection
      * @param string $user_name - user_name
      * @param string $password - username password
      * @param string $first_name - first name
@@ -22,9 +23,10 @@ class Player {
      * @return integer $player_id - id for player
      * 
      */
-    public static function createPlayerUser($connection, $user_name, $password, $first_name, $second_name, $country, $player_club, $player_Image, $player_cue, $player_break_cue, $player_jump_cue, $player_type) {
+    public static function createPlayerUser($connection, $user_name, $first_name, $second_name, $country, $player_club, $player_Image, $player_cue, $player_break_cue, $player_jump_cue, $player_type) {
 
-        
+        // temporary password for new player/user
+        $temporary_password = password_hash("manilaSBIZ", PASSWORD_DEFAULT);
         // sql scheme
         $sql = "INSERT INTO player_user (user_name, password, first_name, second_name, country, player_club, player_Image, player_cue, player_break_cue, player_jump_cue, player_type)
         VALUES (:user_name, :password, :first_name, :second_name, :country, :player_club, :player_Image, :player_cue, :player_break_cue, :player_jump_cue, :player_type)";
@@ -34,7 +36,7 @@ class Player {
 
         // filling and bind values will be execute to Database
         $stmt->bindValue(":user_name", $user_name, PDO::PARAM_STR);
-        $stmt->bindValue(":password", $password, PDO::PARAM_STR);
+        $stmt->bindValue(":password", $temporary_password, PDO::PARAM_STR);
         $stmt->bindValue(":first_name", $first_name, PDO::PARAM_STR);
         $stmt->bindValue(":second_name", $second_name, PDO::PARAM_STR);
         $stmt->bindValue(":country", $country, PDO::PARAM_STR);
@@ -124,7 +126,7 @@ class Player {
                 // asscoc array for one player
                 return $stmt->fetch();
             } else {
-                throw Exception ("Príkaz pre získanie všetkých dát o hráčoch sa nepodaril");
+                throw Exception ("Príkaz pre získanie všetkých dát o hráčovi sa nepodaril");
             }
         } catch (Exception $e){
             // 3 je že vyberiem vlastnú cestu k súboru
@@ -132,4 +134,39 @@ class Player {
             echo "Výsledná chyba je: " . $e->getMessage();
         }
     }
+
+    /**
+     *
+     * RETURN ONE USER FROM DATABASE
+     *
+     * @param object $connection - connection to database
+     * @param integer $player_Id - id for one user
+     * @return array asoc array with one user
+     */
+    public static function getUser($connection, $player_Id){
+        $sql = "SELECT * 
+                FROM player_user
+                WHERE player_Id = :player_Id";
+        
+
+        // connect sql amend to database
+        $stmt = $connection->prepare($sql);
+
+        // all parameters to send to Database
+        $stmt->bindValue(":player_Id", $player_Id, PDO::PARAM_INT);
+
+        try {
+            if($stmt->execute()){
+                // asscoc array for one player
+                return $stmt->fetch();
+            } else {
+                throw Exception ("Príkaz pre získanie všetkých dát o užívateľovi sa nepodaril");
+            }
+        } catch (Exception $e){
+            // 3 je že vyberiem vlastnú cestu k súboru
+            error_log("Chyba pri funkcii getUser, získanie informácií z databázy zlyhalo\n", 3, "../errors/error.log");
+            echo "Výsledná chyba je: " . $e->getMessage();
+        }
+    }
+
 }

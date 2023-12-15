@@ -31,8 +31,6 @@
             <h1>Registrácia nového hráča</h1>
             <form action="after-reg-add-player-user.php" method="POST">
                 <input type="text" name="user_name" placeholder="Užívateľské meno" required>
-                <input class="reg-input password-first" type="password" name="password" placeholder="Heslo" required>
-                <input class="reg-input password-second" type="password" name="password-again" placeholder="Heslo znova" required>
                 <input type="text" name="first_name" placeholder="Meno" required>
                 <input type="text" name="second_name" placeholder="Priezvisko" required>
                 <input type="text" name="country" placeholder="Krajina" required>

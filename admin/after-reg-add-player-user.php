@@ -10,7 +10,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST"){
     $connection = $database->connectionDB();
 
     $user_name = $_POST["user_name"];
-    $password = password_hash($_POST["password"], PASSWORD_DEFAULT);
     $first_name = $_POST["first_name"];
     $second_name = $_POST["second_name"];
     $country = $_POST["country"];
@@ -22,13 +21,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST"){
     $player_type = 'player';
 
     
-    $player_id = Player::createPlayerUser($connection, $user_name, $password, $first_name, $second_name, $country, $player_club, $player_Image, $player_cue, $player_break_cue, $player_jump_cue, $player_type);
+    $player_id = Player::createPlayerUser($connection, $user_name, $first_name, $second_name, $country, $player_club, $player_Image, $player_cue, $player_break_cue, $player_jump_cue, $player_type);
 
     if (!empty($player_id)){
-        echo $player_id;
+        header("location: player-user-profil.php?player_Id=$player_id");
     } else {
         echo "Nového hráča sa nepodarilo pridať";
     }
 } else {
     echo "Nepovolený prístup";
 }
+?>
