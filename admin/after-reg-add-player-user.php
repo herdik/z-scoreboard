@@ -18,10 +18,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST"){
     $player_cue = $_POST["player_cue"];
     $player_break_cue = $_POST["player_break_cue"];
     $player_jump_cue = $_POST["player_jump_cue"];
-    $player_type = 'player';
 
     
-    $player_id = Player::createPlayerUser($connection, $user_name, $first_name, $second_name, $country, $player_club, $player_Image, $player_cue, $player_break_cue, $player_jump_cue, $player_type);
+    $player_id = Player::createPlayerUser($connection, $user_name, $first_name, $second_name, $country, $player_club, $player_Image, $player_cue, $player_break_cue, $player_jump_cue);
 
     if (!empty($player_id)){
         header("location: player-user-profil.php?player_Id=$player_id");

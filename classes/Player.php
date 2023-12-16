@@ -23,7 +23,7 @@ class Player {
      * @return integer $player_id - id for player
      * 
      */
-    public static function createPlayerUser($connection, $user_name, $first_name, $second_name, $country, $player_club, $player_Image, $player_cue, $player_break_cue, $player_jump_cue, $player_type) {
+    public static function createPlayerUser($connection, $user_name, $first_name, $second_name, $country, $player_club, $player_Image, $player_cue, $player_break_cue, $player_jump_cue) {
 
         // temporary password for new player/user
         $temporary_password = password_hash("manilaSBIZ", PASSWORD_DEFAULT);
@@ -45,7 +45,7 @@ class Player {
         $stmt->bindValue(":player_cue", $player_cue, PDO::PARAM_STR);
         $stmt->bindValue(":player_break_cue", $player_break_cue, PDO::PARAM_STR);
         $stmt->bindValue(":player_jump_cue", $player_jump_cue, PDO::PARAM_STR);
-        $stmt->bindValue(":player_type", $player_type, PDO::PARAM_STR);
+        $stmt->bindValue(":player_type", "player", PDO::PARAM_STR);
 
         
         try {
@@ -107,7 +107,8 @@ class Player {
         $sql = "SELECT  first_name, 
                         second_name, 
                         country, 
-                        player_club, 
+                        player_club,
+                        player_Image, 
                         player_cue, 
                         player_break_cue, 
                         player_jump_cue
@@ -144,7 +145,15 @@ class Player {
      * @return array asoc array with one user
      */
     public static function getUser($connection, $player_Id){
-        $sql = "SELECT * 
+        $sql = "SELECT  user_name,
+                        first_name, 
+                        second_name, 
+                        country, 
+                        player_club,
+                        player_Image, 
+                        player_cue, 
+                        player_break_cue, 
+                        player_jump_cue
                 FROM player_user
                 WHERE player_Id = :player_Id";
         
