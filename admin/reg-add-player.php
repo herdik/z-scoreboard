@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="../css/general.css">
     <link rel="stylesheet" href="../css/header.css">
     <link rel="stylesheet" href="../css/footer.css">
-    <link rel="stylesheet" href="../css/reg-add-player-user.css">
+    <link rel="stylesheet" href="../css/reg-add-player.css">
     <link rel="stylesheet" href="../query/header-query.css">
 
     <script src="https://kit.fontawesome.com/ed8b583ef3.js" crossorigin="anonymous"></script>
@@ -29,8 +29,8 @@
 
         <section class="registration-form">
             <h1>Registrácia nového hráča</h1>
-            <form action="after-reg-add-player-user.php" method="POST">
-                <input type="text" name="user_name" placeholder="Užívateľské meno" required>
+            <form action="after-reg-add-player.php" method="POST">
+                <input type="text" name="user_name" placeholder="Používateľské meno" required>
                 <input type="text" name="first_name" placeholder="Meno" required>
                 <input type="text" name="second_name" placeholder="Priezvisko" required>
                 <input type="text" name="country" placeholder="Krajina" required>

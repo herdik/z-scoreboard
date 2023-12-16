@@ -61,7 +61,7 @@ $players = Player::getAllPlayers($connection, "player_Id, first_name, second_nam
                         <h3><?php echo htmlspecialchars($one_player["first_name"]). " ". htmlspecialchars($one_player["second_name"]) ?></h3>
                         <p><?php echo htmlspecialchars($one_player["player_club"]) ?></p>
                     </div>
-                    <a class="info-btn" href="player-user-profil.php?player_Id=<?= $one_player['player_Id'] ?>">Administrácia <br>hráča</a>
+                    <a class="info-btn" href="player-profil.php?player_Id=<?= $one_player['player_Id'] ?>">Administrácia <br>hráča</a>
                 </li>
                 
             <?php endforeach ?>

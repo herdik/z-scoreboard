@@ -9,7 +9,7 @@
 
         <ul>
 
-            <li><a href="./reg-add-player-user.php">Registrácia hráča</a></li>
+            <li><a href="./reg-add-player.php">Registrácia hráča</a></li>
             <li><a href="">Liga</a></li>
             <li><a href="">Turnaje</a></li>
             <li><a href="./admin-players-list.php">Zoznam hráčov</a></li>

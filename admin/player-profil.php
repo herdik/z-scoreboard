@@ -74,7 +74,12 @@
                     </div>
  
                 <?php endif ?>
+        </section>
 
+        <section class="buttons">
+            <a href="./edit-player.php?player_Id=<?= htmlspecialchars($player_infos["player_Id"]) ?>">Upraviť</a>
+            <a href="">Vymazať</a>
+        </section>
     </main>
     
     <?php require "../assets/footer.php" ?>

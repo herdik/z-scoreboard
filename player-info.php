@@ -73,7 +73,7 @@
                     </div>
  
                 <?php endif ?>
-
+        </section>
     </main>
     
     <?php require "./assets/footer.php" ?>
