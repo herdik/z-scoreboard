@@ -1,3 +1,18 @@
+<?php
+
+$player_infos["user_name"] = "";
+$player_infos["first_name"] = "";
+$player_infos["second_name"] = "";
+$player_infos["country"] = "";
+$player_infos["player_club"] = "";
+$player_infos["player_Image"] = "";
+$player_infos["player_cue"] = "";
+$player_infos["player_break_cue"] = "";
+$player_infos["player_jump_cue"] = "";
+
+?>
+
+
 <!DOCTYPE html>
 <html lang="sk">
 <head>
@@ -30,7 +45,9 @@
         <section class="registration-form">
             <h1>Registrácia nového hráča</h1>
             <form action="after-reg-add-player.php" method="POST">
-                <input type="text" name="user_name" placeholder="Používateľské meno" required>
+
+                <?php require "../assets/form.php" ?>
+                <!-- <input type="text" name="user_name" placeholder="Používateľské meno" required>
                 <input type="text" name="first_name" placeholder="Meno" required>
                 <input type="text" name="second_name" placeholder="Priezvisko" required>
                 <input type="text" name="country" placeholder="Krajina" required>
@@ -38,7 +55,7 @@
                 <input type="text" name="player_Image" placeholder="Obrázok">
                 <input type="text" name="player_cue" placeholder="Hracie tágo">
                 <input type="text" name="player_break_cue" placeholder="Rozbíjacie tágo">
-                <input type="text" name="player_jump_cue" placeholder="Skákacie tágo">
+                <input type="text" name="player_jump_cue" placeholder="Skákacie tágo"> -->
                 <input class="btn" type="submit" value="Zaregistrovať">
                 
             </form>
