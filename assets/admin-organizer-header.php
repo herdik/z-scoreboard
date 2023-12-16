@@ -12,7 +12,7 @@
             <li><a href="./reg-add-player-user.php">Registrácia hráča</a></li>
             <li><a href="">Liga</a></li>
             <li><a href="">Turnaje</a></li>
-            <li><a href="../players-list.php">Zoznam hráčov</a></li>
+            <li><a href="./admin-players-list.php">Zoznam hráčov</a></li>
             <li><a href="">Challenge Matches</a></li>
             <li><a href="">Scoreboard</a></li>
             <li><a href="">Odhlásiť</a></li>
