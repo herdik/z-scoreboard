@@ -78,7 +78,7 @@
 
         <section class="buttons">
             <a href="./edit-player.php?player_Id=<?= htmlspecialchars($player_infos["player_Id"]) ?>">Upraviť</a>
-            <a href="">Vymazať</a>
+            <a href="./delete-player.php?player_Id=<?= htmlspecialchars($player_infos["player_Id"]) ?>">Vymazať</a>
         </section>
     </main>
     

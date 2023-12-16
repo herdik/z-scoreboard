@@ -242,4 +242,41 @@ class Player {
         }
     }
 
+
+
+    /**
+     *
+     * RETURN ONE USER FROM DATABASE
+     *
+     * @param object $connection - connection to database
+     * @param integer $player_Id - id for one user
+     * 
+     * @return boolean if update is successful
+     */
+    public static function deletePlayer($connection, $player_Id){
+        $sql = "DELETE 
+                FROM player_user
+                WHERE player_Id = :player_Id";
+        
+
+        // connect sql amend to database
+        $stmt = $connection->prepare($sql);
+
+        // all parameters to send to Database
+        // filling and bind values will be execute to Database
+        $stmt->bindValue(":player_Id", $player_Id, PDO::PARAM_INT);
+
+        try {
+            if($stmt->execute()){
+                return true;
+            } else {
+                throw Exception ("Príkaz pre vymazanie všetkých dát o užívateľovi sa nepodaril");
+            }
+        } catch (Exception $e){
+            // 3 je že vyberiem vlastnú cestu k súboru
+            error_log("Chyba pri funkcii deletePlayer, získanie informácií z databázy zlyhalo\n", 3, "../errors/error.log");
+            echo "Výsledná chyba je: " . $e->getMessage();
+        }
+    }
+
 }

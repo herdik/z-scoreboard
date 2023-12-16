@@ -1,5 +1,6 @@
 <?php
 
+// empty variables for arguments to form.php 
 $player_infos["user_name"] = "";
 $player_infos["first_name"] = "";
 $player_infos["second_name"] = "";
