@@ -2,6 +2,7 @@
 
 require "../classes/Database.php";
 require "../classes/Player.php";
+require "../classes/Url.php";
 
 
 if ($_SERVER["REQUEST_METHOD"] === "POST"){
@@ -23,7 +24,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST"){
     $player_id = Player::createPlayerUser($connection, $user_name, $first_name, $second_name, $country, $player_club, $player_Image, $player_cue, $player_break_cue, $player_jump_cue);
 
     if (!empty($player_id)){
-        header("location: player-user-profil.php?player_Id=$player_id");
+        Url::redirectUrl("/z-scoreboard/admin/player-user-profil.php?player_Id=$player_id");
     } else {
         echo "Nového hráča sa nepodarilo pridať";
     }
