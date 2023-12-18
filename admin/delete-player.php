@@ -63,7 +63,7 @@
             <form action="" method="POST">
 
             
-            <a href="./player-profil.php?player_Id=<?= $player_infos['player_Id'] ?>">Zrušiť</a>
+            <a href="./player-profil.php?player_Id=<?= htmlspecialchars($player_infos['player_Id']) ?>">Zrušiť</a>
             <input type="submit" value="Vymazať">
 
             </form>
@@ -73,7 +73,7 @@
     </main>
     
     <?php require "../assets/footer.php" ?>
-
+    <script src="./js/header.js"></script>
 </body>
 </html>
 

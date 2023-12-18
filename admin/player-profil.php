@@ -83,6 +83,6 @@
     </main>
     
     <?php require "../assets/footer.php" ?>
-
+    <script src="./js/header.js"></script>                
 </body>
 </html>

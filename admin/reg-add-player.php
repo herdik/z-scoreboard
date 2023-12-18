@@ -67,6 +67,6 @@ $player_infos["player_jump_cue"] = "";
     </main>
     
     <?php require "../assets/footer.php" ?>
-
+    <script src="./js/header.js"></script>
 </body>
 </html>
