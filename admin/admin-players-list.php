@@ -3,7 +3,14 @@
 require "../classes/Database.php";
 require "../classes/Player.php";
 
-
+// verifying by session if visitor have access to this website
+require "../classes/Authorization.php";
+// get session
+session_start();
+// authorization for visitor - if has access to website 
+if (!Auth::isLoggedIn()){
+    die ("nepovolený prístup");
+} 
 
 // database connection
 $database = new Database();

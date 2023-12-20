@@ -1,15 +1,24 @@
 <?php
 
-// empty variables for arguments to form.php 
-$player_infos["user_name"] = "";
-$player_infos["first_name"] = "";
-$player_infos["second_name"] = "";
-$player_infos["country"] = "";
-$player_infos["player_club"] = "";
-$player_infos["player_Image"] = "";
-$player_infos["player_cue"] = "";
-$player_infos["player_break_cue"] = "";
-$player_infos["player_jump_cue"] = "";
+    // verifying by session if visitor have access to this website
+    require "../classes/Authorization.php";
+    // get session
+    session_start();
+    // authorization for visitor - if has access to website 
+    if (!Auth::isLoggedIn()){
+        die ("nepovolený prístup");
+    }
+
+    // empty variables for arguments to form.php 
+    $player_infos["user_name"] = "";
+    $player_infos["first_name"] = "";
+    $player_infos["second_name"] = "";
+    $player_infos["country"] = "";
+    $player_infos["player_club"] = "";
+    $player_infos["player_Image"] = "";
+    $player_infos["player_cue"] = "";
+    $player_infos["player_break_cue"] = "";
+    $player_infos["player_jump_cue"] = "";
 
 ?>
 

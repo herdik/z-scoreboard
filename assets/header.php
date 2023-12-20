@@ -10,12 +10,9 @@
         <ul>
 
             <li><a href="./index.php">Domov</a></li>
-            <li><a href="">Liga</a></li>
-            <li><a href="">Turnaje</a></li>
+            <li><a href="">Súťaže</a></li>
             <li><a href="./players-list.php">Zoznam hráčov</a></li>
-            <li><a href="">Challenge Matches</a></li>
-            <li><a href="">Scoreboard</a></li>
-            <li><a href="">Prihlásenie</a></li>
+            <li><a href="./signin.php">Prihlásenie</a></li>
             
 
         </ul>

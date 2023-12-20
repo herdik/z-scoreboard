@@ -136,52 +136,7 @@ class Player {
         }
     }
 
-    /**
-     *
-     * RETURN ONE USER FROM DATABASE
-     *
-     * @param object $connection - connection to database
-     * @param integer $player_Id - id for one user
-     * @return array asoc array with one user
-     */
-    public static function getUser($connection, $player_Id){
-        $sql = "SELECT  player_Id,
-                        user_name,
-                        first_name, 
-                        second_name, 
-                        country, 
-                        player_club,
-                        player_Image, 
-                        player_cue, 
-                        player_break_cue, 
-                        player_jump_cue
-                FROM player_user
-                WHERE player_Id = :player_Id";
-        
-
-        // connect sql amend to database
-        $stmt = $connection->prepare($sql);
-
-        // all parameters to send to Database
-        $stmt->bindValue(":player_Id", $player_Id, PDO::PARAM_INT);
-
-        try {
-            if($stmt->execute()){
-                // asscoc array for one player
-                return $stmt->fetch();
-            } else {
-                throw Exception ("Príkaz pre získanie všetkých dát o užívateľovi sa nepodaril");
-            }
-        } catch (Exception $e){
-            // 3 je že vyberiem vlastnú cestu k súboru
-            error_log("Chyba pri funkcii getUser, získanie informácií z databázy zlyhalo\n", 3, "../errors/error.log");
-            echo "Výsledná chyba je: " . $e->getMessage();
-        }
-    }
-
-
-
-
+    
     /**
      *
      * RETURN ONE USER FROM DATABASE
@@ -275,6 +230,163 @@ class Player {
         } catch (Exception $e){
             // 3 je že vyberiem vlastnú cestu k súboru
             error_log("Chyba pri funkcii deletePlayer, získanie informácií z databázy zlyhalo\n", 3, "../errors/error.log");
+            echo "Výsledná chyba je: " . $e->getMessage();
+        }
+    }
+
+
+
+    /**
+     *
+     * RETURN ONE USER FROM DATABASE
+     *
+     * @param object $connection - connection to database
+     * @param integer $player_Id - id for one user
+     * @return array asoc array with one user
+     */
+    public static function getUser($connection, $player_Id){
+        $sql = "SELECT  player_Id,
+                        user_name,
+                        first_name, 
+                        second_name, 
+                        country, 
+                        player_club,
+                        player_Image, 
+                        player_cue, 
+                        player_break_cue, 
+                        player_jump_cue
+                FROM player_user
+                WHERE player_Id = :player_Id";
+        
+
+        // connect sql amend to database
+        $stmt = $connection->prepare($sql);
+
+        // all parameters to send to Database
+        $stmt->bindValue(":player_Id", $player_Id, PDO::PARAM_INT);
+
+        try {
+            if($stmt->execute()){
+                // asscoc array for one player
+                return $stmt->fetch();
+            } else {
+                throw Exception ("Príkaz pre získanie všetkých dát o užívateľovi sa nepodaril");
+            }
+        } catch (Exception $e){
+            // 3 je že vyberiem vlastnú cestu k súboru
+            error_log("Chyba pri funkcii getUser, získanie informácií z databázy zlyhalo\n", 3, "../errors/error.log");
+            echo "Výsledná chyba je: " . $e->getMessage();
+        }
+    }
+
+
+
+    /**
+     *
+     * RETURN ID USER FROM DATABASE
+     *
+     * @param object $connection - connection to database
+     * @param string $user_name - $user_name from form for one user
+     * @return int ID for one user
+     */
+    public static function getUserId($connection, $user_name){
+        $sql = "SELECT  player_Id
+                FROM player_user
+                WHERE user_name = :user_name";
+        
+
+        // connect sql amend to database
+        $stmt = $connection->prepare($sql);
+
+        // all parameters to send to Database
+        $stmt->bindValue(":user_name", $user_name, PDO::PARAM_STR);
+
+        try {
+            if($stmt->execute()){
+                // asscoc array for one player and we want to get player_Id
+                return $stmt->fetch()["player_Id"];
+            } else {
+                throw Exception ("Príkaz pre získanie všetkých ID o užívateľovi sa nepodaril");
+            }
+        } catch (Exception $e){
+            // 3 je že vyberiem vlastnú cestu k súboru
+            error_log("Chyba pri funkcii getUserId, získanie informácií z databázy zlyhalo\n", 3, "../errors/error.log");
+            echo "Výsledná chyba je: " . $e->getMessage();
+        }
+    }
+
+
+
+
+    /**
+     *
+     * RETURN ONE USER FROM DATABASE
+     *
+     * @param object $connection - connection to database
+     * @param integer $player_Id - $user_Id who is logged in
+     * @return array asoc array with one user
+     */
+    public static function getUserRole($connection, $player_Id){
+        $sql = "SELECT role
+                FROM player_user
+                WHERE player_Id = :player_Id";
+        
+
+        // connect sql amend to database
+        $stmt = $connection->prepare($sql);
+
+        // all parameters to send to Database
+        $stmt->bindValue(":player_Id", $player_Id, PDO::PARAM_INT);
+
+        try {
+            if($stmt->execute()){
+                // asscoc array for one player
+                return $stmt->fetch()["role"];
+            } else {
+                throw Exception ("Príkaz pre získanie role o užívateľovi sa nepodaril");
+            }
+        } catch (Exception $e){
+            // 3 je že vyberiem vlastnú cestu k súboru
+            error_log("Chyba pri funkcii getUserRole, získanie informácií z databázy zlyhalo\n", 3, "../errors/error.log");
+            echo "Výsledná chyba je: " . $e->getMessage();
+        }
+    }
+
+
+
+    /**
+     *
+     * Authentication for ONE USER FROM DATABASE
+     *
+     * @param object $connection - connection to database
+     * @param string $user_name - $user_name from form for one user
+     * @param string $password - $password from form to signIn
+     * @return array asoc array with one user
+     */
+    public static function authentication($connection, $log_user_name, $log_password){
+        $sql = "SELECT password
+                FROM player_user
+                WHERE user_name = :user_name";
+        
+
+        // connect sql amend to database
+        $stmt = $connection->prepare($sql);
+
+        // all parameters to send to Database
+        $stmt->bindValue(":user_name", $log_user_name, PDO::PARAM_STR);
+        
+
+        try {
+            if($stmt->execute()){
+                if ($user = $stmt->fetch()){
+                    return password_verify($log_password, $user["password"]);
+                }
+            } else {
+                throw Exception ("Overenie hesla pre užívateľa sa nepodarilo");
+            }
+        } catch (Exception $e){
+            // 3 je že vyberiem vlastnú cestu k súboru
+            error_log("Chyba pri funkcii authentication, získanie informácií z databázy zlyhalo\n", 3, "../errors/error.log");
             echo "Výsledná chyba je: " . $e->getMessage();
         }
     }
