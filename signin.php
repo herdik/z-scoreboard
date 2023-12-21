@@ -14,6 +14,7 @@
 
     <link rel="stylesheet" href="./css/general.css">
     <link rel="stylesheet" href="./css/header.css">
+    <link rel="stylesheet" href="./css/signin.css">
     <link rel="stylesheet" href="./css/footer.css">
     <link rel="stylesheet" href="./query/header-query.css">
 
@@ -29,8 +30,8 @@
             
             <h1>Prihlásenie</h1>
             <form action="./admin/log-in.php" method="POST">
-                <input type="text" name="user_name" placeholder="Používateľské meno" required>
-                <input type="password" name="password" placeholder="Heslo" required>
+                <input type="text" name="user_name" placeholder="Používateľské meno" required><br>
+                <input type="password" name="password" placeholder="Heslo" required><br>
                 <input type="submit" value="Prihlásiť">
             </form>
 

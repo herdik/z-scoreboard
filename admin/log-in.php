@@ -36,6 +36,33 @@ if ($_SERVER["REQUEST_METHOD"] === "POST"){
 
         Url::redirectUrl("/z-scoreboard/admin/admin-players-list.php");
      
+    } else {
+        $error = "Neúspešné prihlásenie !!!";
     }
 
 }
+
+?>
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/fail-login.css">
+    <title>Neúspešné prihlásenie</title>
+</head>
+<body>
+    <main>
+
+        <?php if(!empty($error)): ?>
+            <h1><?= $error ?></h1>
+            <a href="../signin.php">Naspäť na prihlásenie</a>
+        <?php endif; ?>
+
+
+    </main>
+    
+</body>
+</html>

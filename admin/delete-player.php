@@ -52,7 +52,7 @@
     <link rel="stylesheet" href="../css/general.css">
     <link rel="stylesheet" href="../css/header.css">
     <link rel="stylesheet" href="../css/footer.css">
-    <link rel="stylesheet" href="../css/reg-add-player.css">
+    <link rel="stylesheet" href="../css/delete-player.css">
     <link rel="stylesheet" href="../query/header-query.css">
 
     <script src="https://kit.fontawesome.com/ed8b583ef3.js" crossorigin="anonymous"></script>
@@ -64,8 +64,12 @@
 
     <main>
 
+        <section class="alert-triangel">
+            <h1>!</h1>
+        </section>
+
         <section class="registration-form">
-            <h3>Naozaj chcete VYMAZAŤ hráča</h3>
+            <h3>Naozaj chcete VYMAZAŤ hráča?</h3>
             <h1><?= $player_name ?></h1>
         </section>
 
@@ -73,8 +77,8 @@
             <form action="" method="POST">
 
             
-            <a href="./player-profil.php?player_Id=<?= htmlspecialchars($player_infos['player_Id']) ?>">Zrušiť</a>
-            <input type="submit" value="Vymazať">
+            <a href="./player-profil.php?player_Id=<?= htmlspecialchars($player_infos['player_Id']) ?>" class="cancel-btn btns">Zrušiť</a>
+            <input class="delete-btn btns" type="submit" value="Vymazať">
 
             </form>
         </section>

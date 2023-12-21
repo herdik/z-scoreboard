@@ -1,0 +1,44 @@
+body {
+    background: linear-gradient(black, rgba(0, 0, 0, 0.702)),
+                url(../img/background.jpg);
+    background-size: cover;
+    background-position: right;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+
+
+main {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+h1 {
+    color: white;
+    font-size: 48px;
+    letter-spacing: 3px;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+
+a {
+    text-decoration: none;
+    color: black;
+    background: white;
+    margin-top: 18px;
+    border: 5px solid white;
+    width: 180px;
+    padding: 8px 12px;
+    font-size: 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s linear;
+}
+
+a:hover {
+    color: #be9524;
+    border: 5px solid #be9524;
+}
