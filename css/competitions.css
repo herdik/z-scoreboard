@@ -1,0 +1,118 @@
+main {
+    min-height: 100vh;
+    background: linear-gradient(black, rgba(0, 0, 0, 0.702));
+    padding:20px 15px 0 15px;
+}
+.competitions-create-btns {
+    text-align: center;
+}
+.competitions-create-btns a{
+    width: 200px;
+    text-decoration: none;
+    text-align: center;
+    display: inline-block;
+    margin-top: 18px;
+    border: 5px solid white;
+    padding: 8px 12px;
+    font-size: 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s linear;
+}
+
+.create-competition-btn {
+    margin-right: 12px;
+    color: white;
+    background: #be9524;
+    transition: all 0.3s linear;
+}
+.create-competition-btn:hover {
+    background-color: white;
+    color: #be9524;
+    border: 5px solid #be9524;
+}
+
+.main-heading h1 {
+    color: white;
+    font-size: 40px;
+    text-align: center;
+    margin: 50px 0 50px 0;
+}
+
+
+/* List of registered players */
+.all-registered-competitions {
+    /* reset counter */
+    max-width: 1280px;
+    counter-reset: section;
+    margin: 0 auto;
+    border: 5px solid rgba(0, 0, 0, 0.608);
+    border-radius: 20px;
+    box-shadow: 0 0 10px 10px #888888;
+    padding: 15px;
+}
+
+.registered-competitions-list {
+    width: 100%;
+    background-color: rgba(246, 246, 246, 0.977);
+    border-radius: 20px;
+}
+
+.registered-competitions-list li {
+    display: flex;
+    flex-direction: row;
+    padding: 10px 50px;
+    border-bottom: 2px solid rgba(0, 0, 0, 0.2);
+    position: relative;
+    align-items: center;
+}
+
+/* counter for each li */
+.registered-competitions-list li::before {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    counter-increment: section;
+    content: counter(section);
+    background-color: #ebe206;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 10px;
+    font-weight: bold;
+}
+
+/* img flag */
+.registered-competitions-list img {
+    border-radius: 15px;
+    width: 50px;
+    height: 50px;
+    flex-grow: 1;
+    margin-left: 50px;
+}
+
+/* player info */
+.competition-informations {
+    flex-grow: 2;
+}
+
+/* link to player info  */
+.competition-btn {
+    border: 2px solid rgba(0, 0, 0, 0.608);
+    background: #b0acac;
+    border-radius: 20px;
+    padding: 8px 15px;
+    text-align: center;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 14px;
+    text-decoration: none;
+    color: black;
+    box-shadow: none;
+    transition: all .2s linear;
+}
+.info-btn:hover{
+    color: white;
+    cursor: pointer;
+    box-shadow: 0 0 5px 5px #888888;
+    background: #575656;
+}

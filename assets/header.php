@@ -10,7 +10,7 @@
         <ul>
 
             <li><a href="./index.php">Domov</a></li>
-            <li><a href="">Súťaže</a></li>
+            <li><a href="./competitions.php">Súťaže</a></li>
             <li><a href="./players-list.php">Zoznam hráčov</a></li>
             <li><a href="./signin.php">Prihlásenie</a></li>
             

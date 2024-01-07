@@ -1,4 +1,6 @@
 <?php
+    require "../classes/Database.php";
+    require "../classes/Player.php";
 
     // verifying by session if visitor have access to this website
     require "../classes/Authorization.php";
@@ -19,6 +21,10 @@
     $player_infos["player_cue"] = "";
     $player_infos["player_break_cue"] = "";
     $player_infos["player_jump_cue"] = "";
+
+    // database connection
+    $database = new Database();
+    $connection = $database->connectionDB();
 
 ?>
 
