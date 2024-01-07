@@ -71,7 +71,7 @@
                     <p>Hráč nebol nájdený<p>
                 <?php else: ?>
                     <div class="one-player-box">
-                        <h1>Užívateľské meno: <?= htmlspecialchars($player_infos["user_name"]) ?></h1>
+                        <h1>Email: <?= htmlspecialchars($player_infos["user_email"]) ?></h1>
                         <h1><?= htmlspecialchars($player_infos["first_name"]). " " .htmlspecialchars($player_infos["second_name"]) ?></h1>
                         <h3>Klub: <?= htmlspecialchars($player_infos["player_club"]) ?></h3>
 

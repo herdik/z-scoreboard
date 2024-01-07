@@ -30,7 +30,7 @@
             
             <h1>Prihlásenie</h1>
             <form action="./admin/log-in.php" method="POST">
-                <input type="text" name="user_name" placeholder="Používateľské meno" required><br>
+                <input type="email" name="user_email" placeholder="Email" required><br>
                 <input type="password" name="password" placeholder="Heslo" required><br>
                 <input type="submit" value="Prihlásiť">
             </form>

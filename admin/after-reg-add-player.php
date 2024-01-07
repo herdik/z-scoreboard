@@ -19,7 +19,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST"){
     $database = new Database();
     $connection = $database->connectionDB();
 
-    $user_name = $_POST["user_name"];
+    $user_email = $_POST["user_email"];
     $first_name = $_POST["first_name"];
     $second_name = $_POST["second_name"];
     $country = $_POST["country"];
@@ -30,7 +30,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST"){
     $player_jump_cue = $_POST["player_jump_cue"];
 
     
-    $player_Id = Player::createPlayer($connection, $user_name, $first_name, $second_name, $country, $player_club, $player_Image, $player_cue, $player_break_cue, $player_jump_cue);
+    $player_Id = Player::createPlayer($connection, $user_email, $first_name, $second_name, $country, $player_club, $player_Image, $player_cue, $player_break_cue, $player_jump_cue);
 
     if (!empty($player_Id)){
         Url::redirectUrl("/z-scoreboard/admin/player-profil.php?player_Id=$player_Id");

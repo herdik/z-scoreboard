@@ -10,7 +10,7 @@
     }
 
     // empty variables for arguments to form.php 
-    $player_infos["user_name"] = "";
+    $player_infos["user_email"] = "";
     $player_infos["first_name"] = "";
     $player_infos["second_name"] = "";
     $player_infos["country"] = "";
@@ -57,7 +57,7 @@
             <form action="after-reg-add-player.php" method="POST">
 
                 <?php require "../assets/form.php" ?>
-                <!-- <input type="text" name="user_name" placeholder="Používateľské meno" required>
+                <!-- <input type="email" name="user_email" placeholder="Email" required>
                 <input type="text" name="first_name" placeholder="Meno" required>
                 <input type="text" name="second_name" placeholder="Priezvisko" required>
                 <input type="text" name="country" placeholder="Krajina" required>

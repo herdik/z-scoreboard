@@ -8,7 +8,7 @@ class Player {
      * ADD PLAYER/USER TO DATABASE
      *
      * @param object $connection - database connection
-     * @param string $user_name - user_name
+     * @param string $user_email - user_email
      * @param string $password - username password
      * @param string $first_name - first name
      * @param string $second_name - second name
@@ -23,19 +23,19 @@ class Player {
      * @return integer $player_id - id for player
      * 
      */
-    public static function createPlayer($connection, $user_name, $first_name, $second_name, $country, $player_club, $player_Image, $player_cue, $player_break_cue, $player_jump_cue) {
+    public static function createPlayer($connection, $user_email, $first_name, $second_name, $country, $player_club, $player_Image, $player_cue, $player_break_cue, $player_jump_cue) {
 
         // temporary password for new player/user
         $temporary_password = password_hash("manilaSBIZ", PASSWORD_DEFAULT);
         // sql scheme
-        $sql = "INSERT INTO player_user (user_name, password, first_name, second_name, country, player_club, player_Image, player_cue, player_break_cue, player_jump_cue, player_type)
-        VALUES (:user_name, :password, :first_name, :second_name, :country, :player_club, :player_Image, :player_cue, :player_break_cue, :player_jump_cue, :player_type)";
+        $sql = "INSERT INTO player_user (user_email, password, first_name, second_name, country, player_club, player_Image, player_cue, player_break_cue, player_jump_cue, player_type)
+        VALUES (:user_email, :password, :first_name, :second_name, :country, :player_club, :player_Image, :player_cue, :player_break_cue, :player_jump_cue, :player_type)";
 
         // prepare data to send to Database
         $stmt = $connection->prepare($sql);
 
         // filling and bind values will be execute to Database
-        $stmt->bindValue(":user_name", $user_name, PDO::PARAM_STR);
+        $stmt->bindValue(":user_email", $user_email, PDO::PARAM_STR);
         $stmt->bindValue(":password", $temporary_password, PDO::PARAM_STR);
         $stmt->bindValue(":first_name", $first_name, PDO::PARAM_STR);
         $stmt->bindValue(":second_name", $second_name, PDO::PARAM_STR);
@@ -154,9 +154,9 @@ class Player {
      * 
      * @return boolean if update is successful
      */
-    public static function updatePlayer($connection, $user_name, $first_name, $second_name, $country, $player_club, $player_Image, $player_cue, $player_break_cue, $player_jump_cue, $player_Id){
+    public static function updatePlayer($connection, $user_email, $first_name, $second_name, $country, $player_club, $player_Image, $player_cue, $player_break_cue, $player_jump_cue, $player_Id){
         $sql = "UPDATE player_user
-                SET user_name = :user_name,
+                SET user_email = :user_email,
                     first_name = :first_name, 
                     second_name = :second_name, 
                     country = :country, 
@@ -173,7 +173,7 @@ class Player {
 
         // all parameters to send to Database
         // filling and bind values will be execute to Database
-        $stmt->bindValue(":user_name", $user_name, PDO::PARAM_STR);
+        $stmt->bindValue(":user_email", $user_email, PDO::PARAM_STR);
         $stmt->bindValue(":first_name", $first_name, PDO::PARAM_STR);
         $stmt->bindValue(":second_name", $second_name, PDO::PARAM_STR);
         $stmt->bindValue(":country", $country, PDO::PARAM_STR);
@@ -246,7 +246,7 @@ class Player {
      */
     public static function getUser($connection, $player_Id){
         $sql = "SELECT  player_Id,
-                        user_name,
+                        user_email,
                         first_name, 
                         second_name, 
                         country, 
@@ -286,20 +286,20 @@ class Player {
      * RETURN ID USER FROM DATABASE
      *
      * @param object $connection - connection to database
-     * @param string $user_name - $user_name from form for one user
+     * @param string $user_email - $user_email from form for one user
      * @return int ID for one user
      */
-    public static function getUserId($connection, $user_name){
+    public static function getUserId($connection, $user_email){
         $sql = "SELECT  player_Id
                 FROM player_user
-                WHERE user_name = :user_name";
+                WHERE user_email = :user_email";
         
 
         // connect sql amend to database
         $stmt = $connection->prepare($sql);
 
         // all parameters to send to Database
-        $stmt->bindValue(":user_name", $user_name, PDO::PARAM_STR);
+        $stmt->bindValue(":user_email", $user_email, PDO::PARAM_STR);
 
         try {
             if($stmt->execute()){
@@ -359,21 +359,21 @@ class Player {
      * Authentication for ONE USER FROM DATABASE
      *
      * @param object $connection - connection to database
-     * @param string $user_name - $user_name from form for one user
+     * @param string $user_email - $user_email from form for one user
      * @param string $password - $password from form to signIn
      * @return array asoc array with one user
      */
-    public static function authentication($connection, $log_user_name, $log_password){
+    public static function authentication($connection, $log_user_email, $log_password){
         $sql = "SELECT password
                 FROM player_user
-                WHERE user_name = :user_name";
+                WHERE user_email = :user_email";
         
 
         // connect sql amend to database
         $stmt = $connection->prepare($sql);
 
         // all parameters to send to Database
-        $stmt->bindValue(":user_name", $log_user_name, PDO::PARAM_STR);
+        $stmt->bindValue(":user_email", $log_user_email, PDO::PARAM_STR);
         
 
         try {

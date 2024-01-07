@@ -31,7 +31,7 @@ main {
 }
 
 
-.signin-form input[type="text"], input[type="password"]{
+.signin-form input[type="email"], input[type="text"], input[type="password"]{
     outline: none;
     background: none;
     border: none;

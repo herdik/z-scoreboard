@@ -1,4 +1,4 @@
-<input type="text" name="user_name" placeholder="Používateľské meno" value="<?= htmlspecialchars($player_infos["user_name"]) ?>" required>
+<input type="text" name="user_email" placeholder="Email" value="<?= htmlspecialchars($player_infos["user_email"]) ?>" required>
 <input type="text" name="first_name" placeholder="Meno" value="<?= htmlspecialchars($player_infos["first_name"]) ?>" required>
 <input type="text" name="second_name" placeholder="Priezvisko" value="<?= htmlspecialchars($player_infos["second_name"]) ?>" required>
 <input type="text" name="country" placeholder="Krajina" value="<?= htmlspecialchars($player_infos["country"]) ?>" required>

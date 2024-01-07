@@ -20,7 +20,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST"){
     $connection = $database->connectionDB();
 
     $player_Id = $_POST["player_Id"];
-    $user_name = $_POST["user_name"];
+    $user_email = $_POST["user_email"];
     $first_name = $_POST["first_name"];
     $second_name = $_POST["second_name"];
     $country = $_POST["country"];
@@ -33,7 +33,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST"){
     
     
 
-    if (Player::updatePlayer($connection, $user_name, $first_name, $second_name, $country, $player_club, $player_Image, $player_cue, $player_break_cue, $player_jump_cue, $player_Id)){
+    if (Player::updatePlayer($connection, $user_email, $first_name, $second_name, $country, $player_club, $player_Image, $player_cue, $player_break_cue, $player_jump_cue, $player_Id)){
         Url::redirectUrl("/z-scoreboard/admin/player-profil.php?player_Id=$player_Id");
     } else {
         echo "Hráča sa nepodarilo upraviť";
