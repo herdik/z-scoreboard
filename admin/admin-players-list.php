@@ -80,7 +80,7 @@ $players = Player::getAllPlayers($connection, "player_Id, first_name, second_nam
     </main>
     
     <?php require "../assets/footer.php" ?>
-    <script src="./js/header.js"></script>            
+    <script src="../js/header.js"></script>            
 </body>
 </html>
 
