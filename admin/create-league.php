@@ -18,6 +18,17 @@ if (!Auth::isLoggedIn()){
 $database = new Database();
 $connection = $database->connectionDB();
 
+
+// $testDate = '12.01.21'; 
+
+// $date = DateTime::createFromFormat('d.m.y', $testDate);
+// echo $date->format('Y-m-d'); 
+
+// *echo date("Y/m/d", strtotime($testDate));
+
+
+$league_name = "";
+$date_of_event = "";
 ?>
 
 <!DOCTYPE html>
@@ -36,7 +47,7 @@ $connection = $database->connectionDB();
 
     <link rel="stylesheet" href="../css/general.css">
     <link rel="stylesheet" href="../css/header.css">
-    <link rel="stylesheet" href="../css/competitions.css">
+    <link rel="stylesheet" href="../css/create-league.css">
     <link rel="stylesheet" href="../css/footer.css">
     <link rel="stylesheet" href="../query/header-query.css">
 
@@ -51,105 +62,125 @@ $connection = $database->connectionDB();
         <section class="main-heading">
             
             <h1>Vytvoriť ligu</h1>
+            <h1 class="app-name"></h1>
+
+            <!-- logo manila -->
+            <div class="moving-logo">
+                <img src="../img/logo-white-manila.png" alt="">
+            </div>
 
         </section>
 
         <section class="main-league-settings">
-            <!-- Hlavný názov -->
-        <h1>BK MANILA " Z-scoreboard "</h1>
-
-
-        <!-- logo manila -->
-        <header>
-            <img src="img/logo-white-manila.png" alt="">
-        </header>
-
-
-        <!-- Formulár pre zadanie názvu ligy -->
-        <div class="zero-container">
+           
             
-            <form id="leagueName-form">
-                <input type="text" placeholder="Názov ligy" name="leagueName">
-                <input type="submit" value="Potvrdiť" name="submitLeagueName">
-            </form>
-            <h1 class="heading-name-league">Názov ligy
-                <span class="left-icon"></span>
-                <span class="right-icon"></span>
-            </h1>
-        </div>
 
-        <!-- Nastavenia pre vytvorenie ligy + system-container -->
+            <form id="basic-settings-form" action="after-create-league.php" method="post">
 
-        <div class="system-container">
+                <input type="text" name="league_name" id="league_name" placeholder="Názov Ligy" value="<?= htmlspecialchars($league_name) ?>" required>
+                <input type="date" name="date_of_event" id="date_of_event" value="<?= htmlspecialchars($date_of_event) ?>" required>
 
-            <h1>Nastavenia ligy</h1>
+                <div class="basic-settings">
+                    <div class="game-settings">
+                        
+                        <div class="container">
+                            <input type="radio" name="discipline" id="8-ball" value="<?= htmlspecialchars("8") ?>" required>
+                            <label for="8-ball"><img src="../img/eight-ball.png" alt=""></label>
+                        </div>
+                        
+                        <div class="container">
+                            <input type="radio" name="discipline" id="9-ball" value="<?= htmlspecialchars("9") ?>" required>
+                            <label for="9-ball"><img src="../img/nine-ball.png" alt=""></label>
+                        </div>
 
-            <!-- Formulár pre registáciu hráča -->
-            <form id="league-settings">
+                        <div class="container">
+                            <input type="radio" name="discipline" id="10-ball" value="<?= htmlspecialchars("10") ?>" required>
+                            <label for="10-ball"><img src="../img/ten-ball.png" alt=""></label>
+                        </div>
 
-                <input type="checkbox" id="revenge" name="checkbox">
-                <label for="revenge">Odvety</label>
-                <!-- výber krajiny z options -->
-                <select id="match-settings" name="matchSettings">
-                    <option value="single">Jednotlivci</option>
-                    <option value="doubles">Dvojice</option>
-                    <option value="teams">Teamy</option>
-                </select><br>
-                <!-- Hrať do -->
+                        <div class="container">
+                            <input type="radio" name="discipline" id="14-ball" value="<?= htmlspecialchars("14") ?>" required>
+                            <label for="14-ball"><img src="../img/straight-pool.png" alt=""></label>
+                        </div>
 
-                <label for="raceTo">Hrať do</label>
-                <input type="number" id="raceTo" min="0" value="1" step="1" name="raceTo"><br>
-
-                <!-- Počet stolov -->
-                <label for="count-tables">Počet stolov</label>
-                <input type="number" id="count-tables" min="0" value="1" step="1" name="countTables"><br>
-                
-                <!-- výber typu hry -->
-                <div class="game-menu">
-
-                    <div class="game-title">
-                        Typ hry
                     </div>
 
-                    <div class="game-option-list">
-                        <ul class="defaultOption">
-                            <li>
-                                <div class="gameOption default">
-                                    <div class="ballImage"><img src="img/eight-ball.png" alt="eight-ball"></div>
-                                </div>
-                            </li>
-                        </ul>
+                    <div class="game-settings">
 
-                        <ul class="chooseGame">
-                            <li>
-                                <div class="gameOption">
-                                    <div class="ballImage"><img src="img/eight-ball.png" alt="eight-ball"></div>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="gameOption">
-                                    <div class="ballImage"><img src="img/nine-ball.png" alt="nine-ball"></div>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="gameOption">
-                                    <div class="ballImage"><img src="img/ten-ball.png" alt="ten-ball"></div>
-                                </div>
-                            </li>
-                        </ul>
+                        <div class="container">
+                            <input type="radio" name="playing_format" id="single" value="<?= htmlspecialchars("single") ?>" required>
+                            <label for="single"> Jednotlivci <i class="fa-solid fa-person"></i></label>
+
+                        </div>
+                        
+                        <div class="container">
+                            <input type="radio" name="playing_format" id="doubles" value="<?= htmlspecialchars("doubles") ?>" required>
+                            <label for="doubles">Dvojice <i class="fa-solid fa-person"></i><i class="fa-solid fa-person"></i></label>
+                            
+                        </div>    
+
+                        <div class="container">
+                            <input type="radio" name="playing_format" id="teams" value="<?= htmlspecialchars("teams") ?>" required>
+                            <label for="teams">Družstvá<i class="fa-solid fa-people-group"></i></label>
+                            
+                        </div>
+                    </div>
+
+                </div>
+
+                <h1>Miesto konania</h1>
+                <div class="venue-settings">
+
+                    <div class="container">
+                        <input type="radio" name="venue" id="bkmanila" value="<?= htmlspecialchars("BK MANILA") ?>" required>
+                        <label for="bkmanila">BK MANILA</label>
+
+                    </div>
+                    
+                    <div class="container">
+                        <input type="radio" name="venue" id="sbiz" value="<?= htmlspecialchars("SBIZ") ?>" required>
+                        <label for="sbiz">SBIZ</label>
+                        
+                    </div>    
+
+                    <div class="container">
+                        <input type="radio" name="venue" id="point" value="<?= htmlspecialchars("POINT") ?>" required>
+                        <label for="point">POINT</label>
+                        
+                    </div>
+                    <div class="container">
+                        <input type="radio" name="venue" id="lavos" value="<?= htmlspecialchars("LAVOS") ?>" required>
+                        <label for="lavos">LAVOS</label>
+                        
+                    </div>
+                    <div class="container">
+                        <input type="radio" name="venue" id="arena" value="<?= htmlspecialchars("ARÉNA") ?>" required>
+                        <label for="arena">ARÉNA</label>
+                        
+                    </div>
+                    <div class="container">
+                        <input type="radio" name="venue" id="pardubice" value="<?= htmlspecialchars("PARDUBICE") ?>" required>
+                        <label for="pardubice">PARDUBICE</label>
+                        
                     </div>
                 </div>
+
+                <label for="season" id="season">Sezóna</label>
+                <input type="number" name="season" id="season-input" min="2020" max="2099" value="<?= htmlspecialchars(date("Y")) ?>" required>
                 
-                <!-- odosielacie tlačítko pre odolsanie údajov od užívateľa pre nastavenia hry -->
-                <input type="submit" value="Potvrdiť" name="submitForm">
+                <input type="submit" id="submit-btn" value="Potvrdiť">
+                
 
             </form>
-                </section>
-        </div>   
 
+        </section>
+        
+        
+            
     </main>
 
     <?php require "../assets/footer.php" ?>
     <script src="../js/header.js"></script>
+    <script src="../js/repeating-Z-scoreboard.js"></script>
 </body>
 </html>

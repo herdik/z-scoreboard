@@ -1,0 +1,193 @@
+main {
+    min-height: 100vh;
+    background: linear-gradient(black, rgba(0, 0, 0, 0.702));
+    color: white;
+}
+
+.main-heading h1{
+    font-size: 30px;
+    padding-top: 30px;
+    text-align: center;
+}
+
+.main-league-settings {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.main-league-settings h1 {
+    text-align: center;
+}
+
+/* logo manila plus animácia */
+.moving-logo {
+    max-width: 150px;
+    margin: 20px auto;
+}
+
+.moving-logo img{
+    width: 100%;
+    animation: floatation 3s alternate infinite linear;
+}
+
+#basic-settings-form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    max-width: 680px;
+    padding: 20px 70px;
+    border: 5px solid rgba(0, 0, 0, 0.608);
+    border-radius: 20px;
+    box-shadow: 0 0 10px 10px #888888;
+    padding: 15px;
+}
+
+#basic-settings-form img {
+    max-width: 30px;
+}
+
+#league_name {
+    margin: 20px;
+    padding: 8px 0;
+    text-align: center;
+    border-radius: 10px;
+    box-shadow: 0 0 10px 10px #888888;
+    font-size: 14px;
+    border: 5px solid #be9524;
+    cursor: pointer;
+}
+
+#date_of_event {
+    margin: 10px;
+    padding: 8px 0;
+    text-align: center;
+    border-radius: 10px;
+    font-size: 14px;
+    border: 5px solid #be9524;
+    cursor: pointer;
+}
+
+.basic-settings {
+    margin: 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    gap: 50px;
+    
+}
+
+.game-settings {
+    border: 3px solid white;
+    border-radius: 10px;
+    padding: 15px 50px;
+    display: flex;
+    flex-direction: column;
+}
+
+
+.container input[type="radio"] {
+    display: none;
+}
+
+.container label {
+    position: relative;
+    color: white;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    border: 3px solid white;
+    border-radius: 10px;
+    padding: 12px 22px;
+    width: 100%;
+    margin: 5px 0 5px 0;
+}
+
+.container label::before {
+    content: "";
+    height: 15px;
+    width: 15px;
+    border: 2px solid white;
+    border-radius: 50%;
+    margin-right: 15px;
+}
+
+input[type="radio"]:checked + label::before {
+    height: 10px;
+    width: 10px;
+    border: 5px solid white;
+}
+
+input[type="radio"]:checked + label {
+    background-color: #be9524;
+    color: white;
+}
+
+.fa-solid {
+    margin-left: 5px;
+}
+
+.venue-settings {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+.venue-settings label {
+    width: 240px;
+}
+
+
+#season {
+    font-size: 30px;
+}
+#season-input {
+    margin: 20px;
+    padding: 8px 0;
+    text-align: center;
+    border-radius: 10px;
+    font-size: 14px;
+    border: 5px solid #be9524;
+    cursor: pointer;
+}
+
+
+#submit-btn{
+    width: 150px;
+    text-align: center;
+    margin-top: 18px;
+    border: 5px solid white;
+    padding: 8px 12px;
+    font-size: 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s linear;
+    color: white;
+    background: #be9524;
+    transition: all 0.3s linear;
+}
+
+#submit-btn:hover {
+    background-color: white;
+    color: #be9524;
+    border: 5px solid #be9524;
+}
+
+
+
+/* Animácia pre LOGO */
+/* floating keyframes */
+@keyframes floatation {
+    0% {
+        transform: translateY(15px);
+    }
+
+    100% {
+        transform: translateY(-15px);
+    }
+}

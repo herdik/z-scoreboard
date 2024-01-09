@@ -5,3 +5,7 @@
     font-family: 'Tektur', cursive;
     list-style: none;
 }
+
+input:focus {
+    outline: none;
+}
