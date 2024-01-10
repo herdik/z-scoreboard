@@ -2,6 +2,7 @@
 
 require "../classes/Database.php";
 require "../classes/Player.php";
+require "../classes/League.php";
 require "../classes/Url.php";
 
 
@@ -17,6 +18,9 @@ if (!Auth::isLoggedIn()){
 // database connection
 $database = new Database();
 $connection = $database->connectionDB();
+
+$leagues = League::getAllLeagues($connection);
+
 ?>
 
 <!DOCTYPE html>
@@ -63,23 +67,54 @@ $connection = $database->connectionDB();
         
 
         <section class="all-registered-competitions">
-            <!-- Zoznam registrovaných hráčov -->
-            <ol class="registered-competitions-list">
+            <!-- Zoznam registrovaných súťaží -->
+            <div class="result-container">
+                
+                <div class="league-table">
 
-            <?php /*foreach($players as $one_player): ?>
+                    <table class="list-of-league">
+                        <thead>
+                            <tr>
+                                <th>Formát</th>
+                                <th>Názov</th>
+                                <th style="display:none;">Dátum</th>
+                                <th>Kategória</th>
+                                <th>Hra</th>
+                                <th>Sezóna</th>
+                                <th>Miesto</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        <?php foreach($leagues as $one_league): ?>
+
+                            
+                                <tr onclick='window.location="./current-league.php?league_id=<?= htmlspecialchars($one_league["league_id"]) ?>";'>
+
+                                <?php if (htmlspecialchars($one_league["playing_format"]) === "single"): ?>
+                                    <td><i class="fa-solid fa-person"></i></td>
+                                <?php elseif (htmlspecialchars($one_league["playing_format"]) === "doubles"): ?>
+                                    <td><i class="fa-solid fa-person"></i><i class="fa-solid fa-person"></i></td>
+                                <?php else: ?> 
+                                    <td><i class="fa-solid fa-people-group"></i></td>
+                                <?php endif; ?>   
+                                
+                                <td><?= htmlspecialchars($one_league["league_name"]) ?></td>
+                                <td><?= htmlspecialchars($one_league["category"]) ?></td>
+                                <td><img src="../img/<?= $one_league["discipline"] ?>-ball.png" alt=""></td>
+                                <td><?= htmlspecialchars($one_league["season"]) ?></td>
+                                <td><?= htmlspecialchars($one_league["venue"]) ?></td>
+                                <td style="display:none;"><?= htmlspecialchars($one_league["type"]) ?></td>
+                                
+                                </tr>
+                            
+
+                        <?php endforeach ?>   
+                        </tbody>
+                    </table>
+                </div>
+            </div>
                 
-                <li>
-                    <img src="img/Slovensko.png" alt="Slovensko">
-                    <div class="competition-informations">
-                        <h3><?php echo htmlspecialchars($one_player["first_name"]). " ". htmlspecialchars($one_player["second_name"]) ?></h3>
-                        <p><?php echo htmlspecialchars($one_player["player_club"]) ?></p>
-                    </div>
-                    <a class="competition-btn" href="player-info.php?player_Id=<?= htmlspecialchars($one_player['player_Id']) ?>">Informácie <br>o hráčovi</a>
-                </li>
-                
-            <?php endforeach */?>
-        
-            </ol>
+            
 
         </section>
         

@@ -146,7 +146,7 @@ input[type="radio"]:checked + label {
 #season {
     font-size: 30px;
 }
-#season-input {
+#season-input, #category {
     margin: 20px;
     padding: 8px 0;
     text-align: center;
@@ -166,7 +166,7 @@ input[type="radio"]:checked + label {
     font-size: 20px;
     border-radius: 20px;
     cursor: pointer;
-    transition: all 0.3s linear;
+    transition: all 0.4s linear;
     color: white;
     background: #be9524;
     transition: all 0.3s linear;

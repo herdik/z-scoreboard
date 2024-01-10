@@ -21,11 +21,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST"){
     $connection = $database->connectionDB();
 
     $league_name = $_POST["league_name"];
+    $category = $_POST["category"];
     $playing_format = $_POST["playing_format"];
     $date_of_event = $_POST["date_of_event"];
     $season = $_POST["season"];
     $discipline = intval($_POST["discipline"]);
     $venue = $_POST["venue"];
+    $type = $_POST["type"];
     
     if (is_numeric($_SESSION["logged_in_user_id"]) and isset($_SESSION["logged_in_user_id"])){
         $user_info = Player::getUser($connection, $_SESSION["logged_in_user_id"]);
@@ -35,7 +37,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST"){
     }
     
     
-    $league_id = League::createLeague($connection, $league_name, $playing_format, $date_of_event, $season, $discipline, $venue, $manager);
+    $league_id = League::createLeague($connection, $league_name, $category, $playing_format, $date_of_event, $season, $discipline, $venue, $type, $manager);
 
     if (!empty($league_id)){
         Url::redirectUrl("/z-scoreboard/admin/current-league.php?league_id=$league_id");

@@ -29,6 +29,7 @@ $connection = $database->connectionDB();
 
 $league_name = "";
 $date_of_event = "";
+$category = "";
 ?>
 
 <!DOCTYPE html>
@@ -85,22 +86,22 @@ $date_of_event = "";
                         
                         <div class="container">
                             <input type="radio" name="discipline" id="8-ball" value="<?= htmlspecialchars("8") ?>" required>
-                            <label for="8-ball"><img src="../img/eight-ball.png" alt=""></label>
+                            <label for="8-ball"><img src="../img/8-ball.png" alt=""></label>
                         </div>
                         
                         <div class="container">
                             <input type="radio" name="discipline" id="9-ball" value="<?= htmlspecialchars("9") ?>" required>
-                            <label for="9-ball"><img src="../img/nine-ball.png" alt=""></label>
+                            <label for="9-ball"><img src="../img/9-ball.png" alt=""></label>
                         </div>
 
                         <div class="container">
                             <input type="radio" name="discipline" id="10-ball" value="<?= htmlspecialchars("10") ?>" required>
-                            <label for="10-ball"><img src="../img/ten-ball.png" alt=""></label>
+                            <label for="10-ball"><img src="../img/10-ball.png" alt=""></label>
                         </div>
 
                         <div class="container">
                             <input type="radio" name="discipline" id="14-ball" value="<?= htmlspecialchars("14") ?>" required>
-                            <label for="14-ball"><img src="../img/straight-pool.png" alt=""></label>
+                            <label for="14-ball"><img src="../img/14-ball.png" alt=""></label>
                         </div>
 
                     </div>
@@ -165,11 +166,18 @@ $date_of_event = "";
                     </div>
                 </div>
 
+                <input type="text" name="category" autocomplete=“off” placeholder="Kategória" value="<?= htmlspecialchars($category) ?>" list="categories" id="category" required>
+                <datalist id="categories">
+                <option>Amatérske turnaje</option>
+                <option>Slovenský pohár</option>
+                <option>Majstrovstvá SR</option>
+                </datalist>
+
                 <label for="season" id="season">Sezóna</label>
                 <input type="number" name="season" id="season-input" min="2020" max="2099" value="<?= htmlspecialchars(date("Y")) ?>" required>
                 
                 <input type="submit" id="submit-btn" value="Potvrdiť">
-                
+                <input type="hidden" name="type" value="<?= htmlspecialchars("liga") ?>">
 
             </form>
 
