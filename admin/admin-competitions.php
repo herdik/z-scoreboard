@@ -3,7 +3,6 @@
 require "../classes/Database.php";
 require "../classes/Player.php";
 require "../classes/League.php";
-require "../classes/Url.php";
 
 
 // verifying by session if visitor have access to this website

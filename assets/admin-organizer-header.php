@@ -18,7 +18,11 @@
         <ul>
 
             <li><a href="./admin-competitions.php">Súťaže</a></li>
-            <li><a href="./reg-add-player.php">Registrácia hráča</a></li>
+            
+            <?php if ($_SESSION["role"] === "admin" || $_SESSION["role"] === "organizer"): ?>
+            <li><a href="./reg-add-player.php">Registrácia hráča</a></li>            
+            <?php endif ?> 
+            
             <li><a href="./admin-players-list.php">Zoznam hráčov</a></li>
             <li><a href="">Challenge Matches</a></li>
             <li><a href="">Scoreboard</a></li>

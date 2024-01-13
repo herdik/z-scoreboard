@@ -82,4 +82,36 @@ class League {
             echo "Výsledná chyba je: " . $e->getMessage();
         }
     }
+
+    /**
+     *
+     * RETURN ONE SELECTED REGISTERED LEAGUE FROM DATABASE
+     *
+     * @param object $connection - connection to database
+     * @param string $league_id - league_id
+     *
+     * @return array array of objects, one object mean one league
+     */
+    public static function getLeague($connection, $league_id, $columns = "*"){
+        $sql = "SELECT $columns
+                FROM league
+                WHERE league_id = :league_id";
+
+        $stmt = $connection->prepare($sql);
+
+        $stmt->bindValue(":league_id", $league_id, PDO::PARAM_INT);
+
+        try {
+            if($stmt->execute()){
+                // asscoc array for one league
+                return $stmt->fetch();
+            } else {
+                throw new Exception ("Príkaz pre získanie ligy sa nepodaril");
+            }
+        } catch (Exception $e){
+            // 3 je že vyberiem vlastnú cestu k súboru
+            error_log("Chyba pri funckii getLeague, príkaz pre získanie informácií z databázy zlyhal\n", 3, "./errors/error.log");
+            echo "Výsledná chyba je: " . $e->getMessage();
+        }
+    }
 }
