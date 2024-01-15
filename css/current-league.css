@@ -35,7 +35,7 @@ main {
     justify-content: space-around;
     gap: 10%;
     overflow-y: hidden;
-    padding: 5px;
+    padding: 10px;
 }
 
 .navigation-bar a {
@@ -70,6 +70,7 @@ main {
     flex-direction: row;
     justify-content: space-around;
     align-items: center;
+    flex-wrap: wrap;
 }
 
 .league-content h1 {

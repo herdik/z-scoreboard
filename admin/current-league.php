@@ -1,5 +1,5 @@
 <?php
-// var_dump($_GET["league_id"]);
+
 
 require "../classes/Database.php";
 require "../classes/Player.php";
@@ -58,7 +58,8 @@ if (isset($_GET["league_id"]) and is_numeric($_GET["league_id"])){
 
         <section class="navigation-bar">
             <ul>
-                <li><a href="./admin-list_of_league_players.php">Zoznam hráčov</a></li>
+                <li><a href="./current-league.php?league_id=<?= htmlspecialchars($league_infos["league_id"]) ?>">Informácie</a></li>
+                <li><a href="./admin-list_of_league_players.php?league_id=<?= htmlspecialchars($league_infos["league_id"]) ?>">Zoznam hráčov</a></li>
                 <li><a href="#">Nastavenia</a></li>
                 <li><a href="#">Ligové zápasy</a></li>
                 <li><a href="#">Výsledky</a></li>
