@@ -93,14 +93,14 @@ main {
     font-size: 20px;
 }
 
-.logo {
+.logos {
     display: flex;
     justify-content: center;
     justify-content: center;
     align-items: center;
     flex: 1;
 }
-.logo img {
+.logos img {
     width: 120px;
 }
 #reg-league-form {
@@ -172,6 +172,15 @@ main {
     width: 100%;
 }
 
+.registered-players span {
+    border: 5px solid white;
+    border-radius: 10px;
+    box-shadow: 0 0 10px 3px #be9524;
+    background-color: #be9524;
+    color: #fff;
+    padding: 3px 6px;
+}
+
 .players {
     width: 100%;
     display: flex;
@@ -180,13 +189,63 @@ main {
     align-content: flex-start;
     flex-wrap: wrap;
     gap: 10px;
+    background-color: rgb(255, 253, 253);
+    margin-top: 20px;
 }
 .player-profil {
     width: 150px;
-    height: 150px;
-    background-color: black;
-    box-shadow: 0 0 10px 5px #be9524;
-    border-radius: 20px;
+    height: 200px;
+    background-color: #fff;
+    border: 1px solid #be9524;
+    border-radius: 10px;
+    box-shadow: 5px 5px 5px 3px #be9524;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+}
+
+.picture-part {
+    width: 70px;
+    height: 70px;
+    background: url(../img/players-image/majo.jpg);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    border-radius: 50%;
+    position: relative;
+}
+.flag-part {
+    width: 40px;
+    height: 22px;
+    border-radius: 10%;
+    position: absolute;
+    left: 50%;
+    top: 100%;
+    transform: translate(-50%, -50%);
+}
+
+.profil-name {
+    color: #be9524;
+}
+
+.player-profil a {
+    text-decoration: none;
+    text-align: center;
+    color: white;
+    background: #be9524;
+    padding: 8px 12px;
+    font-size: 12px;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    transition: all 0.3s linear;
+}
+
+.player-profil a:hover {
+    background-color: white;
+    color:black;
+    border: 1px solid #be9524;
 }
 
 /* .registered-players ol {

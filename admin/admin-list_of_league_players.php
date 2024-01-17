@@ -4,6 +4,7 @@
 require "../classes/Database.php";
 require "../classes/Player.php";
 require "../classes/League.php";
+require "../classes/LeaguePlayer.php";
 
 
 
@@ -20,11 +21,27 @@ if (!Auth::isLoggedIn()){
 $database = new Database();
 $connection = $database->connectionDB();
 
+// button registrovať - Registration
+$reg_button = "Registrovať";
+
 if (isset($_GET["league_id"]) and is_numeric($_GET["league_id"])){
     $league_infos = League::getLeague($connection, $_GET["league_id"]);
+    $registered_players = LeaguePlayer::getAllLeaguePlayers($connection, $league_infos["league_id"]);
+
+    foreach($registered_players as $one_reg_player){
+        if($_SESSION["logged_in_user_id"] === $one_reg_player["player_Id"]){
+            $reg_button = "Odregistrovať";
+            break;
+        } else {
+            $reg_button = "Registrovať";
+        }
+    }     
 } else {
     $league_infos = null;
+    $registered_players = null;
 }
+
+$total_players = count($registered_players);
 
 ?>
 
@@ -76,9 +93,12 @@ if (isset($_GET["league_id"]) and is_numeric($_GET["league_id"])){
 
                     <h1 id="venue">Miesto konania</h1>
                     <p><?= htmlspecialchars($league_infos["venue"]) ?></p>
+
+                    <h5 id="total-reg-players">Počet registrovaných hráčov</h5>
+                    <p><?= htmlspecialchars($total_players) ?></p>
                 </div>
                 
-                <div class="logo">
+                <div class="logos">
                     <img id="black-manila" src="../img/black-logo-manila.png" alt="">   
                     <img id="sbiz" src="../img/sbiz.png" alt="">  
                 </div>
@@ -105,9 +125,8 @@ if (isset($_GET["league_id"]) and is_numeric($_GET["league_id"])){
                             </div>
 
                             
-
                             <div class="sumbit-btn">
-                                <input type="submit" value="Registrovať">
+                                <input type="submit" value="<?= htmlspecialchars($reg_button) ?>">
                             </div>
 
                         </div>
@@ -124,24 +143,23 @@ if (isset($_GET["league_id"]) and is_numeric($_GET["league_id"])){
                 
 
                 <div class="players">
-                    <div class="player-profil"></div>
-                    <div class="player-profil"></div>
-                    <div class="player-profil"></div>
-                    <div class="player-profil"></div>
-                    <div class="player-profil"></div>
-                    <div class="player-profil"></div>
-                    <div class="player-profil"></div>
-                    <div class="player-profil"></div>
-                    <div class="player-profil"></div>
-                    <div class="player-profil"></div>
-                    <div class="player-profil"></div>
-                    <div class="player-profil"></div>
-                    <div class="player-profil"></div>
-                    <div class="player-profil"></div>
-                    <div class="player-profil"></div>
-                    <div class="player-profil"></div>
-            
-                    
+
+                    <?php foreach($registered_players as $reg_player): ?>
+                        <article class="player-profil">
+                            <div class="picture-part">
+                                <div class="flag-part" style="
+                                    background: url(../img/countries/<?= htmlspecialchars($reg_player["country"]) ?>.png);
+                                    background-size: cover;
+                                    background-position: center;
+                                    background-repeat: no-repeat;
+                                    ">
+                                </div>
+                            </div>
+                            <h6 class="profil-name"><?php echo htmlspecialchars($reg_player["first_name"]). " ". htmlspecialchars($reg_player["second_name"]) ?></h6>
+                            <a href="./player-profil.php?player_Id=<?= htmlspecialchars($reg_player["player_Id"]) ?>">Informácie</a>
+                        </article>
+                    <?php endforeach ?>
+
                 </div>
         
                 

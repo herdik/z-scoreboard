@@ -48,11 +48,16 @@ class LeaguePlayer {
      *
      * @return array array of objects, one object mean one player
      */
-    public static function getAllLeaguePlayers($connection, $columns = "*"){
-        $sql = "SELECT $columns
-                FROM list_of_players_league";
+    public static function getAllLeaguePlayers($connection, $league_id, $columns = "*"){
+        $sql = "SELECT list_of_players_league.$columns, player_user.first_name, player_user.second_name, player_user.player_Image, player_user.country
+                FROM list_of_players_league
+                INNER JOIN player_user ON list_of_players_league.player_Id = player_user.player_Id
+                WHERE league_id = :league_id";
 
         $stmt = $connection->prepare($sql);
+
+        // all parameters to send to Database
+        $stmt->bindValue(":league_id", $league_id, PDO::PARAM_INT);
 
         try {
             if($stmt->execute()){
