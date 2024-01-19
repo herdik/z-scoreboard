@@ -8,7 +8,7 @@
   <option>POINT Trenčín</option>
   <option>BK Aréna Ružomberok</option>
 </datalist>
-<input type="text" name="player_Image" placeholder="Obrázok" value="<?= htmlspecialchars($player_infos["player_Image"]) ?>">
+<input id="playerIMG" type="file" name="player_Image">
 <input type="text" name="player_cue" placeholder="Hracie tágo" value="<?= htmlspecialchars($player_infos["player_cue"]) ?>">
 <input type="text" name="player_break_cue" placeholder="Rozbíjacie tágo" value="<?= htmlspecialchars($player_infos["player_break_cue"]) ?>">
 <input type="text" name="player_jump_cue" placeholder="Skákacie tágo" value="<?= htmlspecialchars($player_infos["player_jump_cue"]) ?>">

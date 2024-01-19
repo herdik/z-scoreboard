@@ -391,4 +391,32 @@ class Player {
         }
     }
 
+    /**
+     *
+     * GET NEXT player_Id / user_id FOR NEXT USER FROM DATABASE
+     *
+     * @return int ID for one user
+     */
+    public static function nextPLayerId($connection){
+        $sql = "SELECT `AUTO_INCREMENT`
+                FROM  INFORMATION_SCHEMA.TABLES
+                WHERE TABLE_SCHEMA = 'z_scoreboard'
+                AND   TABLE_NAME   = 'player_user'";
+        
+
+        // connect sql amend to database
+        $stmt = $connection->prepare($sql);
+
+        try {
+            if($stmt->execute()) {
+                return $stmt->fetch()["AUTO_INCREMENT"];
+            }
+            
+        } catch (Exception $e){
+            // 3 je že vyberiem vlastnú cestu k súboru
+            error_log("Chyba pri funkcii authentication, získanie informácií z databázy zlyhalo\n", 3, "../errors/error.log");
+            echo "Výsledná chyba je: " . $e->getMessage();
+        }
+    }
+
 }

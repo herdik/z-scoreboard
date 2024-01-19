@@ -60,7 +60,7 @@
 
         <section class="registration-form">
             <h1>Registrácia nového hráča</h1>
-            <form action="after-reg-add-player.php" method="POST">
+            <form action="after-reg-add-player.php" method="POST" enctype="multipart/form-data">
 
                 <?php require "../assets/form.php" ?>
                 <!-- <input type="email" name="user_email" placeholder="Email" required>
@@ -72,7 +72,7 @@
                 <input type="text" name="player_cue" placeholder="Hracie tágo">
                 <input type="text" name="player_break_cue" placeholder="Rozbíjacie tágo">
                 <input type="text" name="player_jump_cue" placeholder="Skákacie tágo"> -->
-                <input class="btn" type="submit" value="Zaregistrovať">
+                <input class="btn" type="submit" name="submit" value="Zaregistrovať">
                 
             </form>
 
