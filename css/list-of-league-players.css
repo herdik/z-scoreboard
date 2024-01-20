@@ -209,10 +209,6 @@ main {
 .picture-part {
     width: 70px;
     height: 70px;
-    background: url(../img/players-image/majo.jpg);
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
     border-radius: 50%;
     position: relative;
 }

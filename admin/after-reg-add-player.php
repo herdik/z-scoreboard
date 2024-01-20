@@ -20,6 +20,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST"){
     $database = new Database();
     $connection = $database->connectionDB();
 
+    // if redirect is active/true do not save data to database and not to use onother redirrect
+    $redirect_status = false;
+
     $next_player_id = Player::nextPLayerId($connection);
 
     $user_email = $_POST["user_email"];
@@ -45,7 +48,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST"){
             // 10000000 is 10MB
             if ($image_size > 10000000){
                 // redirect to error site
-                $too_big = "priliš velke";
+                $too_big = "súbor je príliš veľký";
+                Url::redirectUrl("/z-scoreboard/admin/logedin-error.php?logedin_error=$too_big");
+                $redirect_status = true;
             } else {
                 // use pathinfo to get filename extension
                 $image_extension = pathinfo($image_name, PATHINFO_EXTENSION); 
@@ -73,6 +78,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST"){
                 } else {
                     // redirect to error site
                     $not_allowed_extension = "nedovolená koncovka";
+                    Url::redirectUrl("/z-scoreboard/admin/logedin-error.php?logedin_error=$not_allowed_extension");
+                    $redirect_status = true;
                 }
             }
         } else {
@@ -84,21 +91,25 @@ if ($_SERVER["REQUEST_METHOD"] === "POST"){
         }
     }
     
-    // player_Image is current choose image by user or automatically choose unknown player image 'no-photo-player'
-    $player_Image = $new_image_name;
+    if (!$redirect_status){
+        // player_Image is current choose image by user or automatically choose unknown player image 'no-photo-player'
+        $player_Image = $new_image_name;
 
-    // create registered Player in Database
-    $player_Id = Player::createPlayer($connection, $user_email, $first_name, $second_name, $country, $player_club, $player_Image, $player_cue, $player_break_cue, $player_jump_cue);
+        // create registered Player in Database
+        $player_Id = Player::createPlayer($connection, $user_email, $first_name, $second_name, $country, $player_club, $player_Image, $player_cue, $player_break_cue, $player_jump_cue);
 
-    // save image for registered player in Database for current registered Player
-    $image_id = Image::insertPlayerImage($connection, $player_Id, $player_Image);
+        // save image for registered player in Database for current registered Player
+        $image_id = Image::insertPlayerImage($connection, $player_Id, $player_Image);
 
-    if (!empty($player_Id)){
-        Url::redirectUrl("/z-scoreboard/admin/player-profil.php?player_Id=$player_Id");
-    } else {
-        echo "Nového hráča sa nepodarilo pridať";
+        if (!empty($player_Id)){
+            Url::redirectUrl("/z-scoreboard/admin/player-profil.php?player_Id=$player_Id");
+        } else {
+            $not_added_player = "Nového hráča sa nepodarilo pridať";
+            Url::redirectUrl("/z-scoreboard/admin/logedin-error.php?logedin_error=$not_added_player");
+        }
     }
 } else {
-    echo "Nepovolený prístup";
+    $not_authorization = "Nepovolený prístup";
+    Url::redirectUrl("/z-scoreboard/admin/logedin-error.php?logedin_error=$not_authorization");
 }
 ?>
