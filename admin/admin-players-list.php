@@ -16,7 +16,7 @@ if (!Auth::isLoggedIn()){
 $database = new Database();
 $connection = $database->connectionDB();
 
-$players = Player::getAllPlayers($connection, "player_Id, first_name, second_name, player_club");
+$players = Player::getAllPlayers($connection, "player_Id, first_name, second_name, country, player_club");
 
 ?>
 
@@ -63,7 +63,7 @@ $players = Player::getAllPlayers($connection, "player_Id, first_name, second_nam
             <?php foreach($players as $one_player): ?>
 
                 <li>
-                    <img src="img/Slovensko.png" alt="Slovensko">
+                    <img src="../img/countries/<?= htmlspecialchars($one_player["country"]) ?>.png" alt="<?= htmlspecialchars($one_player["country"]) ?>">
                     <div class="player-informations">
                         <h3><?php echo htmlspecialchars($one_player["first_name"]). " ". htmlspecialchars($one_player["second_name"]) ?></h3>
                         <p><?php echo htmlspecialchars($one_player["player_club"]) ?></p>

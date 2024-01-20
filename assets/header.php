@@ -7,7 +7,7 @@
 
     <nav>
 
-        <ul>
+        <ul id="main-menu">
 
             <li><a href="./index.php">Domov</a></li>
             <li><a href="./competitions.php">Súťaže</a></li>

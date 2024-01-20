@@ -62,7 +62,7 @@
 
         <section class="player-heading">
 
-            <h1>Užívateľský profil hráča</h1>
+            <h1>Profil hráča</h1>
 
         </section>
 
@@ -71,7 +71,7 @@
                     <p>Hráč nebol nájdený<p>
                 <?php else: ?>
                     <div class="one-player-box">
-                    <?php if ($_SESSION["role"] === "admin" || $_SESSION["role"] === "organizer"): ?>
+                    <?php if ($_SESSION["role"] === "admin" || $_SESSION["role"] === "organizer" || $_SESSION["logged_in_user_id"] === $player_infos["player_Id"]): ?>
                         <h1>Email: <?= htmlspecialchars($player_infos["user_email"]) ?></h1>
                     <?php endif ?>   
                         <h1><?= htmlspecialchars($player_infos["first_name"]). " " .htmlspecialchars($player_infos["second_name"]) ?></h1>

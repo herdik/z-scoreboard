@@ -24,19 +24,19 @@ header nav {
     margin-right: 15px;
 }
 
-header nav ul{
+#main-menu{
     display: flex;
     flex-direction: row;
 }
 
-header nav ul li {
+#main-menu li {
     list-style-type: none;
     margin-right: 20px;
     position: relative;
-
+    color: white;
 }
 
-header nav ul li::before {
+#main-menu li::before {
     content: '';
     position: absolute;
     width: 0;
@@ -46,17 +46,18 @@ header nav ul li::before {
     transition: 0.3s all linear;
 }
 
-header nav ul li:hover::before {
+#main-menu li:hover::before {
     width: 100%;
 }
 
-header nav ul li a{
+#main-menu li a{
     color: white;
     text-decoration: none;
     font-size: 18px;
+    display: block;
 }
 
-header nav ul li a:hover {
+#main-menu li a:hover {
     color: #ebe206;
 
 }
@@ -65,3 +66,41 @@ header nav ul li a:hover {
 .menu-icon {
     display: none;
 }
+
+#second-menu {
+    list-style-type: none;
+    visibility: hidden;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    flex-wrap: nowrap;
+    opacity: 0;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    position: absolute;
+    background-color: black;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    transform: translateY(-3em);
+    z-index: -1;
+    transition: all 0.3s ease 0s, visibility 0s linear 0.3s, z-index 0s linear 0.01s;
+}
+
+#main-menu li:focus #second-menu, 
+#main-menu li:focus-within #second-menu,
+#main-menu li:hover #second-menu {
+    visibility: visible;
+    opacity: 1;
+    z-index: 1;
+    transform: translateY(0);
+    transition-delay: 0s, 0s, 0.3s;
+}
+
+
+
+
+
+

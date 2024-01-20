@@ -15,7 +15,7 @@
 
     <nav>
 
-        <ul>
+        <ul id="main-menu">
 
             <li><a href="./admin-competitions.php">Súťaže</a></li>
             
@@ -26,7 +26,12 @@
             <li><a href="./admin-players-list.php">Zoznam hráčov</a></li>
             <li><a href="">Challenge Matches</a></li>
             <li><a href="">Scoreboard</a></li>
-            <li><a href="./log-out.php"><?= htmlspecialchars($user_info["first_name"]). " " .htmlspecialchars($user_info["second_name"]) ?></a></li>
+            <li><a href="#"><?= htmlspecialchars($user_info["first_name"]). " " .htmlspecialchars($user_info["second_name"]) ?></a>
+                <ul id="second-menu">
+                    <li><a href="./player-profil.php?player_Id=<?= htmlspecialchars($user_info["player_Id"]) ?>">Môj profil</a></li>
+                    <li><a href="./log-out.php">Odhlásiť</a></li>
+                </ul>
+            </li>
             
 
         </ul>
