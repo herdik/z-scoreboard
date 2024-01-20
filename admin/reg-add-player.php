@@ -83,5 +83,6 @@
     
     <?php require "../assets/footer.php" ?>
     <script src="../js/header.js"></script>
+    <script src="../js/show-img-name.js"></script>
 </body>
 </html>
