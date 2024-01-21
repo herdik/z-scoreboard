@@ -16,10 +16,11 @@
 
     if (isset($_GET["player_Id"]) and is_numeric($_GET["player_Id"])){
         $player_infos = Player::getPlayer($connection, $_GET["player_Id"]);
+        $player_id = $_GET["player_Id"];
     } else {
         $player_infos = null;
     }
-
+    
 ?>
 
 <!DOCTYPE html>
@@ -58,19 +59,28 @@
         </section>
 
         <section class="player-main-info">
-                <?php if ($player_infos === NULL): ?>
-                    <p>Hráč nebol nájdený<p>
-                <?php else: ?>
-                    <div class="one-player-box">
-                        <h1><?= htmlspecialchars($player_infos["first_name"]). " " .htmlspecialchars($player_infos["second_name"]) ?></h1>
-                        <h3>Klub: <?= htmlspecialchars($player_infos["player_club"]) ?></h3>
+        <?php if ($player_infos === NULL): ?>
+                        <p>Hráč nebol nájdený<p>
+                    <?php else: ?>
+                        <div class="one-player-box">
+            
+                            <?php if (htmlspecialchars($player_infos["player_Image"]) === "no-photo-player"): ?>
+                                    <img class="player-pict" src="./img/no-photo-player.png" alt="no-photo-player.png">
+                            <?php else: ?>
+                                <img class="player-pict" src="./uploads/<?= htmlspecialchars($player_id) ?>/<?= htmlspecialchars($player_infos["player_Image"]) ?>" alt="<?= htmlspecialchars($player_infos["first_name"]). " " .htmlspecialchars($player_infos["second_name"]) ?>">
+                            <?php endif; ?>
 
-                        <div class="cues">
-                            <p>Hracie tágo: <?= htmlspecialchars($player_infos["player_cue"]) ?></p>
-                            <p>Rozbíjacie tágo: <?= htmlspecialchars($player_infos["player_break_cue"]) ?></p>
-                            <p>Skákacie tágo: <?= htmlspecialchars($player_infos["player_jump_cue"]) ?></p>
+                            <img id="country-flag" src="./img/countries/<?= htmlspecialchars($player_infos["country"]) ?>.png" alt="<?= htmlspecialchars($player_infos["country"]) ?>">
+
+                            <h1><?= htmlspecialchars($player_infos["first_name"]). " " .htmlspecialchars($player_infos["second_name"]) ?></h1>
+                            <h3>Klub: <?= htmlspecialchars($player_infos["player_club"]) ?></h3>
+
+                            <div class="cues">
+                                <p>Hracie tágo: <?= htmlspecialchars($player_infos["player_cue"]) ?></p>
+                                <p>Rozbíjacie tágo: <?= htmlspecialchars($player_infos["player_break_cue"]) ?></p>
+                                <p>Skákacie tágo: <?= htmlspecialchars($player_infos["player_jump_cue"]) ?></p>
+                            </div>
                         </div>
-                    </div>
  
                 <?php endif ?>
         </section>
