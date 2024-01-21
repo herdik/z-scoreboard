@@ -60,39 +60,53 @@
 
     <main>
 
-        <section class="player-heading">
+        <article>
 
-            <h1>Profil hráča</h1>
+        
+            <section class="player-heading">
 
-        </section>
+                <h1>Profil hráča</h1>
 
-        <section class="player-main-info">
-                <?php if ($player_infos === NULL): ?>
-                    <p>Hráč nebol nájdený<p>
-                <?php else: ?>
-                    <div class="one-player-box">
-                    <?php if ($_SESSION["role"] === "admin" || $_SESSION["role"] === "organizer" || $_SESSION["logged_in_user_id"] === $player_infos["player_Id"]): ?>
-                        <h1>Email: <?= htmlspecialchars($player_infos["user_email"]) ?></h1>
-                    <?php endif ?>   
-                        <h1><?= htmlspecialchars($player_infos["first_name"]). " " .htmlspecialchars($player_infos["second_name"]) ?></h1>
-                        <h3>Klub: <?= htmlspecialchars($player_infos["player_club"]) ?></h3>
+            </section>
 
-                        <div class="cues">
-                            <p>Hracie tágo: <?= htmlspecialchars($player_infos["player_cue"]) ?></p>
-                            <p>Rozbíjacie tágo: <?= htmlspecialchars($player_infos["player_break_cue"]) ?></p>
-                            <p>Názov školy: <?= htmlspecialchars($player_infos["player_jump_cue"]) ?></p>
+            <section class="player-main-info">
+                    <?php if ($player_infos === NULL): ?>
+                        <p>Hráč nebol nájdený<p>
+                    <?php else: ?>
+                        <div class="one-player-box">
+                            <?php if ($_SESSION["role"] === "admin" || $_SESSION["role"] === "organizer" || $_SESSION["logged_in_user_id"] === $player_infos["player_Id"]): ?>
+                                <h1>Email: <?= htmlspecialchars($player_infos["user_email"]) ?></h1>
+                            <?php endif ?>  
+
+                            <?php if (htmlspecialchars($player_infos["player_Image"]) === "no-photo-player"): ?>
+                                    <img class="player-pict" src="../img/no-photo-player.png" alt="no-photo-player.png">
+                            <?php else: ?>
+                                <img class="player-pict" src="../uploads/<?= htmlspecialchars($player_infos["player_Id"]) ?>/<?= htmlspecialchars($player_infos["player_Image"]) ?>" alt="<?= htmlspecialchars($player_infos["first_name"]). " " .htmlspecialchars($player_infos["second_name"]) ?>">
+                            <?php endif; ?>
+
+                            <img id="country-flag" src="../img/countries/<?= htmlspecialchars($player_infos["country"]) ?>.png" alt="<?= htmlspecialchars($player_infos["country"]) ?>">
+
+                            <h1><?= htmlspecialchars($player_infos["first_name"]). " " .htmlspecialchars($player_infos["second_name"]) ?></h1>
+                            <h3>Klub: <?= htmlspecialchars($player_infos["player_club"]) ?></h3>
+
+                            <div class="cues">
+                                <p>Hracie tágo: <?= htmlspecialchars($player_infos["player_cue"]) ?></p>
+                                <p>Rozbíjacie tágo: <?= htmlspecialchars($player_infos["player_break_cue"]) ?></p>
+                                <p>Skákacie tágo: <?= htmlspecialchars($player_infos["player_jump_cue"]) ?></p>
+                            </div>
                         </div>
-                    </div>
- 
-                <?php endif ?>
-        </section>
-           
+    
+                    <?php endif ?>
+            </section>
+        </article> 
+
         <?php if ($_SESSION["role"] === "admin"): ?>
         <section class="buttons">
             <a href="./edit-player.php?player_Id=<?= htmlspecialchars($player_infos["player_Id"]) ?>" class="edit-btn btns">Upraviť</a>
             <a href="./delete-player.php?player_Id=<?= htmlspecialchars($player_infos["player_Id"]) ?>" class="delete-btn btns">Vymazať</a>
         </section>
         <?php endif ?>
+
     </main>
     
     <?php require "../assets/footer.php" ?>

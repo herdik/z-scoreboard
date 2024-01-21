@@ -1,35 +1,65 @@
+
 main {
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    min-height: 100vh;
-    gap: 100px;;
-    background: linear-gradient(black, rgba(0, 0, 0, 0.702));
+    gap: 30px;
     padding:20px 15px 0 15px;
+    background: linear-gradient(black, rgba(0, 0, 0, 0.702));
+}
+
+article {
+    max-width: 1600px;
+    margin: 0 auto;
 }
 
 .player-heading h1 {
     font-size: 40px;
     text-align: center;
-    margin: 50px 0;
+    margin: 7px 0;
     color: white;
 }
 
 .one-player-box {
-    counter-reset: section;
-    margin: 0 auto;
-    border: 5px solid rgba(0, 0, 0, 0.608);
-    border-radius: 20px;
-    box-shadow: 0 0 10px 10px #888888;
-    padding: 15px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
     background-color: rgba(246, 246, 246, 0.977);
-    color: black;
-    padding: 20px 50px;
+    padding: 20px 80px;
+    animation: linechanger 1.5s alternate infinite;
+    color: #be9524;
 }
 
 .one-player-box h1 {
+    color: #be9524;
     font-size: 32px; 
+}
+
+.player-pict {
+    margin: 15px 0;
+    max-width: 320px;
+    text-align: center;
+    border-radius: 15px;
+}
+
+#country-flag {
+    margin: 15px 0;
+    max-width: 70px;
+    max-height: 50px;
+    text-align: center;
+    border-radius: 10px;
+}
+
+.cues {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
 }
 
 .btns {
@@ -71,3 +101,17 @@ main {
     border: 5px solid red;
     
 }
+
+@keyframes linechanger {
+    0% {
+        border: 5px solid #be9524;
+        box-shadow: 0px 0px 3px #be9524;
+    }
+
+
+    100% {
+        border: 5px solid transparent;
+        box-shadow: 2px 2px 25px 3px #be9524;
+    }
+}
+

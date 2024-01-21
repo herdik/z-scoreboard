@@ -62,11 +62,6 @@ header nav {
 
 }
 
-/* Hamurger menu */
-.menu-icon {
-    display: none;
-}
-
 #second-menu {
     list-style-type: none;
     visibility: hidden;
@@ -97,6 +92,24 @@ header nav {
     z-index: 1;
     transform: translateY(0);
     transition-delay: 0s, 0s, 0.3s;
+}
+
+#current-player {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    cursor: pointer;
+}
+
+#current-player img{
+    width: 28px;
+    border-radius: 50px;
+}
+
+/* Hamurger menu */
+.menu-icon {
+    display: none;
 }
 
 

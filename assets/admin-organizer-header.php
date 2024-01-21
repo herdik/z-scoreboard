@@ -26,11 +26,20 @@
             <li><a href="./admin-players-list.php">Zoznam hráčov</a></li>
             <li><a href="">Challenge Matches</a></li>
             <li><a href="">Scoreboard</a></li>
-            <li><a href="#"><?= htmlspecialchars($user_info["first_name"]). " " .htmlspecialchars($user_info["second_name"]) ?></a>
+            <li id="current-player">
+
+                <?php if (htmlspecialchars($user_info["player_Image"]) === "no-photo-player"): ?>
+                    <img src="../img/no-photo-player.png" alt="no-photo-player.png">
+                <?php else: ?>
+                    <img src="../uploads/<?= htmlspecialchars($user_info["player_Id"]) ?>/<?= htmlspecialchars($user_info["player_Image"]) ?>" alt="<?= htmlspecialchars($user_info["first_name"]). " " .htmlspecialchars($user_info["second_name"]) ?>">
+                <?php endif; ?>
+
+                <a href="#"><?= htmlspecialchars($user_info["first_name"]). " " .htmlspecialchars($user_info["second_name"]) ?></a>
                 <ul id="second-menu">
                     <li><a href="./player-profil.php?player_Id=<?= htmlspecialchars($user_info["player_Id"]) ?>">Môj profil</a></li>
                     <li><a href="./log-out.php">Odhlásiť</a></li>
                 </ul>
+                
             </li>
             
 

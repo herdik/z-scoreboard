@@ -146,12 +146,23 @@ $total_players = count($registered_players);
 
                     <?php foreach($registered_players as $reg_player): ?>
                         <article class="player-profil">
+
+                        <?php if (htmlspecialchars($reg_player["player_Image"]) === "no-photo-player"): ?>
                             <div class="picture-part" style="
                                     background: url(../img/<?= htmlspecialchars($reg_player["player_Image"]) ?>.png);
                                     background-size: cover;
                                     background-position: center;
                                     background-repeat: no-repeat;
                                     ">
+                        <?php else: ?>
+                            <div class="picture-part" style="
+                                    background: url(../uploads/<?= htmlspecialchars($reg_player["player_Id"]) ?>/<?= htmlspecialchars($reg_player["player_Image"]) ?>);
+                                    background-size: cover;
+                                    background-position: center;
+                                    background-repeat: no-repeat;
+                                    ">
+                        <?php endif; ?>
+                    
                                 <div class="flag-part" style="
                                     background: url(../img/countries/<?= htmlspecialchars($reg_player["country"]) ?>.png);
                                     background-size: cover;
