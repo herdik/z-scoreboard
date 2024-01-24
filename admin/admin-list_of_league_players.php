@@ -77,7 +77,7 @@ $total_players = count($registered_players);
             <ul>
                 <li><a href="./current-league.php?league_id=<?= htmlspecialchars($league_infos["league_id"]) ?>">Informácie</a></li>
                 <li><a href="./admin-list_of_league_players.php?league_id=<?= htmlspecialchars($league_infos["league_id"]) ?>">Zoznam hráčov</a></li>
-                <li><a href="#">Nastavenia</a></li>
+                <li><a href="././league-settings.php?league_id=<?= htmlspecialchars($league_infos["league_id"]) ?>">Nastavenia</a></li>
                 <li><a href="#">Ligové zápasy</a></li>
                 <li><a href="#">Výsledky</a></li>
             </ul>
