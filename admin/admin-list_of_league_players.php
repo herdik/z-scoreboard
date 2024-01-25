@@ -43,6 +43,7 @@ if (isset($_GET["league_id"]) and is_numeric($_GET["league_id"])){
 
 $total_players = count($registered_players);
 
+$all_players = Player::getAllPlayers($connection, "player_Id, second_name, first_name");
 ?>
 
 <!DOCTYPE html>
@@ -52,7 +53,7 @@ $total_players = count($registered_players);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Zoznam súťaží - administrácia</title>
 
-    <link rel="icon" type="image/x-icon" href="./img/favicon.ico">
+    <link rel="icon" type="image/x-icon" href="../img/favicon.ico">
 
     <!-- Google fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -103,7 +104,43 @@ $total_players = count($registered_players);
                     <img id="sbiz" src="../img/sbiz.png" alt="">  
                 </div>
                 
+
+
+                <?php if ($league_infos["manager_id"] === $_SESSION["logged_in_user_id"]): ?>
+                <form id="reg-players-in-league-form" action="./create-league-players.php" method="POST">
+
+                    <label for="reg-players">Registrácia hráča/hráčov</label>
+        
+                    <div class="main-container-select">
+
                     
+                        <div class="select-container">
+                            
+                        <input type="hidden" name="league_id" value="<?= htmlspecialchars($league_infos["league_id"]) ?>" readonly>
+
+                            <?php foreach ($all_players as $one_player): ?>
+                                <div class="player-line">
+                                    <input type="checkbox" id="player-<?= $one_player["player_Id"] ?>" name="selected_players_id[]" value="<?= $one_player["player_Id"] ?>">
+                                    <label for="player-<?= $one_player["player_Id"] ?>"><?= $one_player["second_name"] ." ". $one_player["first_name"] ?></label>
+                                </div>
+                                
+                            <?php endforeach; ?>
+
+                            
+                        </div>
+
+                    </div>
+                        <h6>Zoznam hráčov</h6>
+                    <div class="selected-players-league">
+                        
+                    </div>
+
+                    <div class="sumbit-btn">
+                        <input type="submit" value="Registrovať">
+                    </div>
+                    
+                </form>            
+                <?php else: ?>    
                 <form id="reg-league-form" action="./create-league-player.php" method="POST">
                     
                     <div class="form-content">
@@ -135,6 +172,7 @@ $total_players = count($registered_players);
                    
                 </form>
 
+                <?php endif; ?>        
             </div>
             
 
@@ -172,7 +210,8 @@ $total_players = count($registered_players);
                                 </div>
                             </div>
                             <h6 class="profil-name"><?php echo htmlspecialchars($reg_player["first_name"]). " ". htmlspecialchars($reg_player["second_name"]) ?></h6>
-                            <a href="./player-profil.php?player_Id=<?= htmlspecialchars($reg_player["player_Id"]) ?>">Informácie</a>
+                            <a class="player-infos" href="./player-profil.php?player_Id=<?= htmlspecialchars($reg_player["player_Id"]) ?>">Informácie</a>
+                            <a class="player-profilX" href="delete-player-in-league.php?league_id=<?= htmlspecialchars($league_infos["league_id"]) ?>&player_Id=<?= htmlspecialchars($reg_player["player_Id"]) ?>">X</a>
                         </article>
                     <?php endforeach ?>
 
@@ -190,5 +229,6 @@ $total_players = count($registered_players);
 
     <?php require "../assets/footer.php" ?>
     <script src="../js/header.js"></script>
+    <script src="../js/select-options.js"></script>
 </body>
 </html>

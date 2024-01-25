@@ -19,12 +19,12 @@ class League {
      * @return integer $league_id - id for league
      * 
      */
-    public static function createLeague($connection, $league_name, $category, $playing_format, $date_of_event, $season, $discipline, $venue, $type, $manager) {
+    public static function createLeague($connection, $league_name, $category, $playing_format, $date_of_event, $season, $discipline, $venue, $type, $manager, $manager_id) {
 
         
         // sql scheme
-        $sql = "INSERT INTO league (league_name, category, playing_format, date_of_event, season, discipline, venue, type, manager)
-        VALUES (:league_name, :category, :playing_format, :date_of_event, :season, :discipline, :venue, :type, :manager)";
+        $sql = "INSERT INTO league (league_name, category, playing_format, date_of_event, season, discipline, venue, type, manager, manager_id)
+        VALUES (:league_name, :category, :playing_format, :date_of_event, :season, :discipline, :venue, :type, :manager, :manager_id)";
 
         // prepare data to send to Database
         $stmt = $connection->prepare($sql);
@@ -39,6 +39,7 @@ class League {
         $stmt->bindValue(":venue", $venue, PDO::PARAM_STR);
         $stmt->bindValue(":type", $type, PDO::PARAM_STR);
         $stmt->bindValue(":manager", $manager, PDO::PARAM_STR);
+        $stmt->bindValue(":manager_id", $manager_id, PDO::PARAM_INT);
 
         
         try {

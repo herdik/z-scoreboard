@@ -32,12 +32,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST"){
     if (is_numeric($_SESSION["logged_in_user_id"]) and isset($_SESSION["logged_in_user_id"])){
         $user_info = Player::getUser($connection, $_SESSION["logged_in_user_id"]);
         $manager = htmlspecialchars($user_info["first_name"]). " " .htmlspecialchars($user_info["second_name"]);
+        $manager_id = $user_info["player_Id"];
     } else {
         $manager = "Nezistený";
+        $manager_id = "Nezistený";
     }
     
     
-    $league_id = League::createLeague($connection, $league_name, $category, $playing_format, $date_of_event, $season, $discipline, $venue, $type, $manager);
+    $league_id = League::createLeague($connection, $league_name, $category, $playing_format, $date_of_event, $season, $discipline, $venue, $type, $manager, $manager_id);
 
     if (!empty($league_id)){
         Url::redirectUrl("/z-scoreboard/admin/current-league.php?league_id=$league_id");

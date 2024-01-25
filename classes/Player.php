@@ -77,7 +77,8 @@ class Player {
      */
     public static function getAllPlayers($connection, $columns = "*"){
         $sql = "SELECT $columns
-                FROM player_user";
+                FROM player_user
+                ORDER BY second_name";
 
         $stmt = $connection->prepare($sql);
 

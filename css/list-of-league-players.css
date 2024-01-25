@@ -103,6 +103,62 @@ main {
 .logos img {
     width: 120px;
 }
+
+#reg-players-in-league-form {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    flex: 1;
+    gap: 15px;
+    border: 3px solid black;
+    border-radius: 20px;
+    padding: 8px 0;
+}
+
+.main-container-select {
+    border: 1px solid black;
+    border-radius: 10px;
+    padding: 10px;
+}
+.select-container {
+    min-width: 250px;
+    height: 100px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    overflow-y: scroll;
+}
+
+.select-container label{
+    font-size: 18px;
+}
+.select-container input[type="checkbox"]{
+    width: 10px;
+}
+
+.selected-players-league {
+    width: 90% ;
+    height: 80px;
+    border: 2px solid black;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+    flex-direction: row;
+    overflow-y: auto;
+}
+
+.selected-players-league p {
+    font-size: 16px;
+    margin: 3px;
+    background-color: #be9524;
+    border-radius: 10px;
+    padding: 3px;
+    color: #fff;
+}
+
 #reg-league-form {
     display: flex;
     flex-direction: column;
@@ -204,6 +260,7 @@ main {
     align-items: center;
     justify-content: center;
     gap: 15px;
+    position: relative;
 }
 
 .picture-part {
@@ -226,7 +283,7 @@ main {
     color: #be9524;
 }
 
-.player-profil a {
+.player-infos {
     text-decoration: none;
     text-align: center;
     color: white;
@@ -238,12 +295,43 @@ main {
     transition: all 0.3s linear;
 }
 
-.player-profil a:hover {
+.player-infos:hover {
     background-color: white;
     color:black;
     border: 1px solid #be9524;
 }
 
+.player-profilX{
+    position: absolute;
+    text-decoration: none;
+    text-align: center;
+    color: white;
+    background: #be9524;
+    padding: 4px 8px;
+    font-size: 12px;
+    border: 1px solid transparent;
+    border-radius: 50%;
+    opacity: 0;
+    top: 10px;
+    right: 10px;
+    transition: all 0.2s linear;
+    cursor: default;
+}
+
+.player-profil:hover > .player-profilX {
+    opacity: 1; 
+    cursor: pointer;
+    
+}
+
+.player-profil:hover > .player-profilX:hover {
+    opacity: 1; 
+    cursor: pointer;
+    background-color: white;
+    color:black;
+    border: 1px solid #be9524;
+    
+}
 /* .registered-players ol {
     list-style: inside;
     list-style-type: decimal;
