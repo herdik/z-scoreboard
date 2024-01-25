@@ -22,20 +22,16 @@ $database = new Database();
 $connection = $database->connectionDB();
 
 
-$checked = false;
+
 
 if (isset($_GET["league_id"]) and is_numeric($_GET["league_id"])){
     $league_infos = League::getLeague($connection, $_GET["league_id"]);
     $league_settings = LeagueSettings::getLeagueSettings($connection, $_GET["league_id"]);
-    if ($league_settings){
-        if ($league_settings["revenge"]) {
-        $checked = true;
-        }
-    } else {
-        $league_settings["revenge"] = 1;
-        $league_settings["race_to"] = 1;
-        $league_settings["count_tables"] = 1;
-        $league_settings["count_groups"] = 1;
+    if (!$league_settings){
+        $league_settings["revenge"] = "0";
+        $league_settings["race_to"] = "1";
+        $league_settings["count_tables"] = "1";
+        $league_settings["count_groups"] = "1";
     }
     
 } else {
@@ -96,16 +92,11 @@ if (isset($_GET["league_id"]) and is_numeric($_GET["league_id"])){
 
                 <input type="hidden" name="league_id" value="<?= htmlspecialchars($league_infos["league_id"]) ?>" readonly>
 
-                <input type='hidden' value="0" name="revenge">
 
-                <?php if ($checked): ?>
-                    <input type="checkbox" id="revenge" value="<?= htmlspecialchars($league_settings["revenge"]) ?>" name="revenge" checked>
-                <?php else: ?>   
-                    <input type="checkbox" id="revenge" value="<?= htmlspecialchars($league_settings["revenge"]) ?>" name="revenge">
-                <?php endif; ?> 
+                <input type="checkbox" id="revenge" name="revenge" value="<?= htmlspecialchars($league_settings["revenge"]) ?>">
                 <label for="revenge">Odvety</label><br>
-                
 
+                
                 <label for="raceTo">Hrať do</label>
                 <input type="number" id="raceTo" min="1" value="<?= htmlspecialchars($league_settings["race_to"]) ?>" step="1" name="race_to"><br>
 

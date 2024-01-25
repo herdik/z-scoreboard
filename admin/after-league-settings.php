@@ -21,6 +21,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST"){
     $connection = $database->connectionDB();
 
     $league_id = $_POST["league_id"];
+    if ($_POST["revenge"] == null) {
+        $_POST["revenge"] = "0";
+    }
     $revenge = $_POST["revenge"];
     $race_to = $_POST["race_to"];
     $count_tables = $_POST["count_tables"];
