@@ -73,5 +73,79 @@ class LeaguePlayer {
     }
 
 
+    /**
+     *
+     * RETURN ONE PLAYER IN LEAGUE FROM DATABASE
+     *
+     * @param object $connection - connection to database
+     * @param integer $league_id - id for league
+     * @param integer $player_Id - id for registered player in League
+     * 
+     * @return boolean if update is successful
+     */
+    public static function deleteLeaguePlayer($connection, $league_id, $player_Id){
+        $sql = "DELETE 
+                FROM list_of_players_league
+                WHERE player_Id = :player_Id AND league_id = :league_id";
+        
+
+        // connect sql amend to database
+        $stmt = $connection->prepare($sql);
+
+        // all parameters to send to Database
+        // filling and bind values will be execute to Database
+        $stmt->bindValue(":league_id", $league_id, PDO::PARAM_INT);
+        $stmt->bindValue(":player_Id", $player_Id, PDO::PARAM_INT);
+
+        try {
+            if($stmt->execute()){
+                return true;
+            } else {
+                throw Exception ("Príkaz pre vymazanie všetkých dát o hráčovi z konkretnej ligy sa nepodaril");
+            }
+        } catch (Exception $e){
+            // 3 je že vyberiem vlastnú cestu k súboru
+            error_log("Chyba pri funkcii deleteLeaguePlayer, získanie informácií z databázy zlyhalo\n", 3, "../errors/error.log");
+            echo "Výsledná chyba je: " . $e->getMessage();
+        }
+    }
+
+
+    /**
+     *
+     * RETURN ALL PLAYERS TO REGISTER FROM DATABASE WHO ARE NOT IN SPECIFIC LEAGUE
+     *
+     * @param object $connection - connection to database
+     *
+     * @return array array of objects, one object mean one player
+     */
+    public static function getAllLeaguePlayersNotRegistered($connection, $league_id, $columns = "player_Id, second_name, first_name"){
+        $sql = "SELECT $columns
+                FROM player_user
+                WHERE player_Id NOT IN
+                    (SELECT player_user.player_Id
+                FROM player_user
+                INNER JOIN list_of_players_league ON list_of_players_league.player_Id = player_user.player_Id
+                WHERE list_of_players_league.league_id = :league_id)
+                ORDER BY second_name";
+
+        $stmt = $connection->prepare($sql);
+
+        // all parameters to send to Database
+        $stmt->bindValue(":league_id", $league_id, PDO::PARAM_INT);
+
+        try {
+            if($stmt->execute()){
+                return $stmt->fetchAll(PDO::FETCH_ASSOC);
+            } else {
+                throw new Exception ("Príkaz pre získanie všetkých hráčov o hráčoch z konkrétnej ligy, ktorí tam nie sú registrovaní sa nepodaril");
+            }
+        } catch (Exception $e){
+            // 3 je že vyberiem vlastnú cestu k súboru
+            error_log("Chyba pri funckii getAllLeaguePlayersNotRegistered, príkaz pre získanie informácií z databázy zlyhal\n", 3, "./errors/error.log");
+            echo "Výsledná chyba je: " . $e->getMessage();
+        }
+    }
+
 
 }

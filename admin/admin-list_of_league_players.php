@@ -27,6 +27,7 @@ $reg_button = "Registrovať";
 if (isset($_GET["league_id"]) and is_numeric($_GET["league_id"])){
     $league_infos = League::getLeague($connection, $_GET["league_id"]);
     $registered_players = LeaguePlayer::getAllLeaguePlayers($connection, $league_infos["league_id"]);
+    $league_id = $league_infos["league_id"];
 
     foreach($registered_players as $one_reg_player){
         if($_SESSION["logged_in_user_id"] === $one_reg_player["player_Id"]){
@@ -43,7 +44,7 @@ if (isset($_GET["league_id"]) and is_numeric($_GET["league_id"])){
 
 $total_players = count($registered_players);
 
-$all_players = Player::getAllPlayers($connection, "player_Id, second_name, first_name");
+$all_players = LeaguePlayer::getAllLeaguePlayersNotRegistered($connection, $league_id);
 ?>
 
 <!DOCTYPE html>
@@ -78,7 +79,9 @@ $all_players = Player::getAllPlayers($connection, "player_Id, second_name, first
             <ul>
                 <li><a href="./current-league.php?league_id=<?= htmlspecialchars($league_infos["league_id"]) ?>">Informácie</a></li>
                 <li><a href="./admin-list_of_league_players.php?league_id=<?= htmlspecialchars($league_infos["league_id"]) ?>">Zoznam hráčov</a></li>
-                <li><a href="././league-settings.php?league_id=<?= htmlspecialchars($league_infos["league_id"]) ?>">Nastavenia</a></li>
+                <?php if ($league_infos["manager_id"] === $_SESSION["logged_in_user_id"]): ?>
+                    <li><a href="././league-settings.php?league_id=<?= htmlspecialchars($league_infos["league_id"]) ?>">Nastavenia</a></li>
+                <?php endif; ?>
                 <li><a href="#">Ligové zápasy</a></li>
                 <li><a href="#">Výsledky</a></li>
             </ul>
@@ -140,8 +143,15 @@ $all_players = Player::getAllPlayers($connection, "player_Id, second_name, first
                     </div>
                     
                 </form>            
-                <?php else: ?>    
+                <?php else: ?>
+                    
+                <?php if ($reg_button === "Registrovať"): ?>
                 <form id="reg-league-form" action="./create-league-player.php" method="POST">
+
+                <?php elseif ($reg_button === "Odregistrovať"): ?>
+                <form id="reg-league-form" action="./delete-player-in-league.php" method="POST">
+
+                <?php endif; ?> 
                     
                     <div class="form-content">
                         <h1>Registrácia</h1>
@@ -211,7 +221,12 @@ $all_players = Player::getAllPlayers($connection, "player_Id, second_name, first
                             </div>
                             <h6 class="profil-name"><?php echo htmlspecialchars($reg_player["first_name"]). " ". htmlspecialchars($reg_player["second_name"]) ?></h6>
                             <a class="player-infos" href="./player-profil.php?player_Id=<?= htmlspecialchars($reg_player["player_Id"]) ?>">Informácie</a>
-                            <a class="player-profilX" href="delete-player-in-league.php?league_id=<?= htmlspecialchars($league_infos["league_id"]) ?>&player_Id=<?= htmlspecialchars($reg_player["player_Id"]) ?>">X</a>
+
+                            <?php if ($league_infos["manager_id"] === $_SESSION["logged_in_user_id"]): ?>
+                                
+                                <a class="player-profilX" href="delete-player-in-league.php?league_id=<?= htmlspecialchars($league_infos["league_id"]) ?>&player_Id=<?= htmlspecialchars($reg_player["player_Id"]) ?>">X</a>
+
+                            <?php endif; ?>
                         </article>
                     <?php endforeach ?>
 

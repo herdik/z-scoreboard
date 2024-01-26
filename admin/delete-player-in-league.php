@@ -15,13 +15,33 @@ if (!Auth::isLoggedIn()){
     die ("nepovolený prístup");
 }
 
-if ($_SERVER["REQUEST_METHOD"] === "GET"){
-    // database connection
-    $database = new Database();
-    $connection = $database->connectionDB();
+ // connection to Database
+ $database = new Database();
+ $connection = $database->connectionDB();
 
-    var_dump($_GET);
+if (($_SERVER["REQUEST_METHOD"] === "GET") || ($_SERVER["REQUEST_METHOD"] === "POST")){
+
+    if ($_SERVER["REQUEST_METHOD"] === "POST") {
+        $league_id = $_POST["league_id"];
+        $player_Id = $_POST["player_Id"];
+    } elseif ($_SERVER["REQUEST_METHOD"] === "GET") {
+        if ((isset($_GET["player_Id"]) && isset($_GET["league_id"])) && (is_numeric($_GET["player_Id"]) && is_numeric($_GET["league_id"]))){
+            $league_id = $_GET["league_id"];
+            $player_Id = $_GET["player_Id"];
+        }
+    }
+
+    $deleted_league_player = LeaguePlayer::deleteLeaguePlayer($connection, $league_id, $player_Id);
+
+    if ($deleted_league_player) {
+        Url::redirectUrl("/z-scoreboard/admin/admin-list_of_league_players.php?league_id=$league_id");
+    } else {
+    echo "Hráč nie je nájdený!!!";
+    }    
+    
 } else {
-    echo "Nepovolený prístup";
+    die("Nepovolený prístup!!!");
 }
+
+
 ?>
