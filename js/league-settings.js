@@ -1,16 +1,16 @@
-let revengeCheckBox = document.querySelector("#revenge")
+let rematchCheckBox = document.querySelector("#rematch")
 
-if (revengeCheckBox.value === "1") {
-    revengeCheckBox.checked = true
+if (rematchCheckBox.value === "1") {
+    rematchCheckBox.checked = true
 } else {
-    revengeCheckBox.checked = false
+    rematchCheckBox.checked = false
 }
 
-revengeCheckBox.addEventListener("change", () => {
-    if (revengeCheckBox.checked) {
-        revengeCheckBox.value = "1"
+rematchCheckBox.addEventListener("change", () => {
+    if (rematchCheckBox.checked) {
+        rematchCheckBox.value = "1"
     } else {
-        revengeCheckBox.value = "0" 
+        rematchCheckBox.value = "0" 
     }
 })
 

@@ -4,7 +4,6 @@
 require "../classes/Database.php";
 require "../classes/Player.php";
 require "../classes/League.php";
-require "../classes/LeagueSettings.php";
 
 
 
@@ -21,26 +20,16 @@ if (!Auth::isLoggedIn()){
 $database = new Database();
 $connection = $database->connectionDB();
 
-
-
-
 if (isset($_GET["league_id"]) and is_numeric($_GET["league_id"])){
     $league_infos = League::getLeague($connection, $_GET["league_id"]);
-    $league_settings = LeagueSettings::getLeagueSettings($connection, $_GET["league_id"]);
-    if (!$league_settings){
-        $league_settings["rematch"] = "0";
-        $league_settings["race_to"] = "1";
-        $league_settings["count_tables"] = "1";
-        $league_settings["count_groups"] = "1";
-    }
+    $league_id = $league_infos["league_id"];
     
 } else {
     $league_infos = null;
-    $league_settings = null;
+    $registered_players = null;
 }
 
 ?>
-
 
 <!DOCTYPE html>
 <html lang="sk">
@@ -58,7 +47,7 @@ if (isset($_GET["league_id"]) and is_numeric($_GET["league_id"])){
 
     <link rel="stylesheet" href="../css/general.css">
     <link rel="stylesheet" href="../css/header.css">
-    <link rel="stylesheet" href="../css/league-settings.css">
+    <link rel="stylesheet" href="../css/league-matches.css">
     <link rel="stylesheet" href="../css/footer.css">
     <link rel="stylesheet" href="../query/header-query.css">
 
@@ -85,37 +74,15 @@ if (isset($_GET["league_id"]) and is_numeric($_GET["league_id"])){
 
         <section class="league-content">
 
-        <div class="system-container">
+            <div class="main-container-matches">
+                <h1>Ligové zápasy</h1>
+                <form id="create-matches" action="after-league-matches.php" method="post">
+                    <input type="hidden" name="league_id" value="<?= htmlspecialchars($league_infos["league_id"]) ?>" readonly>
+                    
+                    <input type="submit" value="Vytvoriť">  
 
-            <h1>Nastavenia ligy</h1>
-
-            <!-- Formulár pre registáciu hráča -->
-            <form id="league-settings" action="after-league-settings.php" method="POST">
-
-                <input type="hidden" name="league_id" value="<?= htmlspecialchars($league_infos["league_id"]) ?>" readonly>
-
-
-                <input type="checkbox" id="rematch" name="rematch" value="<?= htmlspecialchars($league_settings["rematch"]) ?>">
-                <label for="rematch">Odvety</label><br>
-
-                
-                <label for="raceTo">Hrať do</label>
-                <input type="number" id="raceTo" min="1" value="<?= htmlspecialchars($league_settings["race_to"]) ?>" step="1" name="race_to"><br>
-
-                <!-- Počet stolov -->
-                <label for="count-tables">Počet stolov</label>
-                <input type="number" id="count-tables" min="1" value="<?= htmlspecialchars($league_settings["count_tables"]) ?>" step="1" name="count_tables"><br>
-
-                <!-- Počet skupín -->
-                <label for="count-groups">Počet skupín</label>
-                <input type="number" id="count-groups" min="1" value="<?= htmlspecialchars($league_settings["count_groups"]) ?>" step="1" name="count_groups"><br>
-                
-                <!-- odosielacie tlačítko pre odolsanie údajov od užívateľa pre nastavenia hry -->
-                <input type="submit" value="Potvrdiť" name="submitForm">
-
-            </form>
-
-        </div>   
+                </form>
+            </div>
 
         </section>
 
@@ -124,6 +91,5 @@ if (isset($_GET["league_id"]) and is_numeric($_GET["league_id"])){
 
     <?php require "../assets/footer.php" ?>
     <script src="../js/header.js"></script>
-    <script src="../js/league-settings.js"></script>
 </body>
 </html>

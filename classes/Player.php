@@ -78,6 +78,7 @@ class Player {
     public static function getAllPlayers($connection, $columns = "*"){
         $sql = "SELECT $columns
                 FROM player_user
+                WHERE player_Id != 0
                 ORDER BY second_name";
 
         $stmt = $connection->prepare($sql);

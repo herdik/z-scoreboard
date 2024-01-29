@@ -48,8 +48,8 @@ class LeaguePlayer {
      *
      * @return array array of objects, one object mean one player
      */
-    public static function getAllLeaguePlayers($connection, $league_id, $columns = "*"){
-        $sql = "SELECT list_of_players_league.$columns, player_user.first_name, player_user.second_name, player_user.player_Image, player_user.country
+    public static function getAllLeaguePlayers($connection, $league_id, $columns = "list_of_players_league.*, player_user.first_name, player_user.second_name, player_user.player_Image, player_user.country"){
+        $sql = "SELECT $columns
                 FROM list_of_players_league
                 INNER JOIN player_user ON list_of_players_league.player_Id = player_user.player_Id
                 WHERE league_id = :league_id";
@@ -122,7 +122,7 @@ class LeaguePlayer {
     public static function getAllLeaguePlayersNotRegistered($connection, $league_id, $columns = "player_Id, second_name, first_name"){
         $sql = "SELECT $columns
                 FROM player_user
-                WHERE player_Id NOT IN
+                WHERE player_Id != 0 AND player_Id NOT IN
                     (SELECT player_user.player_Id
                 FROM player_user
                 INNER JOIN list_of_players_league ON list_of_players_league.player_Id = player_user.player_Id

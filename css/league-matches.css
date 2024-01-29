@@ -1,0 +1,111 @@
+main {
+    min-height: 90vh;
+    background: linear-gradient(black, rgba(0, 0, 0, 0.702));
+    padding: 15px 15px 0 15px;
+}
+
+.navigation-bar {
+    height: 50%; 
+    width: 210px; 
+    position: fixed; 
+    z-index: 1; 
+    top: 50%; 
+    left: 16px;
+    background-color: #d4d1d1; 
+    overflow-x: hidden; 
+    transform: translateY(-50%);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow-y: hidden;
+    border: 2px solid rgba(224, 204, 22, 0.971);
+    border-radius: 10px;
+    box-shadow: 0 0 10px 10px #be9524;
+}
+
+.navigation-bar ul {
+    height: 80%;
+    list-style-type: none;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: space-around;
+    gap: 10%;
+    overflow-y: hidden;
+    padding: 10px;
+}
+
+.navigation-bar a {
+    text-decoration: none;
+    text-align: center;
+    color: white;
+    background: #be9524;
+    border: 5px solid white;
+    box-shadow: 0 0 10px 3px #be9524;
+    padding: 8px 12px;
+    font-size: 20px;
+    border-radius: 20px;
+    transition: all 0.3s linear;
+}
+
+.navigation-bar a:hover {
+    background-color: white;
+    color:black;
+    border: 5px solid #be9524;
+}
+.league-content {
+    margin-left: 226px; 
+    font-size: 28px; 
+    padding: 30px 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+    border-radius: 10px;
+    background: url(../img/background.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
+    min-height: 80vh;
+    text-align: center;
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.main-container-matches{
+    max-width: 800px;
+    border: 5px solid rgba(0, 0, 0, 0.608);
+    border-radius: 20px;
+    margin: 10px 0 30px 0;
+    box-shadow: 0 0 10px 10px #888888;
+    padding: 100px;
+    background: #fff;
+}
+
+#create-matches input[type="submit"] {
+    text-align: center;
+    color: white;
+    background: #be9524;
+    border: 5px solid white;
+    box-shadow: 0 0 10px 3px #be9524;
+    padding: 8px 12px;
+    font-size: 20px;
+    border-radius: 20px;
+    transition: all 0.3s linear;
+    cursor: pointer;
+    margin-top: 30px;
+}
+#create-matches input[type="submit"]:hover {
+    background-color: white;
+    color:black;
+    border: 5px solid #be9524;
+}
+
+
+
+
+

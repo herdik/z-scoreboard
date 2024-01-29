@@ -9,7 +9,7 @@ class LeagueSettings {
      *
      * @param object $connection - database connection
      * @param integer $league_id - league id
-     * @param boolean $revenge - oneway match or revenge match
+     * @param boolean $rematch - oneway match or rematch match
      * @param integer $race_to - playing to
      * @param integer $count_tables - how many tables in plaing area
      * @param integer $count_groups - how many groups will play all players
@@ -17,19 +17,19 @@ class LeagueSettings {
      * @return integer $league_id - id for league
      * 
      */
-    public static function createLeagueSettings($connection, $league_id, $revenge, $race_to, $count_tables, $count_groups) {
+    public static function createLeagueSettings($connection, $league_id, $rematch, $race_to, $count_tables, $count_groups) {
 
         
         // sql scheme
-        $sql = "INSERT INTO league_settings (league_id, revenge, race_to, count_tables, count_groups)
-        VALUES (:league_id, :revenge, :race_to, :count_tables, :count_groups)";
+        $sql = "INSERT INTO league_settings (league_id, rematch, race_to, count_tables, count_groups)
+        VALUES (:league_id, :rematch, :race_to, :count_tables, :count_groups)";
 
         // prepare data to send to Database
         $stmt = $connection->prepare($sql);
 
         // filling and bind values will be execute to Database
         $stmt->bindValue(":league_id", $league_id, PDO::PARAM_INT);
-        $stmt->bindValue(":revenge", $revenge, PDO::PARAM_BOOL);
+        $stmt->bindValue(":rematch", $rematch, PDO::PARAM_BOOL);
         $stmt->bindValue(":race_to", $race_to, PDO::PARAM_INT);
         $stmt->bindValue(":count_tables", $count_tables, PDO::PARAM_INT);
         $stmt->bindValue(":count_groups", $count_groups, PDO::PARAM_INT);
@@ -92,9 +92,9 @@ class LeagueSettings {
      * 
      * @return boolean if update is successful
      */
-    public static function updateLeagueSettings($connection, $league_id, $revenge, $race_to, $count_tables, $count_groups){
+    public static function updateLeagueSettings($connection, $league_id, $rematch, $race_to, $count_tables, $count_groups){
         $sql = "UPDATE league_settings
-                SET revenge = :revenge,
+                SET rematch = :rematch,
                     race_to = :race_to, 
                     count_tables = :count_tables, 
                     count_groups = :count_groups 
@@ -107,7 +107,7 @@ class LeagueSettings {
         // all parameters to send to Database
         // filling and bind values will be execute to Database
         $stmt->bindValue(":league_id", $league_id, PDO::PARAM_INT);
-        $stmt->bindValue(":revenge", $revenge, PDO::PARAM_BOOL);
+        $stmt->bindValue(":rematch", $rematch, PDO::PARAM_BOOL);
         $stmt->bindValue(":race_to", $race_to, PDO::PARAM_INT);
         $stmt->bindValue(":count_tables", $count_tables, PDO::PARAM_INT);
         $stmt->bindValue(":count_groups", $count_groups, PDO::PARAM_INT);
