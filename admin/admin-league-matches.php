@@ -4,6 +4,8 @@
 require "../classes/Database.php";
 require "../classes/Player.php";
 require "../classes/League.php";
+require "../classes/LeagueSettings.php";
+require "../classes/LeaguePlayer.php";
 
 
 
@@ -23,10 +25,13 @@ $connection = $database->connectionDB();
 if (isset($_GET["league_id"]) and is_numeric($_GET["league_id"])){
     $league_infos = League::getLeague($connection, $_GET["league_id"]);
     $league_id = $league_infos["league_id"];
-    
+    $count_groups = LeagueSettings::getLeagueSettings($connection, $league_id, "count_groups");
+    $players_in_group = LeaguePlayer::getPlayerGroupInLeague($connection, $league_id);
 } else {
     $league_infos = null;
     $registered_players = null;
+    $count_groups = null;
+    $players_in_group = null;
 }
 
 ?>
@@ -75,7 +80,13 @@ if (isset($_GET["league_id"]) and is_numeric($_GET["league_id"])){
         <section class="league-content">
 
             <div class="main-container-matches">
-                <h1>Ligové zápasy</h1>
+
+                <?php if ($count_groups["count_groups"] > 1): ?> 
+                <h1>Liga skupiny</h1>
+                <?php else: ?>
+                <h1>Liga skupina</h1>
+                <?php endif; ?>
+
                 <form id="create-matches" action="after-league-matches.php" method="post">
                     <input type="hidden" name="league_id" value="<?= htmlspecialchars($league_infos["league_id"]) ?>" readonly>
                     

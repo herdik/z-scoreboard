@@ -10,13 +10,13 @@ class LeaguePlayer {
      * @param integer $league_id - id for one league
      * @param integer $player_Id - id for one player to reg in league
      * 
-     * @return boolean if update is successful
+     * @return boolean if creating is successful
      */
-    public static function createLeaguePlayer($connection, $league_id, $player_Id) {
+    public static function createLeaguePlayer($connection, $league_id, $player_Id, $league_group = NULL) {
 
         // sql scheme
-        $sql = "INSERT INTO list_of_players_league (league_id, player_Id)
-        VALUES (:league_id, :player_Id)";
+        $sql = "INSERT INTO list_of_players_league (league_id, player_Id, league_group)
+        VALUES (:league_id, :player_Id, :league_group)";
 
         // prepare data to send to Database
         $stmt = $connection->prepare($sql);
@@ -24,6 +24,7 @@ class LeaguePlayer {
         // filling and bind values will be execute to Database
         $stmt->bindValue(":league_id", $league_id, PDO::PARAM_INT);
         $stmt->bindValue(":player_Id", $player_Id, PDO::PARAM_INT);
+        $stmt->bindValue(":league_group", $league_group, PDO::PARAM_INT);
 
         try {
             // execute all data to SQL Database to table player_user
@@ -52,7 +53,7 @@ class LeaguePlayer {
         $sql = "SELECT $columns
                 FROM list_of_players_league
                 INNER JOIN player_user ON list_of_players_league.player_Id = player_user.player_Id
-                WHERE league_id = :league_id";
+                WHERE league_id = :league_id AND player_user.player_Id != 0";
 
         $stmt = $connection->prepare($sql);
 
@@ -143,6 +144,85 @@ class LeaguePlayer {
         } catch (Exception $e){
             // 3 je že vyberiem vlastnú cestu k súboru
             error_log("Chyba pri funckii getAllLeaguePlayersNotRegistered, príkaz pre získanie informácií z databázy zlyhal\n", 3, "./errors/error.log");
+            echo "Výsledná chyba je: " . $e->getMessage();
+        }
+    }
+
+
+
+    /**
+     *
+     * RETURN BOOLEAN IF PLAYER´S GROUP IS UPDATED IN LEAGUE - DATABASE
+     *
+     * @param object $connection - connection to database
+     * @param string $first_name - player first name
+     * @param string $second_name - player second name
+     * @param string $country - player country
+     * @param string $player_club - player club
+     * @param string $player_Image - player Image
+     * @param string $player_cue - player cue
+     * @param string $player_break_cue - player break cue
+     * @param string $player_jump_cue - player jump cue
+     * @param integer $player_Id - id for one user
+     * 
+     * @return boolean if update is successful
+     */
+    public static function updateLeaguePlayer($connection, $league_group, $player_Id, $league_id){
+        $sql = "UPDATE list_of_players_league
+                SET league_group = :league_group
+                WHERE player_Id = :player_Id AND league_id = :league_id";
+        
+
+        // connect sql amend to database
+        $stmt = $connection->prepare($sql);
+
+        // all parameters to send to Database
+        // filling and bind values will be execute to Database
+        $stmt->bindValue(":league_group", $league_group, PDO::PARAM_INT);
+        $stmt->bindValue(":player_Id", $player_Id, PDO::PARAM_INT);
+        $stmt->bindValue(":league_id", $league_id, PDO::PARAM_INT);
+
+        try {
+            if($stmt->execute()){
+                return true;
+            } else {
+                throw Exception ("Príkaz pre update league_group v v konkrétnej lige sa nepodaril");
+            }
+        } catch (Exception $e){
+            // 3 je že vyberiem vlastnú cestu k súboru
+            error_log("Chyba pri funkcii updateLeaguePlayer, získanie informácií z databázy zlyhalo\n", 3, "../errors/error.log");
+            echo "Výsledná chyba je: " . $e->getMessage();
+        }
+    }
+
+
+    /**
+     *
+     * RETURN ALL GROUPS FOR EACH PLAYER REGISTERED PLAYERS IN LEAGUE FROM DATABASE
+     *
+     * @param object $connection - connection to database
+     * @param integer $league_id - id for league
+     * @return array array of objects, one object mean one player
+     */
+    public static function getPlayerGroupInLeague($connection, $league_id){
+        $sql = "SELECT COUNT(*)
+                FROM list_of_players_league
+                WHERE league_id = :league_id AND league_group IS NULL";
+
+        $stmt = $connection->prepare($sql);
+
+        // all parameters to send to Database
+        $stmt->bindValue(":league_id", $league_id, PDO::PARAM_INT);
+
+        try {
+            if($stmt->execute()){
+                return $stmt->fetchColumn();
+            } else {
+                throw new Exception ("Príkaz pre získanie všetkých dát skupinách pre hráčov z konkrétnej ligy sa nepodaril");
+            }
+        } catch (Exception $e){
+            // 3 je že vyberiem vlastnú cestu k súboru
+            error_log("Chyba pri funckii getPlayerGroupInLeague, príkaz pre získanie informácií z databázy zlyhal\n", 3, "./errors/error.log");
             echo "Výsledná chyba je: " . $e->getMessage();
         }
     }

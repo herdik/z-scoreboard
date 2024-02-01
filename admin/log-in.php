@@ -20,7 +20,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST"){
     if (Player::authentication($connection, $log_user_email, $log_password)){
 
         // player_Id for player who is logged in
-        $id = Player::getUserId($connection, $log_user_email);
+        $id = Player::getUserId($connection, $log_user_email)["player_Id"];
 
         // prevents 'Fixation attack'
         session_regenerate_id(true);
