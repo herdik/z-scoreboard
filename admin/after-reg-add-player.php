@@ -101,6 +101,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST"){
         // save image for registered player in Database for current registered Player
         $image_id = Image::insertPlayerImage($connection, $player_Id, $player_Image);
 
+        // save default image in image gallery in player is registered with choosed image
+        if ($player_Image != "no-photo-player"){
+            Image::insertPlayerImage($connection, $player_Id, "no-photo-player");
+        }
+
         if (!empty($player_Id)){
             Url::redirectUrl("/z-scoreboard/admin/player-profil.php?player_Id=$player_Id");
         } else {

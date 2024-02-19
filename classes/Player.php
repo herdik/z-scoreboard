@@ -105,15 +105,8 @@ class Player {
      * @param integer $player_Id - id for one player
      * @return array asoc array with one player
      */
-    public static function getPlayer($connection, $player_Id){
-        $sql = "SELECT  first_name, 
-                        second_name, 
-                        country, 
-                        player_club,
-                        player_Image, 
-                        player_cue, 
-                        player_break_cue, 
-                        player_jump_cue
+    public static function getPlayer($connection, $player_Id, $columns = "first_name, second_name, country, player_club, player_Image, player_cue, player_break_cue, player_jump_cue"){
+        $sql = "SELECT $columns
                 FROM player_user
                 WHERE player_Id = :player_Id";
         

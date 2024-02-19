@@ -59,10 +59,10 @@
 
         <section class="registration-form">
             <h1>Editácia hráča</h1>
-            <form action="after-edit-player.php" method="POST">
+            <form action="after-edit-player.php" method="POST" enctype="multipart/form-data">
                 <input type="hidden" name="player_Id" value="<?= htmlspecialchars($player_infos["player_Id"]) ?>">
                 <?php require "../assets/form.php" ?>
-                <input class="btn" type="submit" value="Upraviť">
+                <input class="btn" type="submit" name="submit" value="Upraviť">
                 
             </form>
 
@@ -73,5 +73,6 @@
     
     <?php require "../assets/footer.php" ?>
     <script src="../js/header.js"></script>
+    <script src="../js/show-img-name.js"></script>
 </body>
 </html>
