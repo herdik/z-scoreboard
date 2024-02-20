@@ -134,7 +134,7 @@ class Player {
     
     /**
      *
-     * RETURN ONE USER FROM DATABASE
+     * RETURN BOOLEAN FROM DATABASE AFTER UPDATED PLAYER
      *
      * @param object $connection - connection to database
      * @param string $first_name - player first name
@@ -192,6 +192,43 @@ class Player {
         }
     }
 
+
+    /**
+     *
+     * RETURN BOOLEAN FROM DATABASE AFTER UPDATED PLAYER
+     *
+     * @param object $connection - connection to database
+     * @param string $player_Image - player_Image
+     * @param integer $player_Id - id for one user
+     * 
+     * @return boolean if update is successful
+     */
+    public static function updatePlayerImage($connection, $player_Image, $player_Id){
+        $sql = "UPDATE player_user
+                SET player_Image = :player_Image 
+                WHERE player_Id = :player_Id";
+        
+
+        // connect sql amend to database
+        $stmt = $connection->prepare($sql);
+
+        // all parameters to send to Database
+        // filling and bind values will be execute to Database
+        $stmt->bindValue(":player_Image", $player_Image, PDO::PARAM_STR);
+        $stmt->bindValue(":player_Id", $player_Id, PDO::PARAM_INT);
+
+        try {
+            if($stmt->execute()){
+                return true;
+            } else {
+                throw Exception ("Príkaz pre update všetkých dát o užívateľovi sa nepodaril");
+            }
+        } catch (Exception $e){
+            // 3 je že vyberiem vlastnú cestu k súboru
+            error_log("Chyba pri funkcii updatePlayerImage, získanie informácií z databázy zlyhalo\n", 3, "../errors/error.log");
+            echo "Výsledná chyba je: " . $e->getMessage();
+        }
+    }
 
 
     /**

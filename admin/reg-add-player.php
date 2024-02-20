@@ -12,6 +12,7 @@
     }
 
     // empty variables for arguments to form.php 
+    $player_infos["player_Id"] = null;
     $player_infos["user_email"] = "";
     $player_infos["first_name"] = "";
     $player_infos["second_name"] = "";

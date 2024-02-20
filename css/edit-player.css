@@ -47,14 +47,12 @@ main {
     display: none;
 }
 
-#IMGGallery {
-    display: none;
-}
-
-#choose-img-text {
+#choose-img-text, #IMGGallery {
     background-color: white;
     border-radius: 15px;
     padding: 8px 15px;
+    text-decoration: none;
+    color: black;
     cursor: pointer;
 }
 

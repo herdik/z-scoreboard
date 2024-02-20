@@ -9,6 +9,7 @@
   <option>POINT Trenčín</option>
   <option>BK Aréna Ružomberok</option>
 </datalist><br>
+<a href="./image-gallery.php?player_Id=<?= htmlspecialchars($player_infos["player_Id"]) ?>" id="IMGGallery">Obrázok z galérie</a>
 <label for="playerIMG" id="choose-img-text">Vybrať obrázok</label>
 <p>text</p>
 <input id="playerIMG" type="file" name="player_Image"><br>
