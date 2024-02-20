@@ -34,6 +34,7 @@ if ($_SERVER["REQUEST_METHOD"] === "GET"){
             $deleted_Image_Database = Image::deleteImageFromDatabase($connection, $image_id);
             if ($deleted_Image_Database) {
                 $number_of_images = count(Image::getAllImages($connection, $user_id));
+                // if number of images in gallery are 1 or less update player Image default picture
                 if ($number_of_images <= 1) {
                     Player::updatePlayerImage($connection, "no-photo-player", $user_id);
                 }
