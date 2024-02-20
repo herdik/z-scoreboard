@@ -25,6 +25,7 @@ if ($_SERVER["REQUEST_METHOD"] === "GET"){
         $image_id = $_GET["image_id"];
         $user_id = $_GET["player_Id"];
         $image_name = Image::getImageName($connection, $image_id);
+        $current_profil_image = Player::getPlayer($connection, $user_id, "player_Image")["player_Image"];
             
         $image_path = "../uploads/" . $user_id . "/" . $image_name;
 
@@ -35,7 +36,7 @@ if ($_SERVER["REQUEST_METHOD"] === "GET"){
             if ($deleted_Image_Database) {
                 $number_of_images = count(Image::getAllImages($connection, $user_id));
                 // if number of images in gallery are 1 or less update player Image default picture
-                if ($number_of_images <= 1) {
+                if ($number_of_images <= 1 || $image_name === $current_profil_image) {
                     Player::updatePlayerImage($connection, "no-photo-player", $user_id);
                 }
                 Url::redirectUrl("/z-scoreboard/admin/image-gallery.php?player_Id=$user_id");
