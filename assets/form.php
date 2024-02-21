@@ -11,7 +11,12 @@
 </datalist><br>
 <a href="./image-gallery.php?player_Id=<?= htmlspecialchars($player_infos["player_Id"]) ?>" id="IMGGallery">Obrázok z galérie</a>
 <label for="playerIMG" id="choose-img-text">Vybrať obrázok</label>
-<p>text</p>
+<?php if (htmlspecialchars($image_sequence) == NULL): ?>
+  <p>text</p>
+<?php else: ?>
+  <p style="opacity:1;">Zvolený obrázok: Obrázok č.<?= htmlspecialchars($image_sequence) ?></p>
+<?php endif; ?>
+<input type="hidden" name="image_id" value="<?= htmlspecialchars($image_id) ?>" readonly>
 <input id="playerIMG" type="file" name="player_Image"><br>
 <input type="text" name="player_cue" placeholder="Hracie tágo" value="<?= htmlspecialchars($player_infos["player_cue"]) ?>" autocomplete="off"><br>
 <input type="text" name="player_break_cue" placeholder="Rozbíjacie tágo" value="<?= htmlspecialchars($player_infos["player_break_cue"]) ?>" autocomplete="off">

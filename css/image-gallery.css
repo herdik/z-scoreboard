@@ -73,3 +73,36 @@ main img {
     border: 1px solid red;
     
 }
+
+/* OK - for choosed image */
+.imageOK{
+    position: absolute;
+    text-decoration: none;
+    text-align: center;
+    color: #fff;
+    background: green;
+    padding: 5px;
+    font-size: 12px;
+    border: 1px solid green;
+    border-radius: 50%;
+    opacity: 0;
+    bottom: 10px;
+    right: 10px;
+    transition: all 0.2s linear;
+    cursor: default;
+}
+
+.my-images:hover > .imageOK {
+    opacity: 1; 
+    cursor: pointer;
+    
+}
+
+.my-images:hover > .imageOK:hover {
+    opacity: 1; 
+    cursor: pointer;
+    background-color: #fff;
+    color:green;
+    border: 1px solid green;
+    
+}

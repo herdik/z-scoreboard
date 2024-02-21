@@ -23,7 +23,14 @@
         $player_infos = null;
     }
 
-    
+    // control if user choose image from image gallery
+    if ((isset($_GET["image_id"]) and is_numeric($_GET["image_id"])) and (isset($_GET["sequence"]) and is_numeric($_GET["sequence"]))){
+        $image_id = $_GET["image_id"];
+        $image_sequence = $_GET["sequence"];
+    } else {
+        $image_id = null;
+        $image_sequence = null;
+    }
 ?>
 
 

@@ -23,6 +23,11 @@
     $player_infos["player_break_cue"] = "";
     $player_infos["player_jump_cue"] = "";
 
+    // control if user choose image from image gallery because for edit and registration are used same form
+    $image_id = null;
+    $image_sequence = null;
+    
+
     // database connection
     $database = new Database();
     $connection = $database->connectionDB();

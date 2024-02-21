@@ -44,6 +44,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST"){
     $player_cue = $_POST["player_cue"];
     $player_break_cue = $_POST["player_break_cue"];
     $player_jump_cue = $_POST["player_jump_cue"];
+    $image_id = $_POST["image_id"];
 
 
     // isset is not null
@@ -54,65 +55,74 @@ if ($_SERVER["REQUEST_METHOD"] === "POST"){
         $image_tmp_name = $player_Image["tmp_name"];
         $error = $player_Image["error"];
 
-        // how many errors is
-        if ($error === 0){
-            $number_of_images = count(Image::getAllImages($connection, $player_Id));
-            if ($number_of_images < 6) {
-                echo "pusti ma vykonať zmeny";
-                // 10000000 is 10MB
-                if ($image_size > 10000000){
-                    // redirect to error site
-                    $too_big = "súbor je príliš veľký";
-                    Url::redirectUrl("/z-scoreboard/admin/logedin-error.php?logedin_error=$too_big");
-                    $redirect_status = true;
-                } else {
-                    // use pathinfo to get filename extension
-                    $image_extension = pathinfo($image_name, PATHINFO_EXTENSION); 
-                    // to lowercase image extension    
-                    $image_extension_lower_case = strtolower($image_extension);
-
-                    // allowed extensions 
-                    $allowed_extensions = ["jpg", "jpeg", "png"];
-                    
-                    // in_array — Checks if a value exists in an array
-                    if(in_array($image_extension_lower_case, $allowed_extensions)){
-                        // uniq name for image
-                        $new_image_name = uniqid("IMG-", true) . "." . $image_extension;
-
-                        if(!file_exists("../uploads/" . $player_Id)){
-                            // 0777 authorizations
-                            mkdir("../uploads/" . $player_Id, 0777, true);
-                        }
-
-                        // create path where will save image
-                        $image_upload_path = "../uploads/" . $player_Id . "/" . $new_image_name;
-
-                        // upload image - change temporary image path for path to current registered player
-                        move_uploaded_file($image_tmp_name, $image_upload_path);
-
-                        // save image for registered player in Database for current registered Player
-                        $image_id = Image::insertPlayerImage($connection, $player_Id, $new_image_name);
-                    } else {
-                        // redirect to error site
-                        $not_allowed_extension = "nedovolená koncovka";
-                        Url::redirectUrl("/z-scoreboard/admin/logedin-error.php?logedin_error=$not_allowed_extension");
-                        $redirect_status = true;
-                    }
-                }
-            } else {
-                // redirect to error site if images in image gallery are more than allowed limit
-                $not_allowed_image = "Počet obrázkov je väčší ako dovolený limit. Vymažte nejaký obrázok z galérie!!!";
-                Url::redirectUrl("/z-scoreboard/admin/logedin-error.php?logedin_error=$not_allowed_image");
-                $redirect_status = true; 
-            }
-            
+        // image choosed from gallery
+        if (is_numeric($image_id)){
+            $new_image_name = Image::getImageName($connection, $image_id); 
         } else {
-            // error 0 = something went wrong 
-            // error 4 = is UPLOAD_ERR_NO_FILE
-            if ($error == 4 || ($image_size == 0 && $error == 0)){
-                $new_image_name = Player::getPlayer($connection, $player_Id, "player_Image")["player_Image"];
+            // else if is not choosed image from gallery
+            // how many errors is
+            if ($error === 0){
+                $number_of_images = count(Image::getAllImages($connection, $player_Id));
+                if ($number_of_images < 6) {
+                    echo "pusti ma vykonať zmeny";
+                    // 10000000 is 10MB
+                    if ($image_size > 10000000){
+                        // redirect to error site
+                        $too_big = "súbor je príliš veľký";
+                        Url::redirectUrl("/z-scoreboard/admin/logedin-error.php?logedin_error=$too_big");
+                        $redirect_status = true;
+                    } else {
+                        // use pathinfo to get filename extension
+                        $image_extension = pathinfo($image_name, PATHINFO_EXTENSION); 
+                        // to lowercase image extension    
+                        $image_extension_lower_case = strtolower($image_extension);
+
+                        // allowed extensions 
+                        $allowed_extensions = ["jpg", "jpeg", "png"];
+                        
+                        // in_array — Checks if a value exists in an array
+                        if(in_array($image_extension_lower_case, $allowed_extensions)){
+                            // uniq name for image
+                            $new_image_name = uniqid("IMG-", true) . "." . $image_extension;
+
+                            if(!file_exists("../uploads/" . $player_Id)){
+                                // 0777 authorizations
+                                mkdir("../uploads/" . $player_Id, 0777, true);
+                            }
+
+                            // create path where will save image
+                            $image_upload_path = "../uploads/" . $player_Id . "/" . $new_image_name;
+
+                            // upload image - change temporary image path for path to current registered player
+                            move_uploaded_file($image_tmp_name, $image_upload_path);
+
+                            // save image for registered player in Database for current registered Player
+                            $image_id = Image::insertPlayerImage($connection, $player_Id, $new_image_name);
+                        } else {
+                            // redirect to error site
+                            $not_allowed_extension = "nedovolená koncovka";
+                            Url::redirectUrl("/z-scoreboard/admin/logedin-error.php?logedin_error=$not_allowed_extension");
+                            $redirect_status = true;
+                        }
+                    }
+                } else {
+                    // redirect to error site if images in image gallery are more than allowed limit
+                    $not_allowed_image = "Počet obrázkov je väčší ako dovolený limit. Vymažte nejaký obrázok z galérie!!!";
+                    Url::redirectUrl("/z-scoreboard/admin/logedin-error.php?logedin_error=$not_allowed_image");
+                    $redirect_status = true; 
+                }
+                
+            } else {
+                // error 0 = something went wrong 
+                // error 4 = is UPLOAD_ERR_NO_FILE
+                // default image
+                if ($error == 4 || ($image_size == 0 && $error == 0)){
+                    $new_image_name = Player::getPlayer($connection, $player_Id, "player_Image")["player_Image"];
+                }
             }
         }
+
+        
     }
 
     if (!$redirect_status){

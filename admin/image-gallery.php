@@ -27,7 +27,7 @@ if ($_SERVER["REQUEST_METHOD"] === "GET"){
 }
 
 
-
+$index = 1;
 ?>
 
 <!DOCTYPE html>
@@ -71,7 +71,9 @@ if ($_SERVER["REQUEST_METHOD"] === "GET"){
                             <img src="../uploads/<?= htmlspecialchars($one_image["user_id"]) ?>/<?= htmlspecialchars($one_image["image_name"]) ?>" alt="">
                             <a href="delete-image.php?image_id=<?= htmlspecialchars($one_image["image_id"]) ?>&player_Id=<?= htmlspecialchars($one_image["user_id"]) ?>&image_name=<?= htmlspecialchars($one_image["image_name"]) ?>" class="imageX" >X</a>
                         <?php endif; ?>
+                        <a href="edit-player.php?player_Id=<?= htmlspecialchars($one_image["user_id"]) ?>&image_id=<?= htmlspecialchars($one_image["image_id"]) ?>&sequence=<?= htmlspecialchars($index) ?>" class="imageOK" >OK</a>
                     </div>
+                    <?php $index++ ?>
                 <?php endforeach; ?>  
             </article>
               
