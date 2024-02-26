@@ -26,7 +26,7 @@ $reg_button = "Registrovať";
 
 if (isset($_GET["league_id"]) and is_numeric($_GET["league_id"])){
     $league_infos = League::getLeague($connection, $_GET["league_id"]);
-    $registered_players = LeaguePlayer::getAllLeaguePlayers($connection, $league_infos["league_id"]);
+    $registered_players = LeaguePlayer::getAllLeaguePlayers($connection, $league_infos["league_id"], true);
     $league_id = $league_infos["league_id"];
 
     foreach($registered_players as $one_reg_player){

@@ -25,7 +25,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST"){
     $connection = $database->connectionDB();
 
     $league_id = $_POST["league_id"];
-    $registered_players = LeaguePlayer::getAllLeaguePlayers($connection, $league_id, "list_of_players_league.player_Id, list_of_players_league.league_id");
+    $registered_players = LeaguePlayer::getAllLeaguePlayers($connection, $league_id, true, "list_of_players_league.player_Id, list_of_players_league.league_id");
     
     $empty_player = Player::getUserId($connection, "none");
 
