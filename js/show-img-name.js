@@ -2,6 +2,7 @@ let message = document.querySelector(".registration-form form p");
 let img_file = document.querySelector("#playerIMG");
 
 
+
 console.log(message);
 console.log(img_file);
 

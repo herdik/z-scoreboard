@@ -451,4 +451,43 @@ class Player {
         }
     }
 
+
+    /**
+     *
+     * RETURN BOOLEAN FROM DATABASE AFTER UPDATED PASSWORD FOR PLAYER
+     *
+     * @param object $connection - connection to database
+     * @param integer $player_Id - id for one user
+     * 
+     * @return boolean if update is successful
+     */
+    public static function updatePlayerPassword($connection, $password, $player_Id){
+
+        // sql scheme
+        $sql = "UPDATE player_user
+                SET password = :password 
+                WHERE player_Id = :player_Id";
+        
+
+        // connect sql amend to database
+        $stmt = $connection->prepare($sql);
+
+        // all parameters to send to Database
+        // filling and bind values will be execute to Database
+        $stmt->bindValue(":password", password_hash($password, PASSWORD_DEFAULT), PDO::PARAM_STR);
+        $stmt->bindValue(":player_Id", $player_Id, PDO::PARAM_INT);
+
+        try {
+            if($stmt->execute()){
+                return true;
+            } else {
+                throw Exception ("Príkaz pre update hesla pre užívateľa sa nepodaril");
+            }
+        } catch (Exception $e){
+            // 3 je že vyberiem vlastnú cestu k súboru
+            error_log("Chyba pri funkcii updatePlayerPassword, získanie informácií z databázy zlyhalo\n", 3, "../errors/error.log");
+            echo "Výsledná chyba je: " . $e->getMessage();
+        }
+    }
+
 }

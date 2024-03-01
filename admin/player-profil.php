@@ -103,6 +103,7 @@
         <?php if (($_SESSION["role"] === "admin") || ($_SESSION["logged_in_user_id"] === $player_infos["player_Id"])): ?>
         <section class="buttons">
             <a href="./edit-player.php?player_Id=<?= htmlspecialchars($player_infos["player_Id"]) ?>" class="edit-btn btns">Upraviť</a>
+            <a href="./change-password.php?player_Id=<?= htmlspecialchars($player_infos["player_Id"]) ?>" class="edit-btn btns">Zmeniť heslo</a>
             <?php if ($_SESSION["role"] === "admin"): ?>
                 <a href="./delete-player.php?player_Id=<?= htmlspecialchars($player_infos["player_Id"]) ?>" class="delete-btn btns">Vymazať</a>
             <?php endif ?>
