@@ -58,12 +58,17 @@
         <section class="registration-form">
             <h1>Zmena hesla</h1>
             <form action="after-change-password.php" method="POST">
+            
+            <?php if ($_SESSION["role"] === "admin"): ?>
                 <input type="hidden" name="player_Id" value="<?= htmlspecialchars($player_infos["player_Id"]) ?>">
+            <?php else: ?>
+                <input type="hidden" name="player_Id" value="<?= htmlspecialchars($_SESSION["logged_in_user_id"]) ?>">
+            <?php endif; ?>
                 <input type="password" name="password-player" id="password-player" placeholder="Nové heslo"><br>
                 <input type="password" name="password-confirmed" id="password-confirmed" placeholder="Nové heslo"><br>
                 <p id="password-status">Heslá sa nezhodujú</p>
                 <input class="btn" type="submit" name="submit" value="Potvrdiť" enable>
-                
+  
             </form>
 
         </section>
