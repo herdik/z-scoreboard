@@ -162,14 +162,8 @@ class LeaguePlayer {
      * RETURN BOOLEAN IF PLAYER´S GROUP IS UPDATED IN LEAGUE - DATABASE
      *
      * @param object $connection - connection to database
-     * @param string $first_name - player first name
-     * @param string $second_name - player second name
-     * @param string $country - player country
-     * @param string $player_club - player club
-     * @param string $player_Image - player Image
-     * @param string $player_cue - player cue
-     * @param string $player_break_cue - player break cue
-     * @param string $player_jump_cue - player jump cue
+     
+     * @param integer $league_group - league_group for one user
      * @param integer $player_Id - id for one user
      * 
      * @return boolean if update is successful
@@ -234,5 +228,43 @@ class LeaguePlayer {
         }
     }
 
+
+    /**
+     *
+     * RETURN BOOLEAN IF PLAYER´S GROUP IS UPDATED IN LEAGUE - DATABASE
+     *
+     * @param object $connection - connection to database
+     * @param integer $league_group - league_group for one user
+     * @param integer $player_in_league_id - id for one user in league
+     * 
+     * @return boolean if update is successful
+     */
+    public static function updateSpecificLeagueGroup($connection, $league_group, $player_in_league_id, $league_id){
+        $sql = "UPDATE list_of_players_league
+                SET league_group = :league_group
+                WHERE player_in_league_id = :player_in_league_id AND league_id = :league_id";
+        
+
+        // connect sql amend to database
+        $stmt = $connection->prepare($sql);
+
+        // all parameters to send to Database
+        // filling and bind values will be execute to Database
+        $stmt->bindValue(":league_group", $league_group, PDO::PARAM_INT);
+        $stmt->bindValue(":player_in_league_id", $player_in_league_id, PDO::PARAM_INT);
+        $stmt->bindValue(":league_id", $league_id, PDO::PARAM_INT);
+
+        try {
+            if($stmt->execute()){
+                return true;
+            } else {
+                throw Exception ("Príkaz pre update league_group v v konkrétnej lige sa nepodaril");
+            }
+        } catch (Exception $e){
+            // 3 je že vyberiem vlastnú cestu k súboru
+            error_log("Chyba pri funkcii updateSpecificLeagueGroup, získanie informácií z databázy zlyhalo\n", 3, "../errors/error.log");
+            echo "Výsledná chyba je: " . $e->getMessage();
+        }
+    }
 
 }
