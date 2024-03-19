@@ -86,15 +86,24 @@ main {
     background: #fff;
 }
 .main-container-groups{
-    max-width: 800px;
+    max-width: 1200px;
     border: 5px solid rgba(0, 0, 0, 0.608);
     border-radius: 20px;
-    margin: 10px 0 30px 0;
     box-shadow: 0 0 10px 10px #888888;
-    padding: 100px;
     background: #fff;
     display: flex;
+    align-items: center;
+    justify-content: center;
     flex-wrap: wrap;
+}
+.basic-groups{
+    width: 100%;
+    margin: 10px 0 30px 0;
+    padding: 100px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
 }
 .one-modified-group {
     border: 2px solid black;
@@ -102,7 +111,7 @@ main {
 }
 
 
-#create-matches input[type="submit"] {
+#create-matches input[type="submit"], #begin-league {
     text-align: center;
     color: white;
     background: #be9524;
@@ -115,13 +124,10 @@ main {
     cursor: pointer;
     margin-top: 30px;
 }
-#create-matches input[type="submit"]:hover {
+
+/* button for create league groups + begin league submit button */
+#create-matches input[type="submit"]:hover, #begin-league:hover {
     background-color: white;
     color:black;
     border: 5px solid #be9524;
 }
-
-
-
-
-

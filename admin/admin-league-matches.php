@@ -102,6 +102,8 @@ $group_nr = 0;
                 <?php endif; ?>
             <?php else: ?>
             <div class="main-container-groups">
+                <div class="basic-groups">
+
                 <?php foreach ($players_in_group as $one_player): ?>
                     <?php if($one_player["league_group"] === 0): ?>
                     <?php elseif($one_player["league_group"] === $group_nr): ?>
@@ -134,15 +136,16 @@ $group_nr = 0;
                         <?php endif ?>
                     <?php endforeach ?>
                     </ul>
-
+                </div>
+                
                 <form action="./after-finished-league-groups.php" method="post">
-                <input type="hidden" name="league_id" value="<?php echo $league_id; ?>">
-                <input type="submit" value="Zahájiť ligu">
-            </form>
+                    <input type="hidden" name="league_id" value="<?php echo $league_id; ?>">
+                    <input id="begin-league" type="submit" value="Zahájiť ligu">
+                </form>
                     
             <?php endif ?>
 
-            </div>
+        </div>
             
         </section>
 

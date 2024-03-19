@@ -22,11 +22,25 @@ if ($_SERVER["REQUEST_METHOD"] === "POST"){
 
 
     $league_id = $_POST["league_id"];
-    $players_in_group = LeaguePlayer::getAllLeaguePlayers($connection, $league_id, false);
+    $number_of_groups_in_league = LeaguePlayer::getNumberOfGroups($connection, $league_id);
 
-    var_dump($players_in_group);
+    $inactive_players = LeaguePlayer::getInactiveLeaguePlayers($connection, $league_id, 0);
 
-
+    if (count($inactive_players) > 0){
+        foreach($inactive_players as $one_inactive_player){
+            $player_in_league_id = $one_inactive_player["player_in_league_id"];
+            LeaguePlayer::deleteSpecLeaguePlayer($connection, $league_id, $player_in_league_id);
+            
+        }
+    }
+    
+    for ($i = 1; $i <= $number_of_groups_in_league; $i++){
+        $count_players_in_group = LeaguePlayer::countActiveLeaguePlayersInGroup($connection, $league_id, $i);
+        if ($count_players_in_group % 2 != 0){
+            LeaguePlayer::createLeaguePlayer($connection, $league_id, 0, $i);
+        }
+    }
+     
     // if (!empty($league_id)){
     //     Url::redirectUrl("/z-scoreboard/admin/current-league.php?league_id=$league_id");
     // } else {

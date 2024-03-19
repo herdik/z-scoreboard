@@ -109,7 +109,7 @@ $all_players = LeaguePlayer::getAllLeaguePlayersNotRegistered($connection, $leag
                 
 
 
-                <?php if ($league_infos["manager_id"] === $_SESSION["logged_in_user_id"]): ?>
+                <?php if (($league_infos["manager_id"] === $_SESSION["logged_in_user_id"]) || ($_SESSION["role"] === "admin")): ?>
                 <form id="reg-players-in-league-form" action="./create-league-players.php" method="POST">
 
                     <label for="reg-players">Registrácia hráča/hráčov</label>
