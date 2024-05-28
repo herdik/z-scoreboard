@@ -222,7 +222,7 @@ $all_players = LeaguePlayer::getAllLeaguePlayersNotRegistered($connection, $leag
                             <h6 class="profil-name"><?php echo htmlspecialchars($reg_player["first_name"]). " ". htmlspecialchars($reg_player["second_name"]) ?></h6>
                             <a class="player-infos" href="./player-profil.php?player_Id=<?= htmlspecialchars($reg_player["player_Id"]) ?>">Informácie</a>
 
-                            <?php if ($league_infos["manager_id"] === $_SESSION["logged_in_user_id"]): ?>
+                            <?php if (($league_infos["manager_id"] === $_SESSION["logged_in_user_id"]) || ($_SESSION["role"] === "admin")): ?>
                                 
                                 <a class="player-profilX" href="delete-player-in-league.php?league_id=<?= htmlspecialchars($league_infos["league_id"]) ?>&player_Id=<?= htmlspecialchars($reg_player["player_Id"]) ?>">X</a>
 

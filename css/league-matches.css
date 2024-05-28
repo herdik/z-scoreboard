@@ -4,6 +4,7 @@ main {
     padding: 15px 15px 0 15px;
 }
 
+/* left MENU settings -start */
 .navigation-bar {
     height: 50%; 
     width: 210px; 
@@ -56,6 +57,9 @@ main {
     color:black;
     border: 5px solid #be9524;
 }
+/* left MENU settings -finish */
+
+/*************Creating and modifying League groups -start **************/
 .league-content {
     margin-left: 226px; 
     font-size: 28px; 
@@ -76,6 +80,7 @@ main {
     flex-wrap: wrap;
 }
 
+/* Basic setting to conform create league - start*/
 .main-container-settings{
     max-width: 800px;
     border: 5px solid rgba(0, 0, 0, 0.608);
@@ -85,16 +90,21 @@ main {
     padding: 100px;
     background: #fff;
 }
+
+/* Basic setting to conform create league - finish*/
+
+/* Edit League groups -start */
 .main-container-groups{
     max-width: 1200px;
     border: 5px solid rgba(0, 0, 0, 0.608);
     border-radius: 20px;
     box-shadow: 0 0 10px 10px #888888;
-    background: #fff;
+    background: linear-gradient(black, rgb(82, 80, 80));
     display: flex;
     align-items: center;
     justify-content: center;
     flex-wrap: wrap;
+    padding-bottom: 20px;
 }
 .basic-groups{
     width: 100%;
@@ -106,10 +116,110 @@ main {
     gap: 10px;
 }
 .one-modified-group {
-    border: 2px solid black;
-    list-style-type: none;
+    color: black;
+    width: 100%;
+    border-collapse: collapse;
+    margin: 15px 0;
+    font-size: 0.7em;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+    border-radius: 10px;
+    box-shadow: 0 0 10px 10px #888888;
+    overflow: hidden;
+    background-color: #fff;
 }
 
+
+.one-modified-group thead tr {
+    background-color: #be9524;
+    color: #ffffff;
+}
+
+.one-modified-group th {
+    padding: 10px;
+}
+.one-modified-group tbody {
+    text-align: left;
+}
+.one-modified-group td {
+    padding: 10px 2px;
+}
+
+.one-modified-group tbody tr td{
+    border-bottom: 1px solid #dddddd;
+    transition: all .2s linear;
+    padding-left: 20px;
+}
+.one-modified-group tbody tr:nth-of-type(even) {
+    background-color: #d4d1d1;
+}
+
+.player-table {
+    position: relative; 
+}
+
+.player-tableX{
+    position: absolute;
+    text-decoration: none;
+    text-align: center;
+    color: white;
+    background: #be9524;
+    padding: 4px 8px;
+    font-size: 12px;
+    border: 1px solid transparent;
+    border-radius: 50%;
+    opacity: 1;
+    top: 10px;
+    right: 30px;
+    transition: all 0.3s linear;
+    cursor: pointer;
+}
+
+.player-tableX:hover{
+    background-color: white;
+    color:black;
+    border: 1px solid #be9524;
+}
+
+.select-groups{
+    width: 70px;
+    padding: 0px 8px 0px 2px;
+    font-size: 18px;
+    text-align: center;
+    border-radius: 20px;
+    border: 2px solid rgba(0, 0, 0, 0.608);
+    box-shadow: 0 0 3px 3px #888888;
+}
+
+.undefined {
+    position: relative;
+}
+
+.choosed-group-OK {
+    position: absolute;
+    top: 10px;
+    right: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#submit-group {
+    padding: 5px;
+    text-align: center;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 12px;
+    margin-left: 10px;
+    transition: all 0.3s linear;
+}
+
+#submit-group:hover{
+    border-color: #be9524;
+    color: #be9524;
+}
+
+/* Edit League groups -finish*/
 
 #create-matches input[type="submit"], #begin-league {
     text-align: center;
@@ -131,3 +241,5 @@ main {
     color:black;
     border: 5px solid #be9524;
 }
+
+/*************** Creating and modifying League groups - finish *************/

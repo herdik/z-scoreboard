@@ -107,35 +107,61 @@ $group_nr = 0;
                 <?php foreach ($players_in_group as $one_player): ?>
                     <?php if($one_player["league_group"] === 0): ?>
                     <?php elseif($one_player["league_group"] === $group_nr): ?>
-                        <li><?= htmlspecialchars($one_player["first_name"]) . " " . htmlspecialchars($one_player["second_name"])?></li>
-                        <a href="edit-league-group.php?player_in_league_id=<?= htmlspecialchars($one_player["player_in_league_id"]) ?>&league_id=<?= htmlspecialchars($one_player["league_id"]) ?>&league_group=0">x</a>
+                        <tr>
+                        <?php $table_nr++ ?>
+                            <td class="player-table"><?= $table_nr .". ". htmlspecialchars($one_player["first_name"]) . " " . htmlspecialchars($one_player["second_name"])?>
+                            <a class="player-tableX" href="edit-league-group.php?player_in_league_id=<?= htmlspecialchars($one_player["player_in_league_id"]) ?>&league_id=<?= htmlspecialchars($one_player["league_id"]) ?>&league_group=0">x</a></td>
+                        </tr>
+                        
                     
                     <?php else: ?>
                         <?php $group_nr++ ?>
-                        </ul>
-                        <ul class="one-modified-group">
-                        <h3>Skupina č.<?= htmlspecialchars($one_player["league_group"]) ?></h3>
-                            <li><?= htmlspecialchars($one_player["first_name"]) . " " . htmlspecialchars($one_player["second_name"])?></li>
-                            <a href="edit-league-group.php?player_in_league_id=<?= htmlspecialchars($one_player["player_in_league_id"]) ?>&league_id=<?= htmlspecialchars($one_player["league_id"]) ?>&league_group=0">x</a>
+                    </table>
+                        <table class="one-modified-group">
+                            <thead>
+                                <tr>
+                                    <th>Skupina č.<?= htmlspecialchars($one_player["league_group"]) ?></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php $table_nr = 1; ?>
+                                <tr>
+                                    <td class="player-table"><?= $table_nr .". ". htmlspecialchars($one_player["first_name"]) . " " . htmlspecialchars($one_player["second_name"])?>
+                                    <a class="player-tableX" href="edit-league-group.php?player_in_league_id=<?= htmlspecialchars($one_player["player_in_league_id"]) ?>&league_id=<?= htmlspecialchars($one_player["league_id"]) ?>&league_group=0">x</a></td>
+                                </tr>
+                            
 
                     <?php endif ?>
                 <?php endforeach ?>
-                    </ul>    
-                    <ul class="one-modified-group">
-                    <h3>Nezaradení</h3>
-                    <?php foreach ($players_in_group as $one_player): ?>
-                        <?php if($one_player["league_group"] === 0): ?>
-                        <li><?= htmlspecialchars($one_player["first_name"]) . " " . htmlspecialchars($one_player["second_name"])?></li>
-                        <form action="./edit-league-group.php" method="POST">
-                            <input type="hidden" name="player_in_league_id" value="<?= htmlspecialchars($one_player["player_in_league_id"]) ?>">
-                            <input type="hidden" name="league_id" value="<?= htmlspecialchars($one_player["league_id"]) ?>">
-                            <input type="number" name="league_group" class="select-groups" value="0" min="0" max="<?= htmlspecialchars($count_groups["count_groups"]) ?>">
-                            <button>OK</button>
-                        </form>
-                        
-                        <?php endif ?>
-                    <?php endforeach ?>
-                    </ul>
+                            </tbody>
+                    </table>    
+                    <table class="one-modified-group">
+                        <thead>
+                            <tr>
+                                <th>Nezaradení</th>
+                            </tr>
+                        <thead>
+                        <tbody>
+                            <?php $unclassified_table_nr = 1; ?>
+                            <?php foreach ($players_in_group as $one_player): ?>
+                                <?php if($one_player["league_group"] === 0): ?>
+                                    <tr>
+                                        <form action="./edit-league-group.php" method="POST">
+                                        <td class="undefined"><?= $unclassified_table_nr .". ". htmlspecialchars($one_player["first_name"]) . " " . htmlspecialchars($one_player["second_name"])?>
+                                        <span class="choosed-group-OK">
+                                        <input type="hidden" name="player_in_league_id" value="<?= htmlspecialchars($one_player["player_in_league_id"]) ?>">
+                                        <input type="hidden" name="league_id" value="<?= htmlspecialchars($one_player["league_id"]) ?>">
+                                        <input type="number" name="league_group" class="select-groups" value="0" min="0" max="<?= htmlspecialchars($count_groups["count_groups"]) ?>">
+                                        <button id="submit-group">OK</button>
+                                        </span>
+                                        </td>
+                                        </form>
+                                    </tr>
+                            <?php $unclassified_table_nr++; ?>
+                                <?php endif ?>
+                            <?php endforeach ?>
+                        <tbody>
+                    </table>
                 </div>
                 
                 <form action="./after-finished-league-groups.php" method="post">
