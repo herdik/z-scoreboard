@@ -49,7 +49,7 @@ class LeaguePlayer {
      *
      * @return array array of objects, one object mean one player
      */
-    public static function getAllLeaguePlayers($connection, $league_id, $player_zero, $columns = "list_of_players_league.*, player_user.first_name, player_user.second_name, player_user.player_Image, player_user.country"){
+    public static function getAllLeaguePlayers($connection, $league_id, $player_zero, $columns = "list_of_players_league.*, player_user.first_name, player_user.second_name, player_user.player_Image, player_user.country, player_user.player_club"){
         if ($player_zero === TRUE){
             $add_text = " AND player_user.player_Id != 0";
         } else {

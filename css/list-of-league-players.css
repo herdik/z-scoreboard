@@ -250,7 +250,7 @@ main {
 }
 .player-profil {
     width: 150px;
-    height: 200px;
+    height: 220px;
     background-color: #fff;
     border: 1px solid #be9524;
     border-radius: 10px;
@@ -281,6 +281,12 @@ main {
 
 .profil-name {
     color: #be9524;
+}
+
+.profil-club {
+    color: #be9524;
+    font-size: 12px;
+    overflow-wrap: normal;
 }
 
 .player-infos {

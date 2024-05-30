@@ -110,6 +110,8 @@ $group_nr = 0;
                         <tr>
                         <?php $table_nr++ ?>
                             <td class="player-table"><?= $table_nr .". ". htmlspecialchars($one_player["first_name"]) . " " . htmlspecialchars($one_player["second_name"])?>
+                            <img class="country-flag" src="../img/countries/<?= htmlspecialchars($one_player["country"]) ?>.png" alt="">
+                            <span class="player-club"><?= htmlspecialchars($one_player["player_club"]) ?></span>
                             <a class="player-tableX" href="edit-league-group.php?player_in_league_id=<?= htmlspecialchars($one_player["player_in_league_id"]) ?>&league_id=<?= htmlspecialchars($one_player["league_id"]) ?>&league_group=0">x</a></td>
                         </tr>
                         
@@ -127,6 +129,8 @@ $group_nr = 0;
                                 <?php $table_nr = 1; ?>
                                 <tr>
                                     <td class="player-table"><?= $table_nr .". ". htmlspecialchars($one_player["first_name"]) . " " . htmlspecialchars($one_player["second_name"])?>
+                                    <img class="country-flag" src="../img/countries/<?= htmlspecialchars($one_player["country"]) ?>.png" alt="">
+                                    <span class="player-club"><?= htmlspecialchars($one_player["player_club"]) ?></span>
                                     <a class="player-tableX" href="edit-league-group.php?player_in_league_id=<?= htmlspecialchars($one_player["player_in_league_id"]) ?>&league_id=<?= htmlspecialchars($one_player["league_id"]) ?>&league_group=0">x</a></td>
                                 </tr>
                             
@@ -148,6 +152,8 @@ $group_nr = 0;
                                     <tr>
                                         <form action="./edit-league-group.php" method="POST">
                                         <td class="undefined"><?= $unclassified_table_nr .". ". htmlspecialchars($one_player["first_name"]) . " " . htmlspecialchars($one_player["second_name"])?>
+                                        <img class="country-flag" src="../img/countries/<?= htmlspecialchars($one_player["country"]) ?>.png" alt="">
+                                        <span class="player-club"><?= htmlspecialchars($one_player["player_club"]) ?></span>
                                         <span class="choosed-group-OK">
                                         <input type="hidden" name="player_in_league_id" value="<?= htmlspecialchars($one_player["player_in_league_id"]) ?>">
                                         <input type="hidden" name="league_id" value="<?= htmlspecialchars($one_player["league_id"]) ?>">
