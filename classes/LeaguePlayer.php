@@ -81,6 +81,41 @@ class LeaguePlayer {
     }
 
 
+
+    /**
+     *
+     * RETURN ALL REGISTERED PLAYERS IN LEAGUE FROM DATABASE ACCORDING LEAGUE GROUP
+     *
+     * @param object $connection - connection to database
+     *
+     * @return array array of objects, one object mean one player
+     */
+    public static function getAllLeaguePlayersByGroup($connection, $league_id, $league_group){
+    
+        $sql = "SELECT *
+                FROM list_of_players_league
+                WHERE league_id = :league_id AND league_group = :league_group
+                ";
+        // ORDER BY RAND ()
+        $stmt = $connection->prepare($sql);
+
+        // all parameters to send to Database
+        $stmt->bindValue(":league_id", $league_id, PDO::PARAM_INT); 
+        $stmt->bindValue(":league_group", $league_group, PDO::PARAM_INT); 
+
+        try {
+            if($stmt->execute()){
+                return $stmt->fetchAll(PDO::FETCH_ASSOC);
+            } else {
+                throw new Exception ("Príkaz pre získanie všetkých dát o hráčoch z konkrétnej ligy sa nepodaril");
+            }
+        } catch (Exception $e){
+            // 3 je že vyberiem vlastnú cestu k súboru
+            error_log("Chyba pri funckii getAllLeaguePlayers, príkaz pre získanie informácií z databázy zlyhal\n", 3, "./errors/error.log");
+            echo "Výsledná chyba je: " . $e->getMessage();
+        }
+    }
+
     /**
      *
      * DELETE ONE PLAYER IN LEAGUE FROM DATABASE

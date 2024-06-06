@@ -23,8 +23,8 @@ class League {
 
         
         // sql scheme
-        $sql = "INSERT INTO league (league_name, category, playing_format, date_of_event, season, discipline, venue, type, manager, manager_id)
-        VALUES (:league_name, :category, :playing_format, :date_of_event, :season, :discipline, :venue, :type, :manager, :manager_id)";
+        $sql = "INSERT INTO league (league_name, category, playing_format, date_of_event, season, discipline, venue, type, manager, manager_id, active_league)
+        VALUES (:league_name, :category, :playing_format, :date_of_event, :season, :discipline, :venue, :type, :manager, :manager_id, :active_league)";
 
         // prepare data to send to Database
         $stmt = $connection->prepare($sql);
@@ -40,6 +40,7 @@ class League {
         $stmt->bindValue(":type", $type, PDO::PARAM_STR);
         $stmt->bindValue(":manager", $manager, PDO::PARAM_STR);
         $stmt->bindValue(":manager_id", $manager_id, PDO::PARAM_INT);
+        $stmt->bindValue(":active_league", false, PDO::PARAM_BOOL);
 
         
         try {
@@ -52,6 +53,44 @@ class League {
             }
         } catch (Exception $e) {
             error_log("Chyba pri funkcii createLeague\n", 3, "../errors/error.log");
+            echo "Výsledná chyba je: " . $e->getMessage();
+        }
+    }
+
+
+    /**
+     *
+     * RETURN BOOLEAN FROM DATABASE AFTER UPDATED LEAGUE - active league infos
+     *
+     * @param object $connection - database connection
+     * @param boolean $active_league - league matches are created
+     * @param int $league_id - id for league
+     * 
+     * @return boolean if update is successful
+     */
+    public static function updateLeague($connection, $league_id, $active_league){
+        $sql = "UPDATE league
+                SET active_league = :active_league
+                WHERE league_id = :league_id";
+        
+
+        // connect sql amend to database
+        $stmt = $connection->prepare($sql);
+
+        // all parameters to send to Database
+        // filling and bind values will be execute to Database
+        $stmt->bindValue(":active_league", $active_league, PDO::PARAM_BOOL);
+        $stmt->bindValue(":league_id", $league_id, PDO::PARAM_INT);
+
+        try {
+            if($stmt->execute()){
+                return true;
+            } else {
+                throw Exception ("Príkaz pre update aktívnej ligy sa nepodaril");
+            }
+        } catch (Exception $e){
+            // 3 je že vyberiem vlastnú cestu k súboru
+            error_log("Chyba pri funkcii updateLeague, získanie informácií z databázy zlyhalo\n", 3, "../errors/error.log");
             echo "Výsledná chyba je: " . $e->getMessage();
         }
     }

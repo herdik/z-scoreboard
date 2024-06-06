@@ -25,6 +25,7 @@ $connection = $database->connectionDB();
 if (isset($_GET["league_id"]) and is_numeric($_GET["league_id"])){
     $league_infos = League::getLeague($connection, $_GET["league_id"]);
     $league_id = $league_infos["league_id"];
+    $active_league = $league_infos["active_league"];
     $count_groups = LeagueSettings::getLeagueSettings($connection, $league_id, "count_groups");
     $players_without_group = LeaguePlayer::getPlayerGroupInLeague($connection, $league_id);
     $players_in_group = LeaguePlayer::getAllLeaguePlayers($connection, $league_id, false);
@@ -34,6 +35,7 @@ if (isset($_GET["league_id"]) and is_numeric($_GET["league_id"])){
     $count_groups = null;
     $players_without_group = null;
     $players_in_group = null;
+    $active_league = false;
 }
 
 $group_nr = 0;
@@ -81,104 +83,108 @@ $group_nr = 0;
         </section>
 
         <section class="league-content">
-
             
-            <?php if ($players_without_group != 0): ?>
-            <div class="main-container-settings">
-                
-                <?php if ($count_groups["count_groups"] > 1): ?> 
-                <h1>Liga skupiny</h1>
-                <?php else: ?>
-                <h1>Liga skupina</h1>
-                <?php endif; ?>
-                
-                <?php if (($league_infos["manager_id"] === $_SESSION["logged_in_user_id"]) || ($_SESSION["role"] === "admin")): ?>
-                    <form id="create-matches" action="after-league-matches.php" method="post">
-                        <input type="hidden" name="league_id" value="<?= htmlspecialchars($league_infos["league_id"]) ?>" readonly>
-                        
-                        <input type="submit" value="Vytvoriť">  
-
-                    </form>
-                <?php endif; ?>
+            <?php if ($active_league): ?>
+                <?php echo "vytvoriť zápasy sa podarilo"; ?>
             <?php else: ?>
-            <div class="main-container-groups">
-                <div class="basic-groups">
-
-                <?php foreach ($players_in_group as $one_player): ?>
-                    <?php if($one_player["league_group"] === 0): ?>
-                    <?php elseif($one_player["league_group"] === $group_nr): ?>
-                        <tr>
-                        <?php $table_nr++ ?>
-                            <td class="player-table"><?= $table_nr .". ". htmlspecialchars($one_player["first_name"]) . " " . htmlspecialchars($one_player["second_name"])?>
-                            <img class="country-flag" src="../img/countries/<?= htmlspecialchars($one_player["country"]) ?>.png" alt="">
-                            <span class="player-club"><?= htmlspecialchars($one_player["player_club"]) ?></span>
-                            <a class="player-tableX" href="edit-league-group.php?player_in_league_id=<?= htmlspecialchars($one_player["player_in_league_id"]) ?>&league_id=<?= htmlspecialchars($one_player["league_id"]) ?>&league_group=0">x</a></td>
-                        </tr>
-                        
+            
+                <?php if ($players_without_group != 0): ?>
+                <div class="main-container-settings">
                     
+                    <?php if ($count_groups["count_groups"] > 1): ?> 
+                    <h1>Liga skupiny</h1>
                     <?php else: ?>
-                        <?php $group_nr++ ?>
-                    </table>
+                    <h1>Liga skupina</h1>
+                    <?php endif; ?>
+                    
+                    <?php if (($league_infos["manager_id"] === $_SESSION["logged_in_user_id"]) || ($_SESSION["role"] === "admin")): ?>
+                        <form id="create-matches" action="after-league-matches.php" method="post">
+                            <input type="hidden" name="league_id" value="<?= htmlspecialchars($league_infos["league_id"]) ?>" readonly>
+                            
+                            <input type="submit" value="Vytvoriť">  
+
+                        </form>
+                    <?php endif; ?>
+                <?php else: ?>
+                <div class="main-container-groups">
+                    <div class="basic-groups">
+
+                    <?php foreach ($players_in_group as $one_player): ?>
+                        <?php if($one_player["league_group"] === 0): ?>
+                        <?php elseif($one_player["league_group"] === $group_nr): ?>
+                            <tr>
+                            <?php $table_nr++ ?>
+                                <td class="player-table"><?= $table_nr .". ". htmlspecialchars($one_player["first_name"]) . " " . htmlspecialchars($one_player["second_name"])?>
+                                <img class="country-flag" src="../img/countries/<?= htmlspecialchars($one_player["country"]) ?>.png" alt="">
+                                <span class="player-club"><?= htmlspecialchars($one_player["player_club"]) ?></span>
+                                <a class="player-tableX" href="edit-league-group.php?player_in_league_id=<?= htmlspecialchars($one_player["player_in_league_id"]) ?>&league_id=<?= htmlspecialchars($one_player["league_id"]) ?>&league_group=0">x</a></td>
+                            </tr>
+                            
+                        
+                        <?php else: ?>
+                            <?php $group_nr++ ?>
+                        </table>
+                            <table class="one-modified-group">
+                                <thead>
+                                    <tr>
+                                        <th>Skupina č.<?= htmlspecialchars($one_player["league_group"]) ?></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php $table_nr = 1; ?>
+                                    <tr>
+                                        <td class="player-table"><?= $table_nr .". ". htmlspecialchars($one_player["first_name"]) . " " . htmlspecialchars($one_player["second_name"])?>
+                                        <img class="country-flag" src="../img/countries/<?= htmlspecialchars($one_player["country"]) ?>.png" alt="">
+                                        <span class="player-club"><?= htmlspecialchars($one_player["player_club"]) ?></span>
+                                        <a class="player-tableX" href="edit-league-group.php?player_in_league_id=<?= htmlspecialchars($one_player["player_in_league_id"]) ?>&league_id=<?= htmlspecialchars($one_player["league_id"]) ?>&league_group=0">x</a></td>
+                                    </tr>
+                                
+
+                        <?php endif ?>
+                    <?php endforeach ?>
+                                </tbody>
+                        </table>    
                         <table class="one-modified-group">
                             <thead>
                                 <tr>
-                                    <th>Skupina č.<?= htmlspecialchars($one_player["league_group"]) ?></th>
+                                    <th>Nezaradení</th>
                                 </tr>
-                            </thead>
+                            <thead>
                             <tbody>
-                                <?php $table_nr = 1; ?>
-                                <tr>
-                                    <td class="player-table"><?= $table_nr .". ". htmlspecialchars($one_player["first_name"]) . " " . htmlspecialchars($one_player["second_name"])?>
-                                    <img class="country-flag" src="../img/countries/<?= htmlspecialchars($one_player["country"]) ?>.png" alt="">
-                                    <span class="player-club"><?= htmlspecialchars($one_player["player_club"]) ?></span>
-                                    <a class="player-tableX" href="edit-league-group.php?player_in_league_id=<?= htmlspecialchars($one_player["player_in_league_id"]) ?>&league_id=<?= htmlspecialchars($one_player["league_id"]) ?>&league_group=0">x</a></td>
-                                </tr>
-                            
-
-                    <?php endif ?>
-                <?php endforeach ?>
-                            </tbody>
-                    </table>    
-                    <table class="one-modified-group">
-                        <thead>
-                            <tr>
-                                <th>Nezaradení</th>
-                            </tr>
-                        <thead>
-                        <tbody>
-                            <?php $unclassified_table_nr = 1; ?>
-                            <?php foreach ($players_in_group as $one_player): ?>
-                                <?php if($one_player["league_group"] === 0): ?>
-                                    <tr>
-                                        <form action="./edit-league-group.php" method="POST">
-                                        <td class="undefined"><?= $unclassified_table_nr .". ". htmlspecialchars($one_player["first_name"]) . " " . htmlspecialchars($one_player["second_name"])?>
-                                        <img class="country-flag" src="../img/countries/<?= htmlspecialchars($one_player["country"]) ?>.png" alt="">
-                                        <span class="player-club"><?= htmlspecialchars($one_player["player_club"]) ?></span>
-                                        <span class="choosed-group-OK">
-                                        <input type="hidden" name="player_in_league_id" value="<?= htmlspecialchars($one_player["player_in_league_id"]) ?>">
-                                        <input type="hidden" name="league_id" value="<?= htmlspecialchars($one_player["league_id"]) ?>">
-                                        <input type="number" name="league_group" class="select-groups" value="0" min="0" max="<?= htmlspecialchars($count_groups["count_groups"]) ?>">
-                                        <button id="submit-group">OK</button>
-                                        </span>
-                                        </td>
-                                        </form>
-                                    </tr>
-                            <?php $unclassified_table_nr++; ?>
-                                <?php endif ?>
-                            <?php endforeach ?>
-                        <tbody>
-                    </table>
-                </div>
-                
-                <form action="./after-finished-league-groups.php" method="post">
-                    <input type="hidden" name="league_id" value="<?php echo $league_id; ?>">
-                    <input id="begin-league" type="submit" value="Zahájiť ligu">
-                </form>
+                                <?php $unclassified_table_nr = 1; ?>
+                                <?php foreach ($players_in_group as $one_player): ?>
+                                    <?php if($one_player["league_group"] === 0): ?>
+                                        <tr>
+                                            <form action="./edit-league-group.php" method="POST">
+                                            <td class="undefined"><?= $unclassified_table_nr .". ". htmlspecialchars($one_player["first_name"]) . " " . htmlspecialchars($one_player["second_name"])?>
+                                            <img class="country-flag" src="../img/countries/<?= htmlspecialchars($one_player["country"]) ?>.png" alt="">
+                                            <span class="player-club"><?= htmlspecialchars($one_player["player_club"]) ?></span>
+                                            <span class="choosed-group-OK">
+                                            <input type="hidden" name="player_in_league_id" value="<?= htmlspecialchars($one_player["player_in_league_id"]) ?>">
+                                            <input type="hidden" name="league_id" value="<?= htmlspecialchars($one_player["league_id"]) ?>">
+                                            <input type="number" name="league_group" class="select-groups" value="0" min="0" max="<?= htmlspecialchars($count_groups["count_groups"]) ?>">
+                                            <button id="submit-group">OK</button>
+                                            </span>
+                                            </td>
+                                            </form>
+                                        </tr>
+                                <?php $unclassified_table_nr++; ?>
+                                    <?php endif ?>
+                                <?php endforeach ?>
+                            <tbody>
+                        </table>
+                    </div>
                     
-            <?php endif ?>
+                    <form action="./after-finished-league-groups.php" method="post">
+                        <input type="hidden" name="league_id" value="<?php echo $league_id; ?>">
+                        <input id="begin-league" type="submit" value="Zahájiť ligu">
+                    </form>
+                        
+                <?php endif ?>
 
-        </div>
-            
+                </div>
+            <?php endif; ?>
+
         </section>
 
         
