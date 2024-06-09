@@ -230,7 +230,7 @@ main {
 
 /* Edit League groups -finish*/
 
-#create-matches input[type="submit"], #begin-league {
+#create-groups input[type="submit"], #begin-league {
     text-align: center;
     color: white;
     background: #be9524;
@@ -245,10 +245,275 @@ main {
 }
 
 /* button for create league groups + begin league submit button */
-#create-matches input[type="submit"]:hover, #begin-league:hover {
+#create-groups input[type="submit"]:hover, #begin-league:hover {
     background-color: white;
     color:black;
     border: 5px solid #be9524;
 }
 
 /*************** Creating and modifying League groups - finish *************/
+
+
+/*************** Creating and modifying League matches - start *************/
+
+/* Hlavný container */
+.league-match-container {
+    width: 1200px;
+    margin: 40px auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #ffff;
+    border-radius: 20px;
+    box-shadow: 0 0 10px 10px #888888;
+    padding: 0 10px;
+}
+
+/* League heading from User show */
+/* nastavenia pre zobrazených registrovaných hráčov*/
+/* .leagueHeading h1 {
+    
+} */
+/* icona šípka dole a hore + aktívna a neaktína pre first-container
+.leagueHeading .left-icon,
+.leagueHeading .right-icon {
+    position: relative;
+    display: inline-block;
+    width: 15px;
+    height: 5px;
+    background: black;
+    bottom: 8px;
+} 
+.leagueHeading .left-icon {
+    left: 17px;
+    transform: rotate(45deg);
+}
+.leagueHeading .right-icon {
+    transform: rotate(135deg);
+}
+.leagueHeading .left-icon.active-left {
+    transform: rotate(135deg); 
+}
+.leagueHeading .right-icon.active-right {
+    transform: rotate(45deg);
+} */
+
+
+/* League matches */
+.league-matches {
+    width: 100%;
+    max-height: 0;
+    border: 5px solid rgba(0, 0, 0, 0.608);
+    border-radius: 20px;
+    margin: 40px 0;
+    box-shadow: 0 0 10px 10px #888888;
+    overflow-y: hidden;
+    transition: max-height .8s ease-out, opacity 1.2s linear;
+    opacity: 0;
+}
+
+.show-league-matches {
+    max-height: 800px;
+    overflow-y: auto;
+    transition: max-height 1s ease-in, opacity 1s linear;
+    opacity: 1;
+}
+
+.leagueRound {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.leagueRound h1 {
+    position: relative;
+    left: 3%;
+    font-size: 32px;
+}
+
+.matchInformation {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 16px;
+}
+
+
+.tableNr {
+    width: 6%;
+    border: 5px solid rgba(0, 0, 0, 0.608);
+    border-radius: 15px;
+    box-shadow: 0 0 3px 3px #888888;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 12px;
+    text-align: center;
+    margin-left: 0.75%;
+    color: rgb(255, 255, 255);
+}
+
+.tableNr h3 {
+    width: 100%;
+    color: rgb(0, 0, 0);
+}
+
+/* One match line */
+.general-match {
+    width: 98%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    margin: 10px;
+    border: 5px solid rgba(0, 0, 0, 0.608);
+    border-radius: 20px;
+    box-shadow: 0 0 3px 3px #888888;
+    padding: 5px;
+}
+
+/* Aktívny zápas, ktorý sa hrá */
+.activeLeagueMatch {
+    background-color: #07b078;
+    color: #fff;
+}
+.waitingLeagueMatch {
+    background-color: #8db6bd;
+    color: #fff;
+}
+/* Ukončený ligový zápas */
+.fisnishedLeagueMatch {
+    background-color: #1e2623;
+    color: #fff;
+    border: 5px solid rgba(0, 0, 0, 0.608);
+    box-shadow: 0 0 3px 5px #888888;
+}
+
+/* Players in one match line */
+.general-match span {
+    width: 45%;
+}
+.general-match span img {
+    border-radius: 25px;
+    position: relative;
+    top: 4px;
+}
+
+/* Score in one match line */
+.general-match label {
+    width: 54px;
+    padding: 10px;
+    border: 5px solid rgba(0, 0, 0, 0.608);
+    border-radius: 15px;
+    box-shadow: 0 0 3px 3px #888888;
+}
+
+/* Button in one match line */
+.general-match button {
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+    border-radius: 20px;
+    margin: 0 10px;
+    padding: 5px 10px;
+}
+/* Button in one match line Ukončený ligový zápas */
+.fisnishedLeagueMatch button {
+    visibility: hidden;
+}
+
+/* typ hry obrázok v zápasoch */
+.pl1-span img, .pl2-span img, .btnAndGame img{
+    width: 20px;
+    height: 20px;
+}
+/* Image Profil in league */
+.league-profil {
+    border-radius: 20%;
+    width: 40px;
+    height: 40px;
+}
+/* player club info  */
+.main-info-player {
+   font-size: 10px; 
+}
+
+/*************** Creating and modifying League matches - finish *************/
+
+/*************** SHOW League matches ACCORDNING TO GROUPS - start *************/
+
+.registered-groups {
+    width: 100%;
+    margin: 10px 15px 25px 15px;
+}
+
+
+.all-groups {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-content: flex-start;
+    flex-wrap: wrap;
+    gap: 10px;
+    background-color: rgb(255, 253, 253);
+    margin-top: 20px;
+}
+.group-profil {
+    width: 150px;
+    height: 220px;
+    background-color: #fff;
+    border: 1px solid #be9524;
+    border-radius: 10px;
+    box-shadow: 5px 5px 5px 3px #be9524;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    position: relative;
+}
+
+.picture-part1 {
+    width: 70px;
+    height: 70px;
+    border-radius: 10%;
+    position: relative;
+}
+.picture-part2 {
+    width: 40px;
+    height: 30px;
+    border-radius: 5%;
+    position: absolute;
+    left: 50%;
+    top: 100%;
+    transform: translate(-50%, -50%);
+}
+
+.group-nr {
+    color: #be9524;
+}
+
+.group-infos {
+    text-decoration: none;
+    text-align: center;
+    color: white;
+    background: #be9524;
+    padding: 8px 12px;
+    font-size: 12px;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    transition: all 0.3s linear;
+}
+
+.group-infos:hover {
+    background-color: white;
+    color:black;
+    border: 1px solid #be9524;
+}
+
+
+/*************** SHOW League matches ACCORDNING TO GROUPS - finish *************/

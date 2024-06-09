@@ -84,31 +84,249 @@ $group_nr = 0;
 
         <section class="league-content">
             
+            <!-- Structure for active league if all settings are used and league match are created -->
             <?php if ($active_league): ?>
-                <?php echo "vytvoriť zápasy sa podarilo"; ?>
-            <?php else: ?>
             
-                <?php if ($players_without_group != 0): ?>
-                <div class="main-container-settings">
-                    
-                    <?php if ($count_groups["count_groups"] > 1): ?> 
-                    <h1>Liga skupiny</h1>
-                    <?php else: ?>
-                    <h1>Liga skupina</h1>
-                    <?php endif; ?>
-                    
-                    <?php if (($league_infos["manager_id"] === $_SESSION["logged_in_user_id"]) || ($_SESSION["role"] === "admin")): ?>
-                        <form id="create-matches" action="after-league-matches.php" method="post">
-                            <input type="hidden" name="league_id" value="<?= htmlspecialchars($league_infos["league_id"]) ?>" readonly>
-                            
-                            <input type="submit" value="Vytvoriť">  
+                <div class="league-match-container">
 
-                        </form>
+                <!-- OVERVIEW WHEN IS MORE THAN ONE GROUP IN CURRENT LEAGUE -->
+                <?php if ($count_groups["count_groups"] > 1): ?>
+                    <div class="registered-groups">
+                        <h2><?= htmlspecialchars($league_infos["league_name"]) ?></h2>
+                        
+
+                        <div class="all-groups">
+
+                            <?php for($group = 1; $group <= $count_groups["count_groups"]; $group++): ?>
+                                <article class="group-profil">
+
+                                    <div class="picture-part1" style="
+                                            background: url(../img/sbiz.jpg);
+                                            background-size: cover;
+                                            background-position: center;
+                                            background-repeat: no-repeat;
+                                            ">
+                                
+                            
+                                        <div class="picture-part2" style="
+                                            background: url(../img/black-logo-manila.png);
+                                            background-size: cover;
+                                            background-position: center;
+                                            background-repeat: no-repeat;
+                                            ">
+                                        </div>
+                                    </div>
+                                    <h6 class="group-nr"><?php echo "Skupina č. " . $group?></h6>
+                                
+                                    <a class="group-infos" href="./admin-league-matches-by-group.php?league_id=<?= htmlspecialchars($league_id) ?>&league_group=<?= htmlspecialchars($group) ?>">Zápasy</a>
+
+                                </article>
+                            <?php endfor ?>
+                        </div>  
+                    </div>   
+                <?php else: ?>
+                <!-- OVERVIEW WHEN ONE GROUP IN CURRENT LEAGUE AND SHOW ALL LEAGUE MATCHES-->
+
+                    <!-- Názov heading Liga -->
+                    <!-- <div class="leagueHeading">
+                        <h1>Názov Ligy
+                            <span class="left-icon"></span>
+                            <span class="right-icon"></span>
+                        </h1> 
+                    </div> -->
+
+                    <!-- Liga Rozpis -->
+                    <div class="league-matches show-league-matches">
+
+                        <div class="leagueRound">
+                            <h1>1.kolo</h1>
+
+                            <div class="matchInformation">
+                                
+                                <div class="tableNr fisnishedLeagueMatch">
+                                    <h3 style="color: rgb(255, 255, 255);">X</h3>
+                                </div>
+
+                                <div class="general-match fisnishedLeagueMatch">
+                                    <span class="pl1-span">
+                                        <img src="img/flags/Slovensko.png" alt=""> Juraj Herda
+                                    </span>
+                                    <label class="pl1-label">0</label>
+
+                                    <div class="btnAndGame">
+                                        <img src="img/eight-ball.png" alt="eight-ball">
+                                        <button>Ukončiť</button>
+                                    </div>
+
+                                    <label class="pl2-label">0</label>
+                                    <span class="pl2-span">Voľno</span>
+                                </div>
+
+                            </div>
+
+                            <div class="matchInformation">
+
+                                <div class="tableNr">
+                                    <h3>-</h3>
+                                </div>
+                                    
+                                <div class="general-match">
+                                    <span class="pl1-span">
+                                        <img src="img/flags/Slovensko.png" alt=""> Janka Herda
+                                    </span>
+                                    <label class="pl1-label">0</label>
+
+                                    <div class="btnAndGame">
+                                        <img src="img/eight-ball.png" alt="eight-ball">
+                                        <button>Zapnúť</button>
+                                    </div>
+                                    
+                                    <label class="pl2-label">0</label>
+                                    <span class="pl2-span">
+                                        <img src="img/flags/Slovensko.png" alt=""> Zdenko dsf
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="leagueRound">
+                            <h1>2.kolo</h1>
+                            
+                            <div class="matchInformation">
+
+                                <div class="tableNr">
+                                    <h3>-</h3>
+                                </div>
+
+                                <div class="general-match">
+                                    <span class="pl1-span">
+                                        <img src="img/flags/Slovensko.png" alt=""> Juraj Herda
+                                    </span>
+                                    <label class="pl1-label">0</label>
+
+                                    <div class="btnAndGame">
+                                        <img src="img/eight-ball.png" alt="eight-ball">
+                                        <button>Zapnúť</button>
+                                    </div>
+
+                                    <label class="pl2-label">0</label>
+                                    <span class="pl2-span">
+                                        <img src="img/flags/Slovensko.png" alt=""> Zdenko dsf
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            <div class="matchInformation">
+
+                                <div class="tableNr fisnishedLeagueMatch">
+                                    <h3 style="color: rgb(255, 255, 255);">X</h3>
+                                </div>
+
+                                <div class="general-match fisnishedLeagueMatch">
+                                    <span class="pl1-span">Voľno</span>
+                                    <label class="pl1-label">0</label>
+
+                                    <div class="btnAndGame">
+                                        <img src="img/eight-ball.png" alt="eight-ball">
+                                        <button>Ukončiť</button>
+                                    </div>
+
+                                    <label class="pl2-label">0</label>
+                                    <span class="pl2-span">
+                                        <img src="img/flags/Slovensko.png" alt=""> Janka Herda
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="leagueRound">
+                            <h1>3.kolo</h1>
+                            
+                            <div class="matchInformation">
+
+                                <div class="tableNr">
+                                    <h3>-</h3>
+                                </div>
+
+                                <div class="general-match">
+                                    <span class="pl1-span">
+                                        <img src="img/flags/Slovensko.png" alt=""> Juraj Herda
+                                    </span>
+                                    <label class="pl1-label">0</label>
+
+                                    <div class="btnAndGame">
+                                        <img src="img/eight-ball.png" alt="eight-ball">
+                                        <button>Zapnúť</button>
+                                    </div>
+
+                                    <label class="pl2-label">0</label>
+                                    <span class="pl2-span">
+                                        <img src="img/flags/Slovensko.png" alt=""> Janka Herda
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="matchInformation">
+
+                                <div class="tableNr fisnishedLeagueMatch">
+                                    <h3 style="color: rgb(255, 255, 255);">X</h3>
+                                </div>
+
+                                <div class="general-match fisnishedLeagueMatch">
+                                    <span class="pl1-span">
+                                        <img src="img/flags/Slovensko.png" alt=""> Zdenko dsf
+                                    </span>
+                                    <label class="pl1-label">0</label>
+
+                                    <div class="btnAndGame">
+                                        <img src="img/eight-ball.png" alt="eight-ball">
+                                        <button>Ukončiť</button>
+                                    </div>
+
+                                    <label class="pl2-label">0</label>
+                                    <span class="pl2-span">Voľno</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <?php endif; ?>
+                </div>
+
+            <!-- Structure for CREATING LEAGUE - STEP BY STEP TO CREATE LEAGUE MATCHES && Structure for *NOT* active league -->
+            <?php else: ?>
+                
+                <!-- BASIC SETTINGS TO CREATE LEAGUE - start -->
+                <?php if (($players_without_group != 0) || (count($players_in_group) === 0)): ?>
+                <div class="main-container-settings">
+
+                    <!-- No players are registered to current league -->
+                    <?php if (count($players_in_group) === 0): ?>
+                        <h1>Nedostatočný počet prihlásených hráčov</h1>
+                    <?php else: ?>
+
+                        <?php if ($count_groups["count_groups"] > 1): ?> 
+                        <h1>Liga skupiny</h1>
+                        <?php else: ?>
+                        <h1>Liga skupina</h1>
+                        <?php endif; ?>
+                        
+                        <?php if (($league_infos["manager_id"] === $_SESSION["logged_in_user_id"]) || ($_SESSION["role"] === "admin")): ?>
+                            <form id="create-groups" action="./after-finished-league-groups.php" method="post">
+                                <input type="hidden" name="league_id" value="<?= htmlspecialchars($league_infos["league_id"]) ?>" readonly>
+                                
+                                <input type="submit" value="Vytvoriť">  
+
+                            </form>
+                        <?php endif; ?>
                     <?php endif; ?>
+                <!-- BASIC SETTINGS TO CREATE LEAGUE - finish -->
+                
+                <!-- ADVANCED SETTINGS TO CREATE LEAGUE ACCORDING GROUPS -start -->
                 <?php else: ?>
                 <div class="main-container-groups">
                     <div class="basic-groups">
 
+                    <!-- SHOW GROUPS ACCORDING TO LEAGUE ID -->
                     <?php foreach ($players_in_group as $one_player): ?>
                         <?php if($one_player["league_group"] === 0): ?>
                         <?php elseif($one_player["league_group"] === $group_nr): ?>
@@ -143,7 +361,8 @@ $group_nr = 0;
                         <?php endif ?>
                     <?php endforeach ?>
                                 </tbody>
-                        </table>    
+                        </table> 
+                        <!-- SHOW GROUP ACCORDING TO LEAGUE ID - PLAYERS whose will not play in this league-->   
                         <table class="one-modified-group">
                             <thead>
                                 <tr>
@@ -175,14 +394,14 @@ $group_nr = 0;
                         </table>
                     </div>
                     
-                    <form action="./after-finished-league-groups.php" method="post">
+                    <form action="./after-league-matches.php" method="post">
                         <input type="hidden" name="league_id" value="<?php echo $league_id; ?>">
                         <input id="begin-league" type="submit" value="Zahájiť ligu">
                     </form>
                         
                 <?php endif ?>
-
                 </div>
+                <!-- ADVANCED SETTINGS TO CREATE LEAGUE ACCORDING GROUPS -start -->
             <?php endif; ?>
 
         </section>
@@ -192,5 +411,6 @@ $group_nr = 0;
 
     <?php require "../assets/footer.php" ?>
     <script src="../js/header.js"></script>
+    <!-- <script src="../js/league-matches.js"></script> -->
 </body>
 </html>

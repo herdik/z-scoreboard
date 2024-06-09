@@ -96,5 +96,43 @@ class LeagueMatch {
         }
             
     }
-    
+
+    /**
+     *
+     * RETURN ALL REGISTERED MATCHES IN LEAGUE BY SPECIPIC GROUP FROM DATABASE
+     *
+     * @param object $connection - connection to database
+     *
+     * @return array array of objects, one object mean one match
+     */
+    public static function getAllLeagueMatches($connection, $league_id, $league_group, $columns="league_match_single.*, t1.first_name AS player1_firstname, t1.second_name AS player1_second_name, t1.country AS player1_country, t1.player_club AS player1_club, t1.player_Image as player1_image, t2.first_name AS player2_firstname, t2.second_name AS player2_second_name, t2.country AS player2_country, t2.player_club AS player2_club, t2.player_Image as player2_image"){
+        
+        $sql = "SELECT $columns
+                FROM league_match_single
+                INNER JOIN player_user AS t1
+	                ON t1.player_Id = league_match_single.player_id_1
+                INNER JOIN player_user AS t2
+                    ON t2.player_Id = league_match_single.player_id_2
+                WHERE league_id = :league_id AND league_group = :league_group
+                ORDER BY round_number";
+
+        $stmt = $connection->prepare($sql);
+
+        // all parameters to send to Database
+        $stmt->bindValue(":league_id", $league_id, PDO::PARAM_INT);
+        $stmt->bindValue(":league_group", $league_group, PDO::PARAM_INT);
+
+        try {
+            if($stmt->execute()){
+                return $stmt->fetchAll(PDO::FETCH_ASSOC);
+            } else {
+                throw new Exception ("Príkaz pre získanie všetkých dát o zápasoch z konkrétnej ligy príslušné k špecifickej skupine sa nepodaril");
+            }
+        } catch (Exception $e){
+            // 3 je že vyberiem vlastnú cestu k súboru
+            error_log("Chyba pri funckii getAllLeagueMatches, príkaz pre získanie informácií z databázy zlyhal\n", 3, "./errors/error.log");
+            echo "Výsledná chyba je: " . $e->getMessage();
+        }
+    }
+
 }
