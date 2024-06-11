@@ -108,81 +108,246 @@ $all_players = LeaguePlayer::getAllLeaguePlayersNotRegistered($connection, $leag
                 </div>
                 
 
+                <!-- league players for registration to current league SINGLE -start -->
+                <?php if ($league_infos["playing_format"] === "single"): ?>
+                    <?php if (($league_infos["manager_id"] === $_SESSION["logged_in_user_id"]) || ($_SESSION["role"] === "admin")): ?>
+                    <form id="reg-players-in-league-form" action="./create-league-players.php" method="POST">
 
-                <?php if (($league_infos["manager_id"] === $_SESSION["logged_in_user_id"]) || ($_SESSION["role"] === "admin")): ?>
-                <form id="reg-players-in-league-form" action="./create-league-players.php" method="POST">
+                        <label for="reg-players">Registrácia hráča/hráčov</label>
+            
+                        <div class="main-container-select">
 
-                    <label for="reg-players">Registrácia hráča/hráčov</label>
-        
-                    <div class="main-container-select">
+                        
+                            <div class="select-container single">
+                                
+                            <input type="hidden" name="league_id" value="<?= htmlspecialchars($league_infos["league_id"]) ?>" readonly>
+
+                                <?php foreach ($all_players as $one_player): ?>
+                                    <div class="player-line">
+                                        <input type="checkbox" id="player-<?= $one_player["player_Id"] ?>" name="selected_players_id[]" value="<?= $one_player["player_Id"] ?>">
+                                        <label for="player-<?= $one_player["player_Id"] ?>"><?= $one_player["second_name"] ." ". $one_player["first_name"] ?></label>
+                                    </div>
+                                    
+                                <?php endforeach; ?>
+
+                                
+                            </div>
+
+                        </div>
+                            <h6>Zoznam hráčov</h6>
+                        <div class="selected-players-league">
+                            
+                        </div>
+
+                        <div class="sumbit-btn">
+                            <input type="submit" value="Registrovať">
+                        </div>
+                        
+                    </form>  
+                    <!-- js script to show all selected player in div list to registration for current league -->
+                    <script src="../js/select-options.js"></script>
+                    <?php else: ?>
+                        
+                        <?php if ($reg_button === "Registrovať"): ?>
+                        <form id="reg-league-form" action="./create-league-player.php" method="POST">
+
+                        <?php elseif ($reg_button === "Odregistrovať"): ?>
+                        <form id="reg-league-form" action="./delete-player-in-league.php" method="POST">
+
+                        <?php endif; ?> 
+                        
+                        <div class="form-content">
+                            <h1>Registrácia</h1>
+                            <div class="form-info">
+
+                                <input type="hidden" name="league_id" value="<?= htmlspecialchars($league_infos["league_id"]) ?>" readonly>
+                                <input type="hidden" name="player_Id" value="<?= htmlspecialchars($user_info["player_Id"]) ?>" readonly>
+
+                                <div class="player-names">
+                                    <label for="first_name">Meno:</label>
+                                    <!-- $user_info get from admin-organizer-header -->
+                                    <input type="text" name="first_name"  value="<?= htmlspecialchars($user_info["first_name"]) ?>" readonly>
+                                </div>
+
+                                <div class="player-names">
+                                    <label for="second_name">Priezvisko:</label>
+                                    <input type="text" name="second_name"  value="<?= htmlspecialchars($user_info["second_name"]) ?>" readonly>
+                                </div>
+
+                                
+                                <div class="sumbit-btn">
+                                    <input type="submit" value="<?= htmlspecialchars($reg_button) ?>">
+                                </div>
+
+                            </div>
+
+                        </div>
+                    
+                    </form>
+
+                    <?php endif; ?> 
 
                     
-                        <div class="select-container">
-                            
-                        <input type="hidden" name="league_id" value="<?= htmlspecialchars($league_infos["league_id"]) ?>" readonly>
+                <!-- league players for registration to current league SINGLE -finish -->        
 
-                            <?php foreach ($all_players as $one_player): ?>
-                                <div class="player-line">
-                                    <input type="checkbox" id="player-<?= $one_player["player_Id"] ?>" name="selected_players_id[]" value="<?= $one_player["player_Id"] ?>">
-                                    <label for="player-<?= $one_player["player_Id"] ?>"><?= $one_player["second_name"] ." ". $one_player["first_name"] ?></label>
+                <!-- league players for registration to current league DOUBLES -start -->
+                <?php elseif ($league_infos["playing_format"] === "doubles"): ?>
+
+                    <?php if (($league_infos["manager_id"] === $_SESSION["logged_in_user_id"]) || ($_SESSION["role"] === "admin")): ?>
+                        
+                    <form id="reg-league-form" action="./create-league-player.php" method="POST">
+                        
+                        <div class="form-content doubles-organizator">
+                            <h1>Registrácia</h1>
+                            
+                            <article class="reg-form-doubles">
+
+                                <label for="reg-players">Hráč č.1 do dvojice:</label>
+                    
+                                <div class="main-container-select">
+
+                                
+                                    <div class="select-container doubles-partA">
+                                        
+                                    <input type="hidden" name="league_id" value="<?= htmlspecialchars($league_infos["league_id"]) ?>" readonly>
+
+                                        <?php foreach ($all_players as $one_player): ?>
+                                            <div class="player-line">
+                                                <input type="radio" id="player_doubles_1-<?= $one_player["player_Id"] ?>" name="player_doubles_1" value="<?= $one_player["player_Id"] ?>">
+                                                <label for="player_doubles_1-<?= $one_player["player_Id"] ?>"><?= $one_player["second_name"] ." ". $one_player["first_name"] ?></label>
+                                            </div>
+                                            
+                                        <?php endforeach; ?>
+
+                                        
+                                    </div>
+
+                                </div>
+                                    <h6>Hráč č.1 pre dvojicu</h6>
+                                <div class="selected-players-league">
+                                    
                                 </div>
                                 
-                            <?php endforeach; ?>
+                            </article>
 
-                            
-                        </div>
+                            <article class="reg-form-doubles">
 
-                    </div>
-                        <h6>Zoznam hráčov</h6>
-                    <div class="selected-players-league">
+                                <label for="reg-players">Hráč č.2 do dvojice:</label>
+                    
+                                <div class="main-container-select">
+
+                                
+                                    <div class="select-container doubles-partB">
+                                        
+                                    <input type="hidden" name="league_id" value="<?= htmlspecialchars($league_infos["league_id"]) ?>" readonly>
+
+                                        <?php foreach ($all_players as $one_player): ?>
+                                            <div class="player-line">
+                                                <input type="radio" id="player_doubles_2-<?= $one_player["player_Id"] ?>" name="player_doubles_2" value="<?= $one_player["player_Id"] ?>">
+                                                <label for="player_doubles_2-<?= $one_player["player_Id"] ?>"><?= $one_player["second_name"] ." ". $one_player["first_name"] ?></label>
+                                            </div>
+                                            
+                                        <?php endforeach; ?>
+
+                                        
+                                    </div>
+
+                                </div>
+                                    <h6>Hráč č.2 pre dvojicu</h6>
+                                <div class="selected-player2-league">
+                                    
+                                </div>
+                                
+                            </article>
                         
-                    </div>
-
-                    <div class="sumbit-btn">
-                        <input type="submit" value="Registrovať">
-                    </div>
-                    
-                </form>            
-                <?php else: ?>
-                    
-                <?php if ($reg_button === "Registrovať"): ?>
-                <form id="reg-league-form" action="./create-league-player.php" method="POST">
-
-                <?php elseif ($reg_button === "Odregistrovať"): ?>
-                <form id="reg-league-form" action="./delete-player-in-league.php" method="POST">
-
-                <?php endif; ?> 
-                    
-                    <div class="form-content">
-                        <h1>Registrácia</h1>
-                        <div class="form-info">
-
-                            <input type="hidden" name="league_id" value="<?= htmlspecialchars($league_infos["league_id"]) ?>" readonly>
-                            <input type="hidden" name="player_Id" value="<?= htmlspecialchars($user_info["player_Id"]) ?>" readonly>
-
-                            <div class="player-names">
-                                <label for="first_name">Meno:</label>
-                                <!-- $user_info get from admin-organizer-header -->
-                                <input type="text" name="first_name"  value="<?= htmlspecialchars($user_info["first_name"]) ?>" readonly>
-                            </div>
-
-                            <div class="player-names">
-                                <label for="second_name">Priezvisko:</label>
-                                <input type="text" name="second_name"  value="<?= htmlspecialchars($user_info["second_name"]) ?>" readonly>
-                            </div>
-
-                            
-                            <div class="sumbit-btn">
-                                <input type="submit" value="<?= htmlspecialchars($reg_button) ?>">
-                            </div>
+                        <div class="sumbit-btn">
+                            <input type="submit" value="Registrovať">
+                        </div>
 
                         </div>
 
-                    </div>
-                   
-                </form>
+                           
+                    </form>
 
-                <?php endif; ?>        
+                    <?php else: ?>
+                               
+                        <?php if ($reg_button === "Registrovať"): ?>
+                    <form id="reg-league-form" action="./create-league-player.php" method="POST">
+
+                        <?php elseif ($reg_button === "Odregistrovať"): ?>
+                    <form id="reg-league-form" action="./delete-player-in-league.php" method="POST">
+
+                        <?php endif; ?> 
+                        
+                        <div class="form-content">
+                            <h1>Registrácia</h1>
+                            <div class="form-info">
+
+                                <input type="hidden" name="league_id" value="<?= htmlspecialchars($league_infos["league_id"]) ?>" readonly>
+                                <input type="hidden" name="player_Id" value="<?= htmlspecialchars($user_info["player_Id"]) ?>" readonly>
+
+                                <div class="player-names">
+                                    <label for="first_name">Meno:</label>
+                                    <!-- $user_info get from admin-organizer-header -->
+                                    <input type="text" name="first_name"  value="<?= htmlspecialchars($user_info["first_name"]) ?>" readonly>
+                                </div>
+
+                                <div class="player-names">
+                                    <label for="second_name">Priezvisko:</label>
+                                    <input type="text" name="second_name"  value="<?= htmlspecialchars($user_info["second_name"]) ?>" readonly>
+                                </div>
+
+                            
+                            </div> 
+
+                            <article class="reg-form-doubles">
+
+                                <label for="reg-players">Hráč do dvojice:</label>
+                    
+                                <div class="main-container-select">
+
+                                
+                                    <div class="select-container doubles">
+                                        
+                                    <input type="hidden" name="league_id" value="<?= htmlspecialchars($league_infos["league_id"]) ?>" readonly>
+
+                                        <?php foreach ($all_players as $one_player): ?>
+                                            <div class="player-line">
+                                                <input type="radio" id="player_doubles_2-<?= $one_player["player_Id"] ?>" name="player_doubles_2" value="<?= $one_player["player_Id"] ?>">
+                                                <label for="player_doubles_2-<?= $one_player["player_Id"] ?>"><?= $one_player["second_name"] ." ". $one_player["first_name"] ?></label>
+                                            </div>
+                                            
+                                        <?php endforeach; ?>
+
+                                        
+                                    </div>
+
+                                </div>
+                                    <h6>Hráč č.2 pre dvojicu</h6>
+                                <div class="selected-players-league">
+                                    
+                                </div>
+                                
+                            </article>
+                        
+                        <div class="sumbit-btn">
+                            <input type="submit" value="<?= htmlspecialchars($reg_button) ?>">
+                        </div>
+
+                        </div>
+
+                           
+                    </form>
+                        
+                                   
+                        
+                                           
+                    <?php endif; ?>
+                    <!-- js script for select only one choice for player 1 or player 2 in doubles -->
+                    <script src="../js/select-options-doubles.js"></script>
+                <!-- league players for registration to current league DOUBLES -finish -->
+                <?php endif; ?>      
+                                           
             </div>
             
 
@@ -245,6 +410,5 @@ $all_players = LeaguePlayer::getAllLeaguePlayersNotRegistered($connection, $leag
 
     <?php require "../assets/footer.php" ?>
     <script src="../js/header.js"></script>
-    <script src="../js/select-options.js"></script>
 </body>
 </html>
