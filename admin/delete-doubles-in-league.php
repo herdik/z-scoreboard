@@ -2,7 +2,7 @@
 
 require "../classes/Database.php";
 require "../classes/Player.php";
-require "../classes/LeaguePlayer.php";
+require "../classes/LeaguePlayerDoubles.php";
 require "../classes/Url.php";
 
 
@@ -23,21 +23,22 @@ if (($_SERVER["REQUEST_METHOD"] === "GET") || ($_SERVER["REQUEST_METHOD"] === "P
 
     if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $league_id = $_POST["league_id"];
-        $player_Id = $_POST["player_Id"];
-           
+        // player_Id_doubles_1 - current logged in player after Authorization
+        $player_Id_doubles = $_POST["player_Id_doubles_1"];
+        $doubles_in_league_id = LeaguePlayerDoubles::getDoubles($connection, $league_id, $player_Id_doubles)["doubles_in_league_id"]; 
     } elseif ($_SERVER["REQUEST_METHOD"] === "GET") {
-        if ((isset($_GET["player_Id"]) && isset($_GET["league_id"])) && (is_numeric($_GET["player_Id"]) && is_numeric($_GET["league_id"]))){
+        if ((isset($_GET["doubles_in_league_id"]) && isset($_GET["league_id"])) && (is_numeric($_GET["doubles_in_league_id"]) && is_numeric($_GET["league_id"]))){
             $league_id = $_GET["league_id"];
-            $player_Id = $_GET["player_Id"];
+            $doubles_in_league_id = $_GET["doubles_in_league_id"];
         }
     }
 
-    $deleted_league_player = LeaguePlayer::deleteLeaguePlayer($connection, $league_id, $player_Id);
+    $deleted_league_doubles = LeaguePlayerDoubles::deleteSpecLeagueDoubles($connection, $league_id, $doubles_in_league_id);
 
-    if ($deleted_league_player) {
+    if ($deleted_league_doubles) {
         Url::redirectUrl("/z-scoreboard/admin/admin-list_of_league_players.php?league_id=$league_id");
     } else {
-    echo "Hráč nie je nájdený!!!";
+    echo "Dvojica nie je nájdená!!!";
     }    
     
 } else {

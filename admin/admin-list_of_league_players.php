@@ -5,6 +5,7 @@ require "../classes/Database.php";
 require "../classes/Player.php";
 require "../classes/League.php";
 require "../classes/LeaguePlayer.php";
+require "../classes/LeaguePlayerDoubles.php";
 
 
 
@@ -26,25 +27,45 @@ $reg_button = "Registrovať";
 
 if (isset($_GET["league_id"]) and is_numeric($_GET["league_id"])){
     $league_infos = League::getLeague($connection, $_GET["league_id"]);
-    $registered_players = LeaguePlayer::getAllLeaguePlayers($connection, $league_infos["league_id"], true);
     $league_id = $league_infos["league_id"];
 
-    foreach($registered_players as $one_reg_player){
-        if($_SESSION["logged_in_user_id"] === $one_reg_player["player_Id"]){
-            $reg_button = "Odregistrovať";
-            break;
-        } else {
-            $reg_button = "Registrovať";
+    $registered_players = LeaguePlayer::getAllLeaguePlayers($connection, $league_infos["league_id"], true);
+
+    if ($league_infos["playing_format"] === "single") {
+        $all_players = LeaguePlayer::getAllLeaguePlayersNotRegistered($connection, $league_id);
+        $registered_players = LeaguePlayer::getAllLeaguePlayers($connection, $league_id, true);
+        $total_players = count($registered_players);
+        
+
+        foreach($registered_players as $one_reg_player){
+            if($_SESSION["logged_in_user_id"] === $one_reg_player["player_Id"]){
+                $reg_button = "Odregistrovať";
+                break;
+            } else {
+                $reg_button = "Registrovať";
+            }
+        } 
+    } elseif ($league_infos["playing_format"] === "doubles"){
+        $all_players = LeaguePlayerDoubles::getAllLeaguePlayersNotRegistered($connection, $league_id);
+        $registered_doubles = LeaguePlayerDoubles::getAllLeagueDoubles($connection, $league_id, true);
+        $total_players = (count($registered_doubles) / 2);
+
+        foreach($registered_doubles as $one_reg_doubles){
+            if(($_SESSION["logged_in_user_id"] === $one_reg_doubles["player_Id_doubles_1"]) || ($_SESSION["logged_in_user_id"] === $one_reg_doubles["player_Id_doubles_2"])){
+                $reg_button = "Odregistrovať";
+                break;
+            } else {
+                $reg_button = "Registrovať";
+            }
         }
-    }     
+    }
+
+        
 } else {
     $league_infos = null;
     $registered_players = null;
+    $registered_doubles = null;
 }
-
-$total_players = count($registered_players);
-
-$all_players = LeaguePlayer::getAllLeaguePlayersNotRegistered($connection, $league_id);
 ?>
 
 <!DOCTYPE html>
@@ -71,7 +92,7 @@ $all_players = LeaguePlayer::getAllLeaguePlayersNotRegistered($connection, $leag
 </head>
 <body>
 
-    <?php require "../assets/admin-organizer-header.php" ?>
+<?php require "../assets/admin-organizer-header.php" ?>
 
     <main>
 
@@ -98,8 +119,13 @@ $all_players = LeaguePlayer::getAllLeaguePlayersNotRegistered($connection, $leag
                     <h1 id="venue">Miesto konania</h1>
                     <p><?= htmlspecialchars($league_infos["venue"]) ?></p>
 
+                <?php if ($league_infos["playing_format"] === "single"): ?> 
                     <h5 id="total-reg-players">Počet registrovaných hráčov</h5>
+                <?php elseif ($league_infos["playing_format"] === "doubles"): ?> 
+                    <h5 id="total-reg-players">Počet registrovaných dvojíc</h5>
+                <?php endif ?>
                     <p><?= htmlspecialchars($total_players) ?></p>
+
                 </div>
                 
                 <div class="logos">
@@ -213,8 +239,8 @@ $all_players = LeaguePlayer::getAllLeaguePlayersNotRegistered($connection, $leag
 
                                         <?php foreach ($all_players as $one_player): ?>
                                             <div class="player-line">
-                                                <input type="radio" id="player_doubles_1-<?= $one_player["player_Id"] ?>" name="player_doubles_1" value="<?= $one_player["player_Id"] ?>">
-                                                <label for="player_doubles_1-<?= $one_player["player_Id"] ?>"><?= $one_player["second_name"] ." ". $one_player["first_name"] ?></label>
+                                                <input type="radio" id="player_Id_doubles_1-<?= $one_player["player_Id"] ?>" name="player_Id_doubles_1" value="<?= $one_player["player_Id"] ?>">
+                                                <label for="player_Id_doubles_1-<?= $one_player["player_Id"] ?>"><?= $one_player["second_name"] ." ". $one_player["first_name"] ?></label>
                                             </div>
                                             
                                         <?php endforeach; ?>
@@ -239,12 +265,10 @@ $all_players = LeaguePlayer::getAllLeaguePlayersNotRegistered($connection, $leag
                                 
                                     <div class="select-container doubles-partB">
                                         
-                                    <input type="hidden" name="league_id" value="<?= htmlspecialchars($league_infos["league_id"]) ?>" readonly>
-
                                         <?php foreach ($all_players as $one_player): ?>
                                             <div class="player-line">
-                                                <input type="radio" id="player_doubles_2-<?= $one_player["player_Id"] ?>" name="player_doubles_2" value="<?= $one_player["player_Id"] ?>">
-                                                <label for="player_doubles_2-<?= $one_player["player_Id"] ?>"><?= $one_player["second_name"] ." ". $one_player["first_name"] ?></label>
+                                                <input type="radio" id="player_Id_doubles_2-<?= $one_player["player_Id"] ?>" name="player_Id_doubles_2" value="<?= $one_player["player_Id"] ?>">
+                                                <label for="player_Id_doubles_2-<?= $one_player["player_Id"] ?>"><?= $one_player["second_name"] ." ". $one_player["first_name"] ?></label>
                                             </div>
                                             
                                         <?php endforeach; ?>
@@ -275,8 +299,8 @@ $all_players = LeaguePlayer::getAllLeaguePlayersNotRegistered($connection, $leag
                     <form id="reg-league-form" action="./create-league-player.php" method="POST">
 
                         <?php elseif ($reg_button === "Odregistrovať"): ?>
-                    <form id="reg-league-form" action="./delete-player-in-league.php" method="POST">
-
+                    <form id="reg-league-form" action="./delete-doubles-in-league.php" method="POST">
+                        
                         <?php endif; ?> 
                         
                         <div class="form-content">
@@ -284,7 +308,7 @@ $all_players = LeaguePlayer::getAllLeaguePlayersNotRegistered($connection, $leag
                             <div class="form-info">
 
                                 <input type="hidden" name="league_id" value="<?= htmlspecialchars($league_infos["league_id"]) ?>" readonly>
-                                <input type="hidden" name="player_Id" value="<?= htmlspecialchars($user_info["player_Id"]) ?>" readonly>
+                                <input type="hidden" name="player_Id_doubles_1" value="<?= htmlspecialchars($user_info["player_Id"]) ?>" readonly>
 
                                 <div class="player-names">
                                     <label for="first_name">Meno:</label>
@@ -297,10 +321,10 @@ $all_players = LeaguePlayer::getAllLeaguePlayersNotRegistered($connection, $leag
                                     <input type="text" name="second_name"  value="<?= htmlspecialchars($user_info["second_name"]) ?>" readonly>
                                 </div>
 
-                            
+
                             </div> 
 
-                            <article class="reg-form-doubles">
+                            <article class="reg-form-doubles second-player-doubles">
 
                                 <label for="reg-players">Hráč do dvojice:</label>
                     
@@ -309,12 +333,12 @@ $all_players = LeaguePlayer::getAllLeaguePlayersNotRegistered($connection, $leag
                                 
                                     <div class="select-container doubles">
                                         
-                                    <input type="hidden" name="league_id" value="<?= htmlspecialchars($league_infos["league_id"]) ?>" readonly>
+                                    
 
                                         <?php foreach ($all_players as $one_player): ?>
                                             <div class="player-line">
-                                                <input type="radio" id="player_doubles_2-<?= $one_player["player_Id"] ?>" name="player_doubles_2" value="<?= $one_player["player_Id"] ?>">
-                                                <label for="player_doubles_2-<?= $one_player["player_Id"] ?>"><?= $one_player["second_name"] ." ". $one_player["first_name"] ?></label>
+                                                <input type="radio" id="player_Id_doubles_2-<?= $one_player["player_Id"] ?>" name="player_Id_doubles_2" value="<?= $one_player["player_Id"] ?>">
+                                                <label for="player_Id_doubles_2-<?= $one_player["player_Id"] ?>"><?= $one_player["second_name"] ." ". $one_player["first_name"] ?></label>
                                             </div>
                                             
                                         <?php endforeach; ?>
@@ -331,12 +355,13 @@ $all_players = LeaguePlayer::getAllLeaguePlayersNotRegistered($connection, $leag
                             </article>
                         
                         <div class="sumbit-btn">
-                            <input type="submit" value="<?= htmlspecialchars($reg_button) ?>">
+                            <input id="doubles-reg-btn" type="submit" value="<?= htmlspecialchars($reg_button) ?>">
                         </div>
 
                         </div>
 
-                           
+                    <script src="../js/hide-option-player2-doubles.js"></script>
+
                     </form>
                         
                                    
@@ -352,6 +377,8 @@ $all_players = LeaguePlayer::getAllLeaguePlayersNotRegistered($connection, $leag
             
 
             <div class="registered-players">
+
+            <?php if ($league_infos["playing_format"] === "single"): ?>
                 <h2>Registrovaní hráči</h2>
                 
 
@@ -397,9 +424,61 @@ $all_players = LeaguePlayer::getAllLeaguePlayersNotRegistered($connection, $leag
                     <?php endforeach ?>
 
                 </div>
+
         
+            <?php elseif ($league_infos["playing_format"] === "doubles"): ?>
+
+                <h2>Registrované dvojice</h2>
                 
-                
+                <div class="players">
+
+                    <?php foreach($registered_doubles as $reg_doubles_player): ?>
+                        <article class="doubles-profil">
+
+                        <?php if (htmlspecialchars($reg_doubles_player["player1_image"]) === "no-photo-player"): ?>
+                            <div class="picture-part-doubles">
+                                    <img src="../img/<?= htmlspecialchars($reg_doubles_player["player1_image"]) ?>.png" alt="">
+                        <?php else: ?>
+                            <div class="picture-part-doubles">
+                                    <img src="../uploads/<?= htmlspecialchars($reg_doubles_player["player_Id_doubles_1"]) ?>/<?= htmlspecialchars($reg_doubles_player["player1_image"]) ?>" alt="">
+                        <?php endif; ?>
+                    
+                                <div class="flag-part-doubles">
+                                    <img src="../img/countries/<?= htmlspecialchars($reg_doubles_player["player1_country"]) ?>.png" alt="">
+                                </div>
+                            
+                                <h6 class="profil-name"><?php echo htmlspecialchars($reg_doubles_player["player1_first_name"]). " ". htmlspecialchars($reg_doubles_player["player1_second_name"]) ?></h6>
+                                <p class="profil-club"><?php echo htmlspecialchars($reg_doubles_player["player1_club"]) ?></p>
+                                <a class="player-infos" href="./player-profil.php?player_Id=<?= htmlspecialchars($reg_doubles_player["player_Id_doubles_1"]) ?>">Informácie</a>
+                            </div>
+                        <?php if (htmlspecialchars($reg_doubles_player["player2_image"]) === "no-photo-player"): ?>
+                            <div class="picture-part-doubles">
+                                    <img src="../img/<?= htmlspecialchars($reg_doubles_player["player2_image"]) ?>.png" alt="">
+                        <?php else: ?>
+                            <div class="picture-part-doubles">
+                                    <img src="../uploads/<?= htmlspecialchars($reg_doubles_player["player_Id_doubles_2"]) ?>/<?= htmlspecialchars($reg_doubles_player["player2_image"]) ?>" alt="">
+                        <?php endif; ?>
+                    
+                                <div class="flag-part-doubles">
+                                    <img src="../img/countries/<?= htmlspecialchars($reg_doubles_player["player2_country"]) ?>.png" alt="">
+                                </div>
+                            
+                                <h6 class="profil-name"><?php echo htmlspecialchars($reg_doubles_player["player2_first_name"]). " ". htmlspecialchars($reg_doubles_player["player2_second_name"]) ?></h6>
+                                <p class="profil-club"><?php echo htmlspecialchars($reg_doubles_player["player2_club"]) ?></p>
+                                <a class="player-infos" href="./player-profil.php?player_Id=<?= htmlspecialchars($reg_doubles_player["player_Id_doubles_2"]) ?>">Informácie</a>
+                            </div>
+                            <?php if (($league_infos["manager_id"] === $_SESSION["logged_in_user_id"]) || ($_SESSION["role"] === "admin")): ?>
+
+                                <a class="player-profilX" href="delete-doubles-in-league.php?league_id=<?= htmlspecialchars($league_infos["league_id"]) ?>&doubles_in_league_id=<?= htmlspecialchars($reg_doubles_player["doubles_in_league_id"]) ?>">X</a>
+
+                            <?php endif; ?>
+                        </article>
+                    <?php endforeach ?>
+
+                </div>
+            
+            
+            <?php endif; ?>   
             </div>   
             
 

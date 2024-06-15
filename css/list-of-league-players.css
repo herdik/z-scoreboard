@@ -261,6 +261,8 @@ main {
     background-color: rgb(255, 253, 253);
     margin-top: 20px;
 }
+
+/* player-profil for single */
 .player-profil {
     width: 150px;
     height: 220px;
@@ -275,7 +277,6 @@ main {
     gap: 15px;
     position: relative;
 }
-
 .picture-part {
     width: 70px;
     height: 70px;
@@ -291,6 +292,47 @@ main {
     top: 100%;
     transform: translate(-50%, -50%);
 }
+
+/* doubles-profil for doubles */
+.doubles-profil{
+    max-width: 300px;
+    min-height: 100px;
+    background-color: #fff;
+    border: 1px solid #be9524;
+    border-radius: 10px;
+    box-shadow: 5px 5px 5px 3px #be9524;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    position: relative; 
+    flex-wrap: wrap;
+    padding: 10px;
+}
+.picture-part-doubles{
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.picture-part-doubles img {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+}
+.flag-part-doubles img{
+    max-width: 40px;
+    max-height: 22px;
+    border-radius: 10%;
+}
+.picture-part-doubles .player-infos {
+    margin-top: 10px;
+}
+
+
+
 
 .profil-name {
     color: #be9524;
@@ -337,13 +379,12 @@ main {
     cursor: default;
 }
 
-.player-profil:hover > .player-profilX {
+.player-profil:hover > .player-profilX, .doubles-profil:hover > .player-profilX {
     opacity: 1; 
     cursor: pointer;
-    
 }
 
-.player-profil:hover > .player-profilX:hover {
+.player-profil:hover > .player-profilX:hover, .doubles-profil:hover > .player-profilX:hover {
     opacity: 1; 
     cursor: pointer;
     background-color: white;
@@ -351,6 +392,13 @@ main {
     border: 1px solid #be9524;
     
 }
+
+
+/* hide class second-player-doubles*/
+.hide {
+    display: none;
+}
+
 /* .registered-players ol {
     list-style: inside;
     list-style-type: decimal;

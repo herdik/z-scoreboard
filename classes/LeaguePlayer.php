@@ -15,7 +15,7 @@ class LeaguePlayer {
     public static function createLeaguePlayer($connection, $league_id, $player_Id, $league_group = NULL) {
 
         // sql scheme
-        $sql = "INSERT INTO list_of_players_league (league_id, player_Id, league_group)
+        $sql = "INSERT INTO list_of_players_league_single (league_id, player_Id, league_group)
         VALUES (:league_id, :player_Id, :league_group)";
 
         // prepare data to send to Database
@@ -49,7 +49,7 @@ class LeaguePlayer {
      *
      * @return array array of objects, one object mean one player
      */
-    public static function getAllLeaguePlayers($connection, $league_id, $player_zero, $columns = "list_of_players_league.*, player_user.first_name, player_user.second_name, player_user.player_Image, player_user.country, player_user.player_club"){
+    public static function getAllLeaguePlayers($connection, $league_id, $player_zero, $columns = "list_of_players_league_single.*, player_user.first_name, player_user.second_name, player_user.player_Image, player_user.country, player_user.player_club"){
         if ($player_zero === TRUE){
             $add_text = " AND player_user.player_Id != 0";
         } else {
@@ -57,8 +57,8 @@ class LeaguePlayer {
         }
     
         $sql = "SELECT $columns
-                FROM list_of_players_league
-                INNER JOIN player_user ON list_of_players_league.player_Id = player_user.player_Id
+                FROM list_of_players_league_single
+                INNER JOIN player_user ON list_of_players_league_single.player_Id = player_user.player_Id
                 WHERE league_id = :league_id $add_text
                 ORDER BY league_group";
 
@@ -93,7 +93,7 @@ class LeaguePlayer {
     public static function getAllLeaguePlayersByGroup($connection, $league_id, $league_group){
     
         $sql = "SELECT *
-                FROM list_of_players_league
+                FROM list_of_players_league_single
                 WHERE league_id = :league_id AND league_group = :league_group
                 ";
         // ORDER BY RAND ()
@@ -128,7 +128,7 @@ class LeaguePlayer {
      */
     public static function deleteLeaguePlayer($connection, $league_id, $player_Id){
         $sql = "DELETE 
-                FROM list_of_players_league
+                FROM list_of_players_league_single
                 WHERE player_Id = :player_Id AND league_id = :league_id";
         
 
@@ -168,8 +168,8 @@ class LeaguePlayer {
                 WHERE player_Id != 0 AND player_Id NOT IN
                     (SELECT player_user.player_Id
                 FROM player_user
-                INNER JOIN list_of_players_league ON list_of_players_league.player_Id = player_user.player_Id
-                WHERE list_of_players_league.league_id = :league_id)
+                INNER JOIN list_of_players_league_single ON list_of_players_league_single.player_Id = player_user.player_Id
+                WHERE list_of_players_league_single.league_id = :league_id)
                 ORDER BY second_name";
 
         $stmt = $connection->prepare($sql);
@@ -204,7 +204,7 @@ class LeaguePlayer {
      * @return boolean if update is successful
      */
     public static function updateLeaguePlayer($connection, $league_group, $player_Id, $league_id){
-        $sql = "UPDATE list_of_players_league
+        $sql = "UPDATE list_of_players_league_single
                 SET league_group = :league_group
                 WHERE player_Id = :player_Id AND league_id = :league_id";
         
@@ -242,7 +242,7 @@ class LeaguePlayer {
      */
     public static function getPlayerGroupInLeague($connection, $league_id){
         $sql = "SELECT COUNT(*)
-                FROM list_of_players_league
+                FROM list_of_players_league_single
                 WHERE league_id = :league_id AND league_group IS NULL";
 
         $stmt = $connection->prepare($sql);
@@ -275,7 +275,7 @@ class LeaguePlayer {
      * @return boolean if update is successful
      */
     public static function updateSpecificLeagueGroup($connection, $league_group, $player_in_league_id, $league_id){
-        $sql = "UPDATE list_of_players_league
+        $sql = "UPDATE list_of_players_league_single
                 SET league_group = :league_group
                 WHERE player_in_league_id = :player_in_league_id AND league_id = :league_id";
         
@@ -314,7 +314,7 @@ class LeaguePlayer {
      */
     public static function getInactiveLeaguePlayers($connection, $league_id, $league_group){
         $sql = "SELECT player_in_league_id
-                FROM list_of_players_league
+                FROM list_of_players_league_single
                 WHERE league_group = :league_group AND league_id = :league_id";
         
 
@@ -349,7 +349,7 @@ class LeaguePlayer {
      */
     public static function countActiveLeaguePlayersInGroup($connection, $league_id, $league_group){
         $sql = "SELECT COUNT(*)
-                FROM list_of_players_league
+                FROM list_of_players_league_single
                 WHERE league_group = :league_group AND league_id = :league_id";
     
 
@@ -387,7 +387,7 @@ class LeaguePlayer {
      */
     public static function getNumberOfGroups($connection, $league_id){
         $sql = "SELECT league_group
-                FROM list_of_players_league
+                FROM list_of_players_league_single
                 WHERE league_id = :league_id
                 ORDER BY league_group DESC
                 LIMIT 1";
@@ -424,7 +424,7 @@ class LeaguePlayer {
      */
     public static function deleteSpecLeaguePlayer($connection, $league_id, $player_in_league_id){
         $sql = "DELETE 
-        FROM list_of_players_league
+        FROM list_of_players_league_single
         WHERE player_in_league_id = :player_in_league_id AND league_id = :league_id";
 
 
