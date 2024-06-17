@@ -3,7 +3,9 @@
 require "../classes/Database.php";
 require "../classes/Player.php";
 require "../classes/LeaguePlayer.php";
+require "../classes/LeaguePlayerDoubles.php";
 require "../classes/LeagueSettings.php";
+require "../classes/League.php";
 require "../classes/LeagueGroup.php";
 require "../classes/Url.php";
 
@@ -17,7 +19,7 @@ if (!Auth::isLoggedIn()){
     die ("nepovolený prístup");
 }
 
-$get_groups = array(true, true, true);
+$get_groups = array();
 
 if ($_SERVER["REQUEST_METHOD"] === "POST"){
     // database connection
@@ -25,23 +27,40 @@ if ($_SERVER["REQUEST_METHOD"] === "POST"){
     $connection = $database->connectionDB();
 
     $league_id = $_POST["league_id"];
-    $registered_players = LeaguePlayer::getAllLeaguePlayers($connection, $league_id, true, "list_of_players_league_single.player_Id, list_of_players_league_single.league_id");
-    
+    $league_infos = League::getLeague($connection, $league_id);
     $empty_player = Player::getUserId($connection, "none");
-
     $league_groups = LeagueSettings::getLeagueSettings($connection, $league_id);
     $number_of_groups = $league_groups["count_groups"];
 
+    if ($league_infos["playing_format"] === "single"){
+        $registered_players = LeaguePlayer::getAllLeaguePlayers($connection, $league_id, true, "list_of_players_league_single.player_Id, list_of_players_league_single.league_id");
+    } elseif ($league_infos["playing_format"] === "doubles"){
+        // $registered_players - means doubles
+        $registered_players = LeaguePlayerDoubles::getAllLeagueDoubles($connection, $league_id, true, "list_of_players_league_doubles.player_Id_doubles_1, list_of_players_league_doubles.player_Id_doubles_2, list_of_players_league_doubles.league_id");
+    }
+    
+
     $random_league_groups = LeagueGroup::shuffleRandomGroups($registered_players, $number_of_groups, $league_id, $empty_player);
+
 
     // update choosed random league_group for every player
     foreach ($random_league_groups as $league_group_nr=>$value) {
         
         foreach($random_league_groups[$league_group_nr] as $league_player) {
-            if ($league_player["player_Id"] === 0) {
-                $group_added = LeaguePlayer::createLeaguePlayer($connection, $league_id, $league_player["player_Id"], $league_group_nr + 1);
+            if (isset($league_player["player_Id"]) && $league_player["player_Id"] === 0) {
+
+                if ($league_infos["playing_format"] === "single"){
+                    $group_added = LeaguePlayer::createLeaguePlayer($connection, $league_id, $league_player["player_Id"], $league_group_nr + 1);
+                } elseif ($league_infos["playing_format"] === "doubles"){
+                    $group_added = LeaguePlayerDoubles::createLeagueDoubles($connection, $league_id, $league_player["player_Id"], $league_player["player_Id"], $league_group_nr + 1);
+                }
             } else {
-                $group_added = LeaguePlayer::updateLeaguePlayer($connection, $league_group_nr + 1, $league_player["player_Id"], $league_id);
+
+                if ($league_infos["playing_format"] === "single"){
+                    $group_added = LeaguePlayer::updateLeaguePlayer($connection, $league_group_nr + 1, $league_player["player_Id"], $league_id);
+                } elseif ($league_infos["playing_format"] === "doubles"){
+                    $group_added = LeaguePlayerDoubles::updateLeagueDoubles($connection, $league_group_nr + 1, $league_player["player_Id_doubles_1"], $league_player["player_Id_doubles_2"], $league_id);
+                }
             }
             array_push($get_groups, $group_added);
         }

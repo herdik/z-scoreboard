@@ -154,7 +154,12 @@ main {
 }
 
 .player-table {
-    position: relative; 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    position: relative;
 }
 
 .country-flag {
@@ -201,6 +206,13 @@ main {
 
 .undefined {
     position: relative;
+}
+
+.undefined-number {
+    background-color: #be9524;
+    color: white;
+    border-radius: 50%;
+    padding: 0px 6px;
 }
 
 .choosed-group-OK {

@@ -333,7 +333,7 @@ class LeaguePlayer {
             }
         } catch (Exception $e){
             // 3 je že vyberiem vlastnú cestu k súboru
-            error_log("Chyba pri funkcii getLeaguePlayer, získanie informácií z databázy zlyhalo\n", 3, "../errors/error.log");
+            error_log("Chyba pri funkcii getInactiveLeaguePlayers, získanie informácií z databázy zlyhalo\n", 3, "../errors/error.log");
             echo "Výsledná chyba je: " . $e->getMessage();
         }
     }
@@ -381,7 +381,6 @@ class LeaguePlayer {
      *
      * @param object $connection - connection to database
      * @param integer $league_group - league_group for one user
-     * @param integer $player_in_league_id - id for one user in league
      * 
      * @return integer $league_group - highest number of groups
      */
@@ -403,7 +402,7 @@ class LeaguePlayer {
             if($stmt->execute()){
                 return $stmt->fetchColumn();
             } else {
-                throw new Exception ("Príkaz pre získanie počtu hráčov skupine z konkrétnej ligy sa nepodaril");
+                throw new Exception ("Príkaz pre získanie počtu skupín z konkrétnej ligy sa nepodaril");
             }
         } catch (Exception $e){
             // 3 je že vyberiem vlastnú cestu k súboru

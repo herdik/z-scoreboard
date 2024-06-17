@@ -3,6 +3,7 @@
 require "../classes/Database.php";
 require "../classes/Player.php";
 require "../classes/LeaguePlayer.php";
+require "../classes/LeaguePlayerDoubles.php";
 require "../classes/LeagueSettings.php";
 require "../classes/LeagueMatch.php";
 require "../classes/League.php";
@@ -26,34 +27,71 @@ if ($_SERVER["REQUEST_METHOD"] === "POST"){
 
     // League playing settings
     $league_id = $_POST["league_id"];
-    $number_of_groups_in_league = LeaguePlayer::getNumberOfGroups($connection, $league_id);
-    $inactive_players = LeaguePlayer::getInactiveLeaguePlayers($connection, $league_id, 0);
+    $league_infos = League::getLeague($connection, $league_id);
     $rematch = LeagueSettings::getLeagueSettings($connection, $league_id, "rematch");
-    $choosed_game = League::getLeague($connection, $league_id, "discipline")["discipline"];
+    $choosed_game = $league_infos["discipline"];
+
+    if ($league_infos["playing_format"] === "single"){
+        $number_of_groups_in_league = LeaguePlayer::getNumberOfGroups($connection, $league_id);
+        $inactive_players = LeaguePlayer::getInactiveLeaguePlayers($connection, $league_id, 0);
+    } elseif ($league_infos["playing_format"] === "doubles"){
+        $number_of_groups_in_league = LeaguePlayerDoubles::getNumberOfGroups($connection, $league_id);
+        $inactive_players = LeaguePlayerDoubles::getInactiveLeagueDoubles($connection, $league_id, 0);
+    }
+    
+    
 
     // Array with number of rounds in every group
     $number_of_rounds_in_group = array();
     // Array with number of matches in every group
     $matches_in_rounds_by_group = array();
 
-    // ********** if user deleted player - make change in database for current league **********
+    // ********** if user deleted player - make change in database for current league START **********
     if (count($inactive_players) > 0){
         foreach($inactive_players as $one_inactive_player){
-            $player_in_league_id = $one_inactive_player["player_in_league_id"];
-            LeaguePlayer::deleteSpecLeaguePlayer($connection, $league_id, $player_in_league_id);
-            
+            if ($league_infos["playing_format"] === "single"){
+                $player_in_league_id = $one_inactive_player["player_in_league_id"];
+                LeaguePlayer::deleteSpecLeaguePlayer($connection, $league_id, $player_in_league_id);
+            } elseif ($league_infos["playing_format"] === "doubles"){
+                $doubles_in_league_id = $one_inactive_player["doubles_in_league_id"];
+                LeaguePlayerDoubles::deleteSpecLeagueDoubles($connection, $league_id, $doubles_in_league_id);
+            }
         }
     }
+    // ********** if user deleted player - make change in database for current league FINISH **********
+
 
     for ($i = 0; $i < $number_of_groups_in_league; $i++){
-        $number_of_players_in_group = LeaguePlayer::countActiveLeaguePlayersInGroup($connection, $league_id, $i + 1);
+        if ($league_infos["playing_format"] === "single"){
+            $number_of_players_in_group = LeaguePlayer::countActiveLeaguePlayersInGroup($connection, $league_id, $i + 1);
+        } elseif ($league_infos["playing_format"] === "doubles"){
+            $number_of_players_in_group = LeaguePlayerDoubles::countActiveLeagueDoublesInGroup($connection, $league_id, $i + 1);
+        }
+
         if ($number_of_players_in_group % 2 != 0){
-            LeaguePlayer::createLeaguePlayer($connection, $league_id, 0, $i + 1);
-            $number_of_players_in_group = LeaguePlayer::countActiveLeaguePlayersInGroup($connection, $league_id, $i + 1);
+
+            if ($league_infos["playing_format"] === "single"){
+
+                LeaguePlayer::createLeaguePlayer($connection, $league_id, 0, $i + 1);
+                $number_of_players_in_group = LeaguePlayer::countActiveLeaguePlayersInGroup($connection, $league_id, $i + 1);
+
+            } elseif ($league_infos["playing_format"] === "doubles"){
+                LeaguePlayerDoubles::createLeagueDoubles($connection, $league_id, 0, 0, $i + 1);
+                $number_of_players_in_group = LeaguePlayerDoubles::countActiveLeagueDoublesInGroup($connection, $league_id, $i + 1);
+            }
         } elseif ($number_of_players_in_group === 2){
-            LeaguePlayer::createLeaguePlayer($connection, $league_id, 0, $i + 1);
-            LeaguePlayer::createLeaguePlayer($connection, $league_id, 0, $i + 1);
-            $number_of_players_in_group = LeaguePlayer::countActiveLeaguePlayersInGroup($connection, $league_id, $i + 1);
+
+            if ($league_infos["playing_format"] === "single"){
+
+                LeaguePlayer::createLeaguePlayer($connection, $league_id, 0, $i + 1);
+                LeaguePlayer::createLeaguePlayer($connection, $league_id, 0, $i + 1);
+                $number_of_players_in_group = LeaguePlayer::countActiveLeaguePlayersInGroup($connection, $league_id, $i + 1);
+
+            } elseif ($league_infos["playing_format"] === "doubles"){
+                LeaguePlayerDoubles::createLeagueDoubles($connection, $league_id, 0, 0, $i + 1);
+                LeaguePlayerDoubles::createLeagueDoubles($connection, $league_id, 0, 0, $i + 1);
+                $number_of_players_in_group = LeaguePlayerDoubles::countActiveLeagueDoublesInGroup($connection, $league_id, $i + 1);
+            }
         }
 
         // League playing settings
@@ -80,9 +118,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST"){
     $league_done = array();
     for ($i = 0; $i < $number_of_groups_in_league; $i++){
         $group = $i + 1;
-        $player_in_group = LeaguePlayer::getAllLeaguePlayersByGroup($connection, $league_id, $group);
-        $group_finished = LeagueMatch::createLeagueMatch($connection, $current_league_settings["rematch"], $number_of_rounds_in_group[$i], $matches_in_rounds_by_group[$i], $player_in_group, $league_id, $choosed_game, $group);
+        if ($league_infos["playing_format"] === "single"){
+            $player_in_group = LeaguePlayer::getAllLeaguePlayersByGroup($connection, $league_id, $group);
+        } elseif ($league_infos["playing_format"] === "doubles"){
+            $player_in_group = LeaguePlayerDoubles::getAllLeagueDoublesByGroup($connection, $league_id, $group);
+        }
+        $group_finished = LeagueMatch::createLeagueMatch($connection, $current_league_settings["rematch"], $number_of_rounds_in_group[$i], $matches_in_rounds_by_group[$i], $player_in_group, $league_id, $choosed_game, $group, $league_infos["playing_format"]);
         $league_done[] = $group_finished;
+        var_dump($group_finished);
     }
 
     if(count(array_unique($league_done)) === 1){

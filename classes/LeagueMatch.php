@@ -11,7 +11,7 @@ class LeagueMatch {
     * 
     * @return boolean if creating is successful
     */
-    public static function createLeagueMatch($connection, $rematch, $number_of_rounds_in_group, $matches_in_rounds_by_group, $player_in_group, $league_id, $choosed_game, $league_group) {
+    public static function createLeagueMatch($connection, $rematch, $number_of_rounds_in_group, $matches_in_rounds_by_group, $player_in_group, $league_id, $choosed_game, $league_group, $playing_format) {
         
         $league_pairs = array();
 
@@ -25,33 +25,63 @@ class LeagueMatch {
             
             for ($y = 0; $y < $matches_in_rounds_by_group; $y++){
                 if ($rematch && $round > $number_of_rounds_in_group / 2 ){
-                    $player_id_1 = $player_in_group[(count($player_in_group) - 1) - $y]["player_Id"];
-                    $player_id_2 = $player_in_group[$y]["player_Id"];
+                    if ($playing_format === "single") {
+                        $player_id_1 = $player_in_group[(count($player_in_group) - 1) - $y]["player_Id"];
+                        $player_id_2 = $player_in_group[$y]["player_Id"];
+                    } elseif ($playing_format === "doubles") {
+                        $player_id_1A = $player_in_group[(count($player_in_group) - 1) - $y]["player_Id_doubles_1"];
+                        $player_id_1B = $player_in_group[(count($player_in_group) - 1) - $y]["player_Id_doubles_2"];
+                        $player_id_2A = $player_in_group[$y]["player_Id_doubles_1"];
+                        $player_id_2B = $player_in_group[$y]["player_Id_doubles_2"];
+                    }
                 } else {
-                    $player_id_1 = $player_in_group[$y]["player_Id"];
-                    $player_id_2 = $player_in_group[(count($player_in_group) - 1) - $y]["player_Id"];
+                    if ($playing_format === "single") {
+                        $player_id_1 = $player_in_group[$y]["player_Id"];
+                        $player_id_2 = $player_in_group[(count($player_in_group) - 1) - $y]["player_Id"];
+                    } elseif ($playing_format === "doubles") {
+                        $player_id_1A = $player_in_group[$y]["player_Id_doubles_1"];
+                        $player_id_1B = $player_in_group[$y]["player_Id_doubles_2"];
+                        $player_id_2A = $player_in_group[(count($player_in_group) - 1) - $y]["player_Id_doubles_1"];
+                        $player_id_2B = $player_in_group[(count($player_in_group) - 1) - $y]["player_Id_doubles_2"];
+                    }
+                }
+
+                // all players in current match are inavtive, that mean player "0"
+                $correct_match = false;
+
+                // setting for league match, means league match is not finish, league match is prepare to be active match, if is true that means match contain player_Id = "0"
+                $match_waiting = $match_started = $match_finished = false;
+
+                if ($playing_format === "single"){
+                    // inside sql scheme single
+                    $sql_players = "player_id_1, score_1, player_id_2, score_2";
+                    $sql_players_values = ":player_id_1, :score_1, :player_id_2, :score_2";
+                    if ($player_id_1 || $player_id_2){
+                        // at least one player is active
+                        $correct_match = true;
+                        if ((!$player_id_1) || (!$player_id_2)){
+                            $match_waiting = $match_started = $match_finished = true;
+                        }
+                    }
+                } elseif ($playing_format === "doubles"){
+                    // inside sql scheme doubles
+                    $sql_players = "player_id_1A, player_id_1B, score_1, player_id_2A, player_id_2B, score_2";
+                    $sql_players_values = ":player_id_1A, :player_id_1B, :score_1, :player_id_2A, :player_id_2B, :score_2";
+                    if ($player_id_1A || $player_id_1B || $player_id_2A || $player_id_2B){
+                        // at least one player is active
+                        $correct_match = true;
+                        if (!$player_id_1A || !$player_id_1B || !$player_id_2A || !$player_id_2B){
+                            $match_waiting = $match_started = $match_finished = true;
+                        }
+                    }
                 }
                 
-                if (($player_id_1) || ($player_id_2)){
-                    if ((!$player_id_1) || (!$player_id_2)){
-                        $match_waiting = $match_started = $match_finished = true;
-                    } else {
-                        $match_waiting = $match_started = $match_finished = false;
-                    }
-                    // echo "<br>";
-                    // echo "Hráč č.1";
-                    // echo "<br>";
-                    // echo $player_id_1;
-                    // echo "<br>";
-                    // echo "Hráč č.2";
-                    // echo "<br>";
-                    // echo $player_id_2;
-                    // echo "<br>";
-
-
+                // if match is active, make sql statement
+                if ($correct_match){
+                    
                     // sql scheme
-                    $sql = "INSERT INTO league_match_single (league_id, league_group, player_id_1, score_1, player_id_2, score_2, round_number, choosed_game, table_number, match_waiting, match_started, match_finished)
-                    VALUES (:league_id, :league_group, :player_id_1, :score_1, :player_id_2, :score_2, :round_number, :choosed_game, :table_number, :match_waiting, :match_started, :match_finished)";
+                    $sql = "INSERT INTO league_match_$playing_format (league_id, league_group, $sql_players, round_number, choosed_game, table_number, match_waiting, match_started, match_finished)
+                    VALUES (:league_id, :league_group, $sql_players_values, :round_number, :choosed_game, :table_number, :match_waiting, :match_started, :match_finished)";
 
                     // prepare data to send to Database
                     $stmt = $connection->prepare($sql);
@@ -59,10 +89,19 @@ class LeagueMatch {
                     // filling and bind values will be execute to Database
                     $stmt->bindValue(":league_id", $league_id, PDO::PARAM_INT);
                     $stmt->bindValue(":league_group", $league_group, PDO::PARAM_INT);
-                    $stmt->bindValue(":player_id_1", $player_id_1, PDO::PARAM_INT);
-                    $stmt->bindValue(":score_1", 0, PDO::PARAM_INT);
-                    $stmt->bindValue(":player_id_2", $player_id_2, PDO::PARAM_INT);
-                    $stmt->bindValue(":score_2", 0, PDO::PARAM_INT);
+                    if ($playing_format === "single"){
+                        $stmt->bindValue(":player_id_1", $player_id_1, PDO::PARAM_INT);
+                        $stmt->bindValue(":score_1", 0, PDO::PARAM_INT);
+                        $stmt->bindValue(":player_id_2", $player_id_2, PDO::PARAM_INT);
+                        $stmt->bindValue(":score_2", 0, PDO::PARAM_INT);
+                    } elseif ($playing_format === "doubles"){
+                        $stmt->bindValue(":player_id_1A", $player_id_1A, PDO::PARAM_INT);
+                        $stmt->bindValue(":player_id_1B", $player_id_1B, PDO::PARAM_INT);
+                        $stmt->bindValue(":score_1", 0, PDO::PARAM_INT);
+                        $stmt->bindValue(":player_id_2A", $player_id_2A, PDO::PARAM_INT);
+                        $stmt->bindValue(":player_id_2B", $player_id_2B, PDO::PARAM_INT);
+                        $stmt->bindValue(":score_2", 0, PDO::PARAM_INT);
+                    }
                     $stmt->bindValue(":round_number", $round, PDO::PARAM_INT);
                     $stmt->bindValue(":choosed_game", $choosed_game, PDO::PARAM_INT);
                     $stmt->bindValue(":table_number", false, PDO::PARAM_BOOL);

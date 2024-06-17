@@ -48,7 +48,7 @@ if (isset($_GET["league_id"]) and is_numeric($_GET["league_id"])){
     } elseif ($league_infos["playing_format"] === "doubles"){
         $all_players = LeaguePlayerDoubles::getAllLeaguePlayersNotRegistered($connection, $league_id);
         $registered_doubles = LeaguePlayerDoubles::getAllLeagueDoubles($connection, $league_id, true);
-        $total_players = (count($registered_doubles) / 2);
+        $total_players = count($registered_doubles);
 
         foreach($registered_doubles as $one_reg_doubles){
             if(($_SESSION["logged_in_user_id"] === $one_reg_doubles["player_Id_doubles_1"]) || ($_SESSION["logged_in_user_id"] === $one_reg_doubles["player_Id_doubles_2"])){

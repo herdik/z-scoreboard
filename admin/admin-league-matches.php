@@ -6,6 +6,7 @@ require "../classes/Player.php";
 require "../classes/League.php";
 require "../classes/LeagueSettings.php";
 require "../classes/LeaguePlayer.php";
+require "../classes/LeaguePlayerDoubles.php";
 
 
 
@@ -26,9 +27,18 @@ if (isset($_GET["league_id"]) and is_numeric($_GET["league_id"])){
     $league_infos = League::getLeague($connection, $_GET["league_id"]);
     $league_id = $league_infos["league_id"];
     $active_league = $league_infos["active_league"];
+    // if count groups are false, settings for league are not saved to database
     $count_groups = LeagueSettings::getLeagueSettings($connection, $league_id, "count_groups");
-    $players_without_group = LeaguePlayer::getPlayerGroupInLeague($connection, $league_id);
-    $players_in_group = LeaguePlayer::getAllLeaguePlayers($connection, $league_id, false);
+
+    
+    if ($league_infos["playing_format"] === "single"){
+        $players_in_group = LeaguePlayer::getAllLeaguePlayers($connection, $league_id, false);
+        $players_without_group = LeaguePlayer::getPlayerGroupInLeague($connection, $league_id);
+    } elseif ($league_infos["playing_format"] === "doubles"){
+        $players_in_group = LeaguePlayerDoubles::getAllLeagueDoubles($connection, $league_id, false);
+        $players_without_group = LeaguePlayerDoubles::getDoublesGroupInLeague($connection, $league_id);
+    }
+    
 } else {
     $league_infos = null;
     $registered_players = null;
@@ -297,11 +307,12 @@ $group_nr = 0;
                 
                 <!-- BASIC SETTINGS TO CREATE LEAGUE - start -->
                 <?php if (($players_without_group != 0) || (count($players_in_group) === 0)): ?>
+                    
                 <div class="main-container-settings">
-
-                    <!-- No players are registered to current league -->
-                    <?php if (count($players_in_group) === 0): ?>
-                        <h1>Nedostatočný počet prihlásených hráčov</h1>
+                    
+                    <!-- No players are registered to current league or league settings are not confirmed-->
+                    <?php if ((count($players_in_group) === 0) || ($count_groups != true)): ?>
+                        <h1>Nedostatočný počet prihlásených hráčov alebo nepotvrdené nastavenia ligy</h1>
                     <?php else: ?>
 
                         <?php if ($count_groups["count_groups"] > 1): ?> 
@@ -323,6 +334,7 @@ $group_nr = 0;
                 
                 <!-- ADVANCED SETTINGS TO CREATE LEAGUE ACCORDING GROUPS -start -->
                 <?php else: ?>
+                    
                 <div class="main-container-groups">
                     <div class="basic-groups">
 
@@ -332,10 +344,22 @@ $group_nr = 0;
                         <?php elseif($one_player["league_group"] === $group_nr): ?>
                             <tr>
                             <?php $table_nr++ ?>
+                            <?php if ($league_infos["playing_format"] === "single"): ?>
                                 <td class="player-table"><?= $table_nr .". ". htmlspecialchars($one_player["first_name"]) . " " . htmlspecialchars($one_player["second_name"])?>
                                 <img class="country-flag" src="../img/countries/<?= htmlspecialchars($one_player["country"]) ?>.png" alt="">
                                 <span class="player-club"><?= htmlspecialchars($one_player["player_club"]) ?></span>
-                                <a class="player-tableX" href="edit-league-group.php?player_in_league_id=<?= htmlspecialchars($one_player["player_in_league_id"]) ?>&league_id=<?= htmlspecialchars($one_player["league_id"]) ?>&league_group=0">x</a></td>
+                                <a class="player-tableX" href="edit-league-group.php?player_in_league_id=<?= htmlspecialchars($one_player["player_in_league_id"]) ?>&league_id=<?= htmlspecialchars($one_player["league_id"]) ?>&league_group=0">x</a>
+                                </td>
+                            <?php elseif ($league_infos["playing_format"] === "doubles"): ?>
+                                <td class="player-table"><p><?php echo $table_nr . "." ?></p><?= htmlspecialchars($one_player["player1_first_name"]) . " " . htmlspecialchars($one_player["player1_second_name"])?>
+                                <img class="country-flag" src="../img/countries/<?= htmlspecialchars($one_player["player1_country"]) ?>.png" alt="">
+                                <span class="player-club"><?= htmlspecialchars($one_player["player1_club"]) ?></span><br>
+                                <?= htmlspecialchars($one_player["player2_first_name"]) . " " . htmlspecialchars($one_player["player2_second_name"])?>
+                                <img class="country-flag" src="../img/countries/<?= htmlspecialchars($one_player["player2_country"]) ?>.png" alt="">
+                                <span class="player-club"><?= htmlspecialchars($one_player["player2_club"]) ?></span>
+                                <a class="player-tableX" href="edit-league-group.php?player_in_league_id=<?= htmlspecialchars($one_player["doubles_in_league_id"]) ?>&league_id=<?= htmlspecialchars($one_player["league_id"]) ?>&league_group=0">x</a>
+                                </td>
+                            <?php endif ?>
                             </tr>
                             
                         
@@ -351,10 +375,23 @@ $group_nr = 0;
                                 <tbody>
                                     <?php $table_nr = 1; ?>
                                     <tr>
+
+                                    <?php if ($league_infos["playing_format"] === "single"): ?>
                                         <td class="player-table"><?= $table_nr .". ". htmlspecialchars($one_player["first_name"]) . " " . htmlspecialchars($one_player["second_name"])?>
                                         <img class="country-flag" src="../img/countries/<?= htmlspecialchars($one_player["country"]) ?>.png" alt="">
                                         <span class="player-club"><?= htmlspecialchars($one_player["player_club"]) ?></span>
-                                        <a class="player-tableX" href="edit-league-group.php?player_in_league_id=<?= htmlspecialchars($one_player["player_in_league_id"]) ?>&league_id=<?= htmlspecialchars($one_player["league_id"]) ?>&league_group=0">x</a></td>
+                                        <a class="player-tableX" href="edit-league-group.php?player_in_league_id=<?= htmlspecialchars($one_player["player_in_league_id"]) ?>&league_id=<?= htmlspecialchars($one_player["league_id"]) ?>&league_group=0">x</a>
+                                        </td>
+                                    <?php elseif ($league_infos["playing_format"] === "doubles"): ?>
+                                        <td class="player-table"><p><?php echo $table_nr . "." ?></p><?= htmlspecialchars($one_player["player1_first_name"]) . " " . htmlspecialchars($one_player["player1_second_name"])?>
+                                        <img class="country-flag" src="../img/countries/<?= htmlspecialchars($one_player["player1_country"]) ?>.png" alt="">
+                                        <span class="player-club"><?= htmlspecialchars($one_player["player1_club"]) ?></span><br>
+                                        <?= htmlspecialchars($one_player["player2_first_name"]) . " " . htmlspecialchars($one_player["player2_second_name"])?>
+                                        <img class="country-flag" src="../img/countries/<?= htmlspecialchars($one_player["player2_country"]) ?>.png" alt="">
+                                        <span class="player-club"><?= htmlspecialchars($one_player["player2_club"]) ?></span>
+                                        <a class="player-tableX" href="edit-league-group.php?player_in_league_id=<?= htmlspecialchars($one_player["doubles_in_league_id"]) ?>&league_id=<?= htmlspecialchars($one_player["league_id"]) ?>&league_group=0">x</a>
+                                        </td>
+                                    <?php endif ?>
                                     </tr>
                                 
 
@@ -374,18 +411,40 @@ $group_nr = 0;
                                 <?php foreach ($players_in_group as $one_player): ?>
                                     <?php if($one_player["league_group"] === 0): ?>
                                         <tr>
+
                                             <form action="./edit-league-group.php" method="POST">
-                                            <td class="undefined"><?= $unclassified_table_nr .". ". htmlspecialchars($one_player["first_name"]) . " " . htmlspecialchars($one_player["second_name"])?>
-                                            <img class="country-flag" src="../img/countries/<?= htmlspecialchars($one_player["country"]) ?>.png" alt="">
-                                            <span class="player-club"><?= htmlspecialchars($one_player["player_club"]) ?></span>
-                                            <span class="choosed-group-OK">
-                                            <input type="hidden" name="player_in_league_id" value="<?= htmlspecialchars($one_player["player_in_league_id"]) ?>">
-                                            <input type="hidden" name="league_id" value="<?= htmlspecialchars($one_player["league_id"]) ?>">
-                                            <input type="number" name="league_group" class="select-groups" value="0" min="0" max="<?= htmlspecialchars($count_groups["count_groups"]) ?>">
-                                            <button id="submit-group">OK</button>
-                                            </span>
-                                            </td>
+
+                                            <?php if ($league_infos["playing_format"] === "single"): ?>   
+                                                <td class="undefined"><?= $unclassified_table_nr .". ". htmlspecialchars($one_player["first_name"]) . " " . htmlspecialchars($one_player["second_name"])?>
+                                                <img class="country-flag" src="../img/countries/<?= htmlspecialchars($one_player["country"]) ?>.png" alt="">
+                                                <span class="player-club"><?= htmlspecialchars($one_player["player_club"]) ?></span>
+                                                <span class="choosed-group-OK">
+                                                <input type="hidden" name="player_in_league_id" value="<?= htmlspecialchars($one_player["player_in_league_id"]) ?>">
+                                                <input type="hidden" name="league_id" value="<?= htmlspecialchars($one_player["league_id"]) ?>">
+                                                <input type="number" name="league_group" class="select-groups" value="0" min="0" max="<?= htmlspecialchars($count_groups["count_groups"]) ?>">
+                                                <button id="submit-group">OK</button>
+                                                </span>
+                                                </td>
+                                            <?php elseif ($league_infos["playing_format"] === "doubles"): ?>
+                                                <td class="undefined"><span class="undefined-number"><?= $unclassified_table_nr . "." ?></span><br>
+                                                <?= htmlspecialchars($one_player["player1_first_name"]) . " " . htmlspecialchars($one_player["player1_second_name"])?>
+                                                <img class="country-flag" src="../img/countries/<?= htmlspecialchars($one_player["player1_country"]) ?>.png" alt="">
+                                                <span class="player-club"><?= htmlspecialchars($one_player["player1_club"]) ?></span><br>
+                                                <?= htmlspecialchars($one_player["player2_first_name"]) . " " . htmlspecialchars($one_player["player2_second_name"])?>
+                                                <img class="country-flag" src="../img/countries/<?= htmlspecialchars($one_player["player2_country"]) ?>.png" alt="">
+                                                <span class="player-club"><?= htmlspecialchars($one_player["player2_club"]) ?></span>
+                                                <span class="choosed-group-OK">
+                                                <input type="hidden" name="player_in_league_id" value="<?= htmlspecialchars($one_player["doubles_in_league_id"]) ?>">
+                                                <input type="hidden" name="league_id" value="<?= htmlspecialchars($one_player["league_id"]) ?>">
+                                                <input type="number" name="league_group" class="select-groups" value="0" min="0" max="<?= htmlspecialchars($count_groups["count_groups"]) ?>">
+                                                <button id="submit-group">OK</button>
+                                                </span>
+                                                </td>
+                                            <?php endif ?>
+
                                             </form>
+
+
                                         </tr>
                                 <?php $unclassified_table_nr++; ?>
                                     <?php endif ?>

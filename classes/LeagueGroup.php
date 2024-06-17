@@ -42,17 +42,18 @@ class LeagueGroup {
                 $element = array_pop($registered_players);
                 array_push($random_groups[$i], $element);
             }
+        }   
 
-            for ($i = 0; $i < count($random_groups); $i++) {
-                if (count($random_groups[0]) % 2 !== 0) {
-                    array_push($random_groups[0], $free_day);
-                } else {
-                    while (count($random_groups[0]) > count($random_groups[$i])){
-                        array_push($random_groups[$i], $free_day);
-                    }
+        for ($i = 0; $i < count($random_groups); $i++) {
+            if (count($random_groups[0]) % 2 !== 0) {
+                array_push($random_groups[0], $free_day);
+            } else {
+                while (count($random_groups[0]) > count($random_groups[$i])){
+                    array_push($random_groups[$i], $free_day);
                 }
             }
         }
+        
 
     return $random_groups;
     }
