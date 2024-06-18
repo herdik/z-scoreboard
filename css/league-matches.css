@@ -453,6 +453,21 @@ main {
    font-size: 10px; 
 }
 
+/* doubles player-informations */
+.player1AB-span {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.dl1-label {
+    margin-left: 7px;
+}
+.dl2-label{
+    margin-right: 7px;
+}
+
+
 /*************** Creating and modifying League matches - finish *************/
 
 /*************** SHOW League matches ACCORDNING TO GROUPS - start *************/

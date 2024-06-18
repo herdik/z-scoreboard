@@ -7,6 +7,7 @@ require "../classes/League.php";
 require "../classes/LeagueSettings.php";
 require "../classes/LeaguePlayer.php";
 require "../classes/LeaguePlayerDoubles.php";
+require "../classes/LeagueMatch.php";
 
 
 
@@ -29,6 +30,7 @@ if (isset($_GET["league_id"]) and is_numeric($_GET["league_id"])){
     $active_league = $league_infos["active_league"];
     // if count groups are false, settings for league are not saved to database
     $count_groups = LeagueSettings::getLeagueSettings($connection, $league_id, "count_groups");
+    $league_matches = LeagueMatch::getAllLeagueMatches($connection, $league_id, 1, $league_infos["playing_format"]);
 
     
     if ($league_infos["playing_format"] === "single"){
@@ -49,6 +51,11 @@ if (isset($_GET["league_id"]) and is_numeric($_GET["league_id"])){
 }
 
 $group_nr = 0;
+
+// for print current round nr in  --- > <div class="leagueRound"> 
+$round_nr = 1;
+// counter to add last </div> for <div class="leagueRound">
+$counter = 1;
 ?>
 
 <!DOCTYPE html>
@@ -137,168 +144,54 @@ $group_nr = 0;
                 <?php else: ?>
                 <!-- OVERVIEW WHEN ONE GROUP IN CURRENT LEAGUE AND SHOW ALL LEAGUE MATCHES-->
 
-                    <!-- Názov heading Liga -->
-                    <!-- <div class="leagueHeading">
-                        <h1>Názov Ligy
-                            <span class="left-icon"></span>
-                            <span class="right-icon"></span>
-                        </h1> 
-                    </div> -->
+                        <!-- Názov heading Liga -->
+                        <div class="leagueHeading">
+                            <h1><?= htmlspecialchars($league_infos["league_name"]) ?>
+                                <!-- <span class="left-icon"></span>
+                                <span class="right-icon"></span> -->
+                            </h1> 
+                        </div>
 
-                    <!-- Liga Rozpis -->
-                    <div class="league-matches show-league-matches">
+                        <!-- Liga Rozpis -->
+                        <div class="league-matches show-league-matches">
+                        
+                        <?php foreach ($league_matches as $league_match): ?>
 
-                        <div class="leagueRound">
-                            <h1>1.kolo</h1>
+                            <?php if ($round_nr === $league_match["round_number"]): ?> 
+                            
+                            <?php if ($league_match["round_number"] > 1): ?>
+                            </div>
+                            <?php endif ?>
 
-                            <div class="matchInformation">
+                            <div class="leagueRound">
+                                <h1><?= $round_nr . ".kolo" ?></h1>
+                                <?php $round_nr++ ?>
+                            <?php endif ?>
                                 
-                                <div class="tableNr fisnishedLeagueMatch">
-                                    <h3 style="color: rgb(255, 255, 255);">X</h3>
-                                </div>
 
-                                <div class="general-match fisnishedLeagueMatch">
-                                    <span class="pl1-span">
-                                        <img src="img/flags/Slovensko.png" alt=""> Juraj Herda
-                                    </span>
-                                    <label class="pl1-label">0</label>
-
-                                    <div class="btnAndGame">
-                                        <img src="img/eight-ball.png" alt="eight-ball">
-                                        <button>Ukončiť</button>
-                                    </div>
-
-                                    <label class="pl2-label">0</label>
-                                    <span class="pl2-span">Voľno</span>
-                                </div>
-
-                            </div>
-
-                            <div class="matchInformation">
-
-                                <div class="tableNr">
-                                    <h3>-</h3>
-                                </div>
+                                <div class="matchInformation">
                                     
-                                <div class="general-match">
-                                    <span class="pl1-span">
-                                        <img src="img/flags/Slovensko.png" alt=""> Janka Herda
-                                    </span>
-                                    <label class="pl1-label">0</label>
-
-                                    <div class="btnAndGame">
-                                        <img src="img/eight-ball.png" alt="eight-ball">
-                                        <button>Zapnúť</button>
+                                    <div class="tableNr">
+                                        <h3 style= "color:white">-</h3>
                                     </div>
-                                    
-                                    <label class="pl2-label">0</label>
-                                    <span class="pl2-span">
-                                        <img src="img/flags/Slovensko.png" alt=""> Zdenko dsf
-                                    </span>
+
+                                    <?php if ($league_infos["playing_format"] === "single"): ?>
+                                        <?php require "../assets/league_match_single.php" ?> 
+
+                                    <?php elseif ($league_infos["playing_format"] === "doubles"): ?>
+                                        <?php require "../assets/league_match_doubles.php" ?>                                   
+                                    <?php endif ?>
+
+
                                 </div>
+
+                            <?php if (count($league_matches) === $counter): ?>    
                             </div>
+                            <?php endif ?>
+
+                            <?php endforeach ?>
                         </div>
-                        
-                        <div class="leagueRound">
-                            <h1>2.kolo</h1>
-                            
-                            <div class="matchInformation">
-
-                                <div class="tableNr">
-                                    <h3>-</h3>
-                                </div>
-
-                                <div class="general-match">
-                                    <span class="pl1-span">
-                                        <img src="img/flags/Slovensko.png" alt=""> Juraj Herda
-                                    </span>
-                                    <label class="pl1-label">0</label>
-
-                                    <div class="btnAndGame">
-                                        <img src="img/eight-ball.png" alt="eight-ball">
-                                        <button>Zapnúť</button>
-                                    </div>
-
-                                    <label class="pl2-label">0</label>
-                                    <span class="pl2-span">
-                                        <img src="img/flags/Slovensko.png" alt=""> Zdenko dsf
-                                    </span>
-                                </div>
-                            </div>
-                            
-                            <div class="matchInformation">
-
-                                <div class="tableNr fisnishedLeagueMatch">
-                                    <h3 style="color: rgb(255, 255, 255);">X</h3>
-                                </div>
-
-                                <div class="general-match fisnishedLeagueMatch">
-                                    <span class="pl1-span">Voľno</span>
-                                    <label class="pl1-label">0</label>
-
-                                    <div class="btnAndGame">
-                                        <img src="img/eight-ball.png" alt="eight-ball">
-                                        <button>Ukončiť</button>
-                                    </div>
-
-                                    <label class="pl2-label">0</label>
-                                    <span class="pl2-span">
-                                        <img src="img/flags/Slovensko.png" alt=""> Janka Herda
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="leagueRound">
-                            <h1>3.kolo</h1>
-                            
-                            <div class="matchInformation">
-
-                                <div class="tableNr">
-                                    <h3>-</h3>
-                                </div>
-
-                                <div class="general-match">
-                                    <span class="pl1-span">
-                                        <img src="img/flags/Slovensko.png" alt=""> Juraj Herda
-                                    </span>
-                                    <label class="pl1-label">0</label>
-
-                                    <div class="btnAndGame">
-                                        <img src="img/eight-ball.png" alt="eight-ball">
-                                        <button>Zapnúť</button>
-                                    </div>
-
-                                    <label class="pl2-label">0</label>
-                                    <span class="pl2-span">
-                                        <img src="img/flags/Slovensko.png" alt=""> Janka Herda
-                                    </span>
-                                </div>
-                            </div>
-
-                            <div class="matchInformation">
-
-                                <div class="tableNr fisnishedLeagueMatch">
-                                    <h3 style="color: rgb(255, 255, 255);">X</h3>
-                                </div>
-
-                                <div class="general-match fisnishedLeagueMatch">
-                                    <span class="pl1-span">
-                                        <img src="img/flags/Slovensko.png" alt=""> Zdenko dsf
-                                    </span>
-                                    <label class="pl1-label">0</label>
-
-                                    <div class="btnAndGame">
-                                        <img src="img/eight-ball.png" alt="eight-ball">
-                                        <button>Ukončiť</button>
-                                    </div>
-
-                                    <label class="pl2-label">0</label>
-                                    <span class="pl2-span">Voľno</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                       
                 <?php endif; ?>
                 </div>
 

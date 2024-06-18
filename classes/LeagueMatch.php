@@ -144,14 +144,30 @@ class LeagueMatch {
      *
      * @return array array of objects, one object mean one match
      */
-    public static function getAllLeagueMatches($connection, $league_id, $league_group, $columns="league_match_single.*, t1.first_name AS player1_firstname, t1.second_name AS player1_second_name, t1.country AS player1_country, t1.player_club AS player1_club, t1.player_Image as player1_image, t2.first_name AS player2_firstname, t2.second_name AS player2_second_name, t2.country AS player2_country, t2.player_club AS player2_club, t2.player_Image as player2_image"){
-        
-        $sql = "SELECT $columns
-                FROM league_match_single
-                INNER JOIN player_user AS t1
-	                ON t1.player_Id = league_match_single.player_id_1
-                INNER JOIN player_user AS t2
-                    ON t2.player_Id = league_match_single.player_id_2
+    public static function getAllLeagueMatches($connection, $league_id, $league_group, $playing_format){
+
+        if ($playing_format === "single"){
+            $sql_columns = "league_match_single.*, t1.first_name AS player1_firstname, t1.second_name AS player1_second_name, t1.country AS player1_country, t1.player_club AS player1_club, t1.player_Image as player1_image, t2.first_name AS player2_firstname, t2.second_name AS player2_second_name, t2.country AS player2_country, t2.player_club AS player2_club, t2.player_Image as player2_image
+            FROM league_match_single
+            INNER JOIN player_user AS t1
+                ON t1.player_Id = league_match_single.player_id_1
+            INNER JOIN player_user AS t2
+                ON t2.player_Id = league_match_single.player_id_2";
+
+        } elseif ($playing_format === "doubles"){
+            $sql_columns = "league_match_doubles.*, t1A.first_name AS player1A_firstname, t1A.second_name AS player1A_second_name, t1A.country AS player1A_country, t1A.player_club AS player1A_club, t1A.player_Image as player1A_image, t1B.first_name AS player1B_firstname, t1B.second_name AS player1B_second_name, t1B.country AS player1B_country, t1B.player_club AS player1B_club, t1B.player_Image as player1B_image, t2A.first_name AS player2A_firstname, t2A.second_name AS player2A_second_name, t2A.country AS player2A_country, t2A.player_club AS player2A_club, t2A.player_Image as player2A_image, t2B.first_name AS player2B_firstname, t2B.second_name AS player2B_second_name, t2B.country AS player2B_country, t2B.player_club AS player2B_club, t2B.player_Image as player2B_image
+            FROM league_match_doubles
+            INNER JOIN player_user AS t1A
+                ON t1A.player_Id = league_match_doubles.player_id_1A
+            INNER JOIN player_user AS t1B
+                ON t1B.player_Id = league_match_doubles.player_id_1B
+            INNER JOIN player_user AS t2A
+                ON t2A.player_Id = league_match_doubles.player_id_2A
+            INNER JOIN player_user AS t2B
+                ON t2B.player_Id = league_match_doubles.player_id_2B";
+        }
+
+        $sql = "SELECT $sql_columns
                 WHERE league_id = :league_id AND league_group = :league_group
                 ORDER BY round_number";
 
