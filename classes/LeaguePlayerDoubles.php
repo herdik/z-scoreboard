@@ -159,6 +159,46 @@ class LeaguePlayerDoubles {
 
     /**
      *
+     * DELETE ONE PLAYER IN LEAGUE FROM DATABASE
+     *
+     * @param object $connection - connection to database
+     * @param integer $league_id - id for league
+     * @param integer $player_Id_doubles_1 - id for registered player in League
+     * @param integer $player_Id_doubles_2 - id for registered player in League
+     * 
+     * @return boolean if delete is successful
+     */
+    public static function deleteLeagueDobles($connection, $league_id, $player_Id_doubles_1, $player_Id_doubles_2){
+        $sql = "DELETE 
+                FROM list_of_players_league_doubles
+                WHERE player_Id_doubles_1 = :player_Id_doubles_1 AND player_Id_doubles_2 = :player_Id_doubles_2 AND league_id = :league_id";
+        
+
+        // connect sql amend to database
+        $stmt = $connection->prepare($sql);
+
+        // all parameters to send to Database
+        // filling and bind values will be execute to Database
+        $stmt->bindValue(":league_id", $league_id, PDO::PARAM_INT);
+        $stmt->bindValue(":player_Id_doubles_1", $player_Id_doubles_1, PDO::PARAM_INT);
+        $stmt->bindValue(":player_Id_doubles_2", $player_Id_doubles_2, PDO::PARAM_INT);
+
+        try {
+            if($stmt->execute()){
+                return true;
+            } else {
+                throw Exception ("Príkaz pre vymazanie všetkých dát o dvojici z konkretnej ligy sa nepodaril");
+            }
+        } catch (Exception $e){
+            // 3 je že vyberiem vlastnú cestu k súboru
+            error_log("Chyba pri funkcii deleteLeagueDobles, získanie informácií z databázy zlyhalo\n", 3, "../errors/error.log");
+            echo "Výsledná chyba je: " . $e->getMessage();
+        }
+    }
+
+
+    /**
+     *
      * DELETE ONE DOUBLES IN LEAGUE FROM DATABASE
      *
      * @param object $connection - connection to database

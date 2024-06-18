@@ -32,9 +32,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST"){
     $choosed_game = $league_infos["discipline"];
 
     if ($league_infos["playing_format"] === "single"){
+        LeaguePlayer::deleteLeaguePlayer($connection, $league_id, 0);
         $number_of_groups_in_league = LeaguePlayer::getNumberOfGroups($connection, $league_id);
         $inactive_players = LeaguePlayer::getInactiveLeaguePlayers($connection, $league_id, 0);
     } elseif ($league_infos["playing_format"] === "doubles"){
+        LeaguePlayerDoubles::deleteLeagueDobles($connection, $league_id, 0, 0);
         $number_of_groups_in_league = LeaguePlayerDoubles::getNumberOfGroups($connection, $league_id);
         $inactive_players = LeaguePlayerDoubles::getInactiveLeagueDoubles($connection, $league_id, 0);
     }
@@ -47,6 +49,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST"){
     $matches_in_rounds_by_group = array();
 
     // ********** if user deleted player - make change in database for current league START **********
+    // delete all players who are not in groups
     if (count($inactive_players) > 0){
         foreach($inactive_players as $one_inactive_player){
             if ($league_infos["playing_format"] === "single"){
@@ -71,28 +74,31 @@ if ($_SERVER["REQUEST_METHOD"] === "POST"){
         if ($number_of_players_in_group % 2 != 0){
 
             if ($league_infos["playing_format"] === "single"){
-
+                // delete players 0 to prevent multiple zero players in league
                 LeaguePlayer::createLeaguePlayer($connection, $league_id, 0, $i + 1);
                 $number_of_players_in_group = LeaguePlayer::countActiveLeaguePlayersInGroup($connection, $league_id, $i + 1);
 
             } elseif ($league_infos["playing_format"] === "doubles"){
+                // delete doubles 0 to prevent multiple zero players in league
                 LeaguePlayerDoubles::createLeagueDoubles($connection, $league_id, 0, 0, $i + 1);
                 $number_of_players_in_group = LeaguePlayerDoubles::countActiveLeagueDoublesInGroup($connection, $league_id, $i + 1);
             }
-        } elseif ($number_of_players_in_group === 2){
+        } 
+        
+        // elseif ($number_of_players_in_group === 2){
 
-            if ($league_infos["playing_format"] === "single"){
+        //     if ($league_infos["playing_format"] === "single"){
 
-                LeaguePlayer::createLeaguePlayer($connection, $league_id, 0, $i + 1);
-                LeaguePlayer::createLeaguePlayer($connection, $league_id, 0, $i + 1);
-                $number_of_players_in_group = LeaguePlayer::countActiveLeaguePlayersInGroup($connection, $league_id, $i + 1);
+        //         LeaguePlayer::createLeaguePlayer($connection, $league_id, 0, $i + 1);
+        //         LeaguePlayer::createLeaguePlayer($connection, $league_id, 0, $i + 1);
+        //         $number_of_players_in_group = LeaguePlayer::countActiveLeaguePlayersInGroup($connection, $league_id, $i + 1);
 
-            } elseif ($league_infos["playing_format"] === "doubles"){
-                LeaguePlayerDoubles::createLeagueDoubles($connection, $league_id, 0, 0, $i + 1);
-                LeaguePlayerDoubles::createLeagueDoubles($connection, $league_id, 0, 0, $i + 1);
-                $number_of_players_in_group = LeaguePlayerDoubles::countActiveLeagueDoublesInGroup($connection, $league_id, $i + 1);
-            }
-        }
+        //     } elseif ($league_infos["playing_format"] === "doubles"){
+        //         LeaguePlayerDoubles::createLeagueDoubles($connection, $league_id, 0, 0, $i + 1);
+        //         LeaguePlayerDoubles::createLeagueDoubles($connection, $league_id, 0, 0, $i + 1);
+        //         $number_of_players_in_group = LeaguePlayerDoubles::countActiveLeagueDoublesInGroup($connection, $league_id, $i + 1);
+        //     }
+        // }
 
         // League playing settings
         $one_round_in_group = $number_of_players_in_group - 1;
