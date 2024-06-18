@@ -129,9 +129,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST"){
         } elseif ($league_infos["playing_format"] === "doubles"){
             $player_in_group = LeaguePlayerDoubles::getAllLeagueDoublesByGroup($connection, $league_id, $group);
         }
-        $group_finished = LeagueMatch::createLeagueMatch($connection, $current_league_settings["rematch"], $number_of_rounds_in_group[$i], $matches_in_rounds_by_group[$i], $player_in_group, $league_id, $choosed_game, $group, $league_infos["playing_format"]);
-        $league_done[] = $group_finished;
-        var_dump($group_finished);
+        if (count($player_in_group) > 1){
+            $group_finished = LeagueMatch::createLeagueMatch($connection, $current_league_settings["rematch"], $number_of_rounds_in_group[$i], $matches_in_rounds_by_group[$i], $player_in_group, $league_id, $choosed_game, $group, $league_infos["playing_format"]);
+            $league_done[] = $group_finished;
+        }
+        
     }
 
     if(count(array_unique($league_done)) === 1){
