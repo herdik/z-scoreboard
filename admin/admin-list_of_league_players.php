@@ -313,12 +313,12 @@ if (isset($_GET["league_id"]) and is_numeric($_GET["league_id"])){
                                 <div class="player-names">
                                     <label for="first_name">Meno:</label>
                                     <!-- $user_info get from admin-organizer-header -->
-                                    <input type="text" name="first_name"  value="<?= htmlspecialchars($user_info["first_name"]) ?>" readonly>
+                                    <input id="f_name_reg" type="text" name="first_name"  value="<?= htmlspecialchars($user_info["first_name"]) ?>" readonly>
                                 </div>
 
                                 <div class="player-names">
                                     <label for="second_name">Priezvisko:</label>
-                                    <input type="text" name="second_name"  value="<?= htmlspecialchars($user_info["second_name"]) ?>" readonly>
+                                    <input id="s_name_reg" type="text" name="second_name"  value="<?= htmlspecialchars($user_info["second_name"]) ?>" readonly>
                                 </div>
 
 
