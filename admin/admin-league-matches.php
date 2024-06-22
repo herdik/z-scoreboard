@@ -60,8 +60,6 @@ $group_nr = 0;
 $round_nr = 1;
 // counter to add last </div> for <div class="leagueRound">
 $counter = 1;
-
-var_dump($league_matches);
 ?>
 
 <!DOCTYPE html>
@@ -185,7 +183,9 @@ var_dump($league_matches);
                                         <?php require "../assets/league_match_single.php" ?> 
 
                                     <?php elseif ($league_infos["playing_format"] === "doubles"): ?>
-                                        <?php require "../assets/league_match_doubles.php" ?>                                   
+                                        <?php require "../assets/league_match_doubles.php" ?>                      
+                                    <?php elseif ($league_infos["playing_format"] === "teams"): ?>
+                                        <?php require "../assets/league_match_teams.php" ?>            
                                     <?php endif ?>
 
 

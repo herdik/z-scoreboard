@@ -134,7 +134,10 @@ $counter = 1;
                                 <?php require "../assets/league_match_single.php" ?> 
 
                             <?php elseif ($league_infos["playing_format"] === "doubles"): ?>
-                                <?php require "../assets/league_match_doubles.php" ?>                                   
+                                <?php require "../assets/league_match_doubles.php" ?>   
+                                
+                            <?php elseif ($league_infos["playing_format"] === "teams"): ?>
+                                <?php require "../assets/league_match_teams.php" ?> 
                             <?php endif ?>
 
 

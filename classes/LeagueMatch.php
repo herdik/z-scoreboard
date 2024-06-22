@@ -12,7 +12,7 @@ class LeagueMatch {
     * @return boolean if creating is successful
     */
     public static function createLeagueMatch($connection, $rematch, $number_of_rounds_in_group, $matches_in_rounds_by_group, $player_in_group, $league_id, $choosed_game, $league_group, $playing_format) {
-        
+
         $league_pairs = array();
 
         if ($rematch){
@@ -187,6 +187,13 @@ class LeagueMatch {
                 ON t2A.player_Id = league_match_doubles.player_id_2A
             INNER JOIN player_user AS t2B
                 ON t2B.player_Id = league_match_doubles.player_id_2B";
+        } elseif ($playing_format === "teams"){
+            $sql_columns = "league_match_teams.*, t1.team_name AS team1_name, t1.team_country AS team1_country, t1.team_image as team1_image, t2.team_name AS team2_name, t2.team_country AS team2_country, t2.team_image as team2_image
+            FROM league_match_teams
+            INNER JOIN team_user AS t1
+                ON t1.team_id = league_match_teams.team_id_1
+            INNER JOIN team_user AS t2
+                ON t2.team_id = league_match_teams.team_id_2";
         }
 
         $sql = "SELECT $sql_columns
