@@ -4,6 +4,7 @@ require "../classes/Database.php";
 require "../classes/Player.php";
 require "../classes/LeaguePlayer.php";
 require "../classes/LeaguePlayerDoubles.php";
+require "../classes/LeagueTeam.php";
 require "../classes/LeagueSettings.php";
 require "../classes/League.php";
 require "../classes/Url.php";
@@ -55,6 +56,9 @@ if ($_SERVER["REQUEST_METHOD"] === "GET" || $_SERVER["REQUEST_METHOD"] === "POST
         $doubles_in_league_id = $player_in_league_id;
         $edit_done = LeaguePlayerDoubles::updateSpecificLeagueGroup($connection, $league_group, $doubles_in_league_id, $league_id);
 
+    } elseif ($league_format === "teams"){
+        $team_in_league_id = $player_in_league_id;
+        $edit_done = LeagueTeam::updateSpecificLeagueGroup($connection, $league_group, $team_in_league_id, $league_id);
     }
 
     

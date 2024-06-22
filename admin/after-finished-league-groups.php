@@ -4,6 +4,7 @@ require "../classes/Database.php";
 require "../classes/Player.php";
 require "../classes/LeaguePlayer.php";
 require "../classes/LeaguePlayerDoubles.php";
+require "../classes/LeagueTeam.php";
 require "../classes/LeagueSettings.php";
 require "../classes/League.php";
 require "../classes/LeagueGroup.php";
@@ -37,6 +38,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST"){
     } elseif ($league_infos["playing_format"] === "doubles"){
         // $registered_players - means doubles
         $registered_players = LeaguePlayerDoubles::getAllLeagueDoubles($connection, $league_id, true, "list_of_players_league_doubles.player_Id_doubles_1, list_of_players_league_doubles.player_Id_doubles_2, list_of_players_league_doubles.league_id");
+    } elseif ($league_infos["playing_format"] === "teams"){
+        $registered_players = LeagueTeam::getAllLeagueTeams($connection, $league_id, true, "list_of_players_league_team.team_id, list_of_players_league_team.league_id");
     }
     
 
@@ -48,11 +51,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST"){
         
         foreach($random_league_groups[$league_group_nr] as $league_player) {
             if (isset($league_player["player_Id"]) && $league_player["player_Id"] === 0) {
-
+                var_dump($league_player["player_Id"]);
                 if ($league_infos["playing_format"] === "single"){
                     $group_added = LeaguePlayer::createLeaguePlayer($connection, $league_id, $league_player["player_Id"], $league_group_nr + 1);
                 } elseif ($league_infos["playing_format"] === "doubles"){
                     $group_added = LeaguePlayerDoubles::createLeagueDoubles($connection, $league_id, $league_player["player_Id"], $league_player["player_Id"], $league_group_nr + 1);
+                } elseif ($league_infos["playing_format"] === "teams"){
+                    $group_added = LeagueTeam::createLeagueTeam($connection, $league_id, $league_player["player_Id"], $league_group_nr + 1);
                 }
             } else {
 
@@ -60,6 +65,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST"){
                     $group_added = LeaguePlayer::updateLeaguePlayer($connection, $league_group_nr + 1, $league_player["player_Id"], $league_id);
                 } elseif ($league_infos["playing_format"] === "doubles"){
                     $group_added = LeaguePlayerDoubles::updateLeagueDoubles($connection, $league_group_nr + 1, $league_player["player_Id_doubles_1"], $league_player["player_Id_doubles_2"], $league_id);
+                } elseif ($league_infos["playing_format"] === "teams"){
+                    $group_added = LeagueTeam::updateLeagueTeam($connection, $league_group_nr + 1, $league_player["team_id"], $league_id);
                 }
             }
             array_push($get_groups, $group_added);
