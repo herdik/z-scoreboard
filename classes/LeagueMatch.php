@@ -33,6 +33,9 @@ class LeagueMatch {
                         $player_id_1B = $player_in_group[(count($player_in_group) - 1) - $y]["player_Id_doubles_2"];
                         $player_id_2A = $player_in_group[$y]["player_Id_doubles_1"];
                         $player_id_2B = $player_in_group[$y]["player_Id_doubles_2"];
+                    } elseif ($playing_format === "teams") {
+                        $team_id_1 = $player_in_group[(count($player_in_group) - 1) - $y]["team_id"];
+                        $team_id_2 = $player_in_group[$y]["team_id"];
                     }
                 } else {
                     if ($playing_format === "single") {
@@ -43,6 +46,9 @@ class LeagueMatch {
                         $player_id_1B = $player_in_group[$y]["player_Id_doubles_2"];
                         $player_id_2A = $player_in_group[(count($player_in_group) - 1) - $y]["player_Id_doubles_1"];
                         $player_id_2B = $player_in_group[(count($player_in_group) - 1) - $y]["player_Id_doubles_2"];
+                    } elseif ($playing_format === "teams") {
+                        $team_id_1 = $player_in_group[$y]["team_id"];
+                        $team_id_2 = $player_in_group[(count($player_in_group) - 1) - $y]["team_id"];
                     }
                 }
 
@@ -74,6 +80,17 @@ class LeagueMatch {
                             $match_waiting = $match_started = $match_finished = true;
                         }
                     }
+                } elseif ($playing_format === "teams"){
+                    // inside sql scheme teams
+                    $sql_players = "team_id_1, score_1, team_id_2, score_2";
+                    $sql_players_values = ":team_id_1, :score_1, :team_id_2, :score_2";
+                    if ($team_id_1 || $team_id_2){
+                        // at least one player is active
+                        $correct_match = true;
+                        if ((!$team_id_1) || (!$team_id_2)){
+                            $match_waiting = $match_started = $match_finished = true;
+                        }
+                    }
                 }
                 
                 // if match is active, make sql statement
@@ -100,6 +117,11 @@ class LeagueMatch {
                         $stmt->bindValue(":score_1", 0, PDO::PARAM_INT);
                         $stmt->bindValue(":player_id_2A", $player_id_2A, PDO::PARAM_INT);
                         $stmt->bindValue(":player_id_2B", $player_id_2B, PDO::PARAM_INT);
+                        $stmt->bindValue(":score_2", 0, PDO::PARAM_INT);
+                    } elseif ($playing_format === "teams"){
+                        $stmt->bindValue(":team_id_1", $team_id_1, PDO::PARAM_INT);
+                        $stmt->bindValue(":score_1", 0, PDO::PARAM_INT);
+                        $stmt->bindValue(":team_id_2", $team_id_2, PDO::PARAM_INT);
                         $stmt->bindValue(":score_2", 0, PDO::PARAM_INT);
                     }
                     $stmt->bindValue(":round_number", $round, PDO::PARAM_INT);

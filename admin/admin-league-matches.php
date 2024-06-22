@@ -60,6 +60,8 @@ $group_nr = 0;
 $round_nr = 1;
 // counter to add last </div> for <div class="leagueRound">
 $counter = 1;
+
+var_dump($league_matches);
 ?>
 
 <!DOCTYPE html>
