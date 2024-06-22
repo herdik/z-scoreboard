@@ -4,6 +4,7 @@ require "../classes/Database.php";
 require "../classes/Player.php";
 require "../classes/LeaguePlayer.php";
 require "../classes/LeaguePlayerDoubles.php";
+require "../classes/LeagueTeam.php";
 require "../classes/League.php";
 require "../classes/Url.php";
 
@@ -40,6 +41,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST"){
 
         $reg_player_in_league = LeaguePlayerDoubles::createLeagueDoubles($connection, $league_id, $player_Id_doubles_1, $player_Id_doubles_2);
 
+    } elseif ($league_playing_format === "teams"){
+        $team_id = $_POST["team_id"];
+        $reg_player_in_league = LeagueTeam::createLeagueTeam($connection, $league_id, $team_id);
     }
     
     if ($reg_player_in_league){

@@ -14,6 +14,7 @@ class Player {
      * @param string $second_name - second name
      * @param string $country - country
      * @param string $player_club - player_club
+     * @param integer $player_club_id - player_club_id
      * @param string $player_Image - player_Image
      * @param string $player_cue - player_cue
      * @param string $player_break_cue - player_break_cue
@@ -23,13 +24,13 @@ class Player {
      * @return integer $player_id - id for player
      * 
      */
-    public static function createPlayer($connection, $user_email, $first_name, $second_name, $country, $player_club, $player_Image, $player_cue, $player_break_cue, $player_jump_cue) {
+    public static function createPlayer($connection, $user_email, $first_name, $second_name, $country, $player_club, $player_club_id, $player_Image, $player_cue, $player_break_cue, $player_jump_cue) {
 
         // temporary password for new player/user
         $temporary_password = password_hash("manilaSBIZ", PASSWORD_DEFAULT);
         // sql scheme
-        $sql = "INSERT INTO player_user (user_email, password, first_name, second_name, country, player_club, player_Image, player_cue, player_break_cue, player_jump_cue, player_type)
-        VALUES (:user_email, :password, :first_name, :second_name, :country, :player_club, :player_Image, :player_cue, :player_break_cue, :player_jump_cue, :player_type)";
+        $sql = "INSERT INTO player_user (user_email, password, first_name, second_name, country, player_club, player_club_id, player_Image, player_cue, player_break_cue, player_jump_cue, player_type)
+        VALUES (:user_email, :password, :first_name, :second_name, :country, :player_club, :player_club_id, :player_Image, :player_cue, :player_break_cue, :player_jump_cue, :player_type)";
 
         // prepare data to send to Database
         $stmt = $connection->prepare($sql);
@@ -41,6 +42,7 @@ class Player {
         $stmt->bindValue(":second_name", $second_name, PDO::PARAM_STR);
         $stmt->bindValue(":country", $country, PDO::PARAM_STR);
         $stmt->bindValue(":player_club", $player_club, PDO::PARAM_STR);
+        $stmt->bindValue(":player_club_id", $player_club_id, PDO::PARAM_INT);
         $stmt->bindValue(":player_Image", $player_Image, PDO::PARAM_STR);
         $stmt->bindValue(":player_cue", $player_cue, PDO::PARAM_STR);
         $stmt->bindValue(":player_break_cue", $player_break_cue, PDO::PARAM_STR);
@@ -57,7 +59,7 @@ class Player {
                 throw new Exception ("Vytvorenie nového hráča sa neuskutočnilo");
             }
         } catch (Exception $e) {
-            error_log("Chyba pri funkcii createPlayerUser\n", 3, "../errors/error.log");
+            error_log("Chyba pri funkcii createPlayer\n", 3, "../errors/error.log");
             echo "Výsledná chyba je: " . $e->getMessage();
         }
     }
@@ -105,7 +107,7 @@ class Player {
      * @param integer $player_Id - id for one player
      * @return array asoc array with one player
      */
-    public static function getPlayer($connection, $player_Id, $columns = "first_name, second_name, country, player_club, player_Image, player_cue, player_break_cue, player_jump_cue"){
+    public static function getPlayer($connection, $player_Id, $columns = "first_name, second_name, country, player_club, player_club_id, player_Image, player_cue, player_break_cue, player_jump_cue"){
         $sql = "SELECT $columns
                 FROM player_user
                 WHERE player_Id = :player_Id";
@@ -141,6 +143,7 @@ class Player {
      * @param string $second_name - player second name
      * @param string $country - player country
      * @param string $player_club - player club
+     * @param integer $player_club_id - player_club_id
      * @param string $player_Image - player Image
      * @param string $player_cue - player cue
      * @param string $player_break_cue - player break cue
@@ -149,13 +152,14 @@ class Player {
      * 
      * @return boolean if update is successful
      */
-    public static function updatePlayer($connection, $user_email, $first_name, $second_name, $country, $player_club, $player_Image, $player_cue, $player_break_cue, $player_jump_cue, $player_Id){
+    public static function updatePlayer($connection, $user_email, $first_name, $second_name, $country, $player_club, $player_club_id, $player_Image, $player_cue, $player_break_cue, $player_jump_cue, $player_Id){
         $sql = "UPDATE player_user
                 SET user_email = :user_email,
                     first_name = :first_name, 
                     second_name = :second_name, 
                     country = :country, 
                     player_club = :player_club,
+                    player_club_id = :player_club_id,
                     player_Image = :player_Image, 
                     player_cue = :player_cue, 
                     player_break_cue = :player_break_cue, 
@@ -173,6 +177,7 @@ class Player {
         $stmt->bindValue(":second_name", $second_name, PDO::PARAM_STR);
         $stmt->bindValue(":country", $country, PDO::PARAM_STR);
         $stmt->bindValue(":player_club", $player_club, PDO::PARAM_STR);
+        $stmt->bindValue(":player_club_id", $player_club_id, PDO::PARAM_INT);
         $stmt->bindValue(":player_Image", $player_Image, PDO::PARAM_STR);
         $stmt->bindValue(":player_cue", $player_cue, PDO::PARAM_STR);
         $stmt->bindValue(":player_break_cue", $player_break_cue, PDO::PARAM_STR);
@@ -283,6 +288,7 @@ class Player {
                         second_name, 
                         country, 
                         player_club,
+                        player_club_id,
                         player_Image, 
                         player_cue, 
                         player_break_cue, 

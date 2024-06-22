@@ -3,12 +3,33 @@
 <input type="text" name="first_name" placeholder="Meno" value="<?= htmlspecialchars($player_infos["first_name"]) ?>" autocomplete=“off” required>
 <input type="text" name="second_name" placeholder="Priezvisko" value="<?= htmlspecialchars($player_infos["second_name"]) ?>" autocomplete=“off” required><br>
 <input type="text" name="country" placeholder="Krajina" value="<?= htmlspecialchars($player_infos["country"]) ?>" autocomplete=“off” required>
-<input type="text" name="player_club" placeholder="Klub" value="<?= htmlspecialchars($player_infos["player_club"]) ?>" list="player_clubs" autocomplete=“off” required><br>
-<datalist id="player_clubs">
-  <option>BK MANILA Topoľčany</option>
-  <option>POINT Trenčín</option>
-  <option>BK Aréna Ružomberok</option>
-</datalist><br>
+
+<?php if (htmlspecialchars($player_infos["player_club"]) === ""): ?>
+
+  <input type="text" id="answerInput" name="player_club" placeholder="Klub" list="player_clubs" autocomplete=“off” required><br>
+
+  <datalist id="player_clubs">
+  <?php foreach ($teams_infos as $one_team_info): ?>
+    <option data-value="<?= htmlspecialchars($one_team_info["team_id"]) ?>"><?= htmlspecialchars($one_team_info["team_name"]) ?></option>
+  <?php endforeach ?>
+  </datalist><br>
+
+  <input type="hidden" name="player_club_id" id="answerInput-hidden">
+
+<?php else: ?>
+
+  <input type="text" id="answerInput" name="player_club" placeholder="Klub" list="player_clubs" autocomplete=“off” value="<?= htmlspecialchars($player_infos["player_club"]) ?>" required><br>
+
+  <datalist id="player_clubs">
+  <?php foreach ($teams_infos as $one_team_info): ?>
+    <option data-value="<?= htmlspecialchars($one_team_info["team_id"]) ?>"><?= htmlspecialchars($one_team_info["team_name"]) ?></option>
+  <?php endforeach ?>
+  </datalist><br>
+
+  <input type="hidden" name="player_club_id" value="<?= htmlspecialchars($player_infos["player_club_id"]) ?>" id="answerInput-hidden">
+<?php endif ?>
+
+
 <a href="./image-gallery.php?player_Id=<?= htmlspecialchars($player_infos["player_Id"]) ?>" id="IMGGallery">Obrázok z galérie</a>
 <label for="playerIMG" id="choose-img-text">Vybrať obrázok</label>
 <?php if (htmlspecialchars($image_sequence) == NULL): ?>

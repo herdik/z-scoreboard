@@ -1,6 +1,7 @@
 <?php
     require "../classes/Database.php";
     require "../classes/Player.php";
+    require "../classes/Team.php";
 
     // verifying by session if visitor have access to this website
     require "../classes/Authorization.php";
@@ -31,7 +32,7 @@
     // database connection
     $database = new Database();
     $connection = $database->connectionDB();
-
+    $teams_infos = Team::getAllTeams($connection);
 ?>
 
 
@@ -90,5 +91,6 @@
     <?php require "../assets/footer.php" ?>
     <script src="../js/header.js"></script>
     <script src="../js/show-img-name.js"></script>
+    <script src="../js/get-club-value.js"></script>
 </body>
 </html>

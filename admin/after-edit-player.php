@@ -3,6 +3,7 @@
 require "../classes/Database.php";
 require "../classes/Player.php";
 require "../classes/Image.php";
+require "../classes/Team.php";
 require "../classes/Url.php";
 
 
@@ -15,16 +16,6 @@ if (!Auth::isLoggedIn()){
     die ("nepovolený prístup");
 }
 
-// $database = new Database();
-// $connection = $database->connectionDB();
-// $player_Id = $_POST["player_Id"];
-// $number_of_images = count(Image::getAllImages($connection, $player_Id));
-// echo $number_of_images;
-// if ($number_of_images <= 6) {
-//     echo "pusti ma vykonať zmeny";
-// } else {
-//     echo "limit prekročený";
-// }
 
 if ($_SERVER["REQUEST_METHOD"] === "POST"){
     // database connection
@@ -40,6 +31,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST"){
     $second_name = $_POST["second_name"];
     $country = $_POST["country"];
     $player_club = $_POST["player_club"];
+    $player_club_id = $_POST["player_club_id"];
     $player_Image = $_FILES["player_Image"];
     $player_cue = $_POST["player_cue"];
     $player_break_cue = $_POST["player_break_cue"];
@@ -130,7 +122,16 @@ if ($_SERVER["REQUEST_METHOD"] === "POST"){
         $player_Image = $new_image_name;
 
         // update Player information in Database for current Player
-        if (Player::updatePlayer($connection, $user_email, $first_name, $second_name, $country, $player_club, $player_Image, $player_cue, $player_break_cue, $player_jump_cue, $player_Id)){
+        if (is_numeric($player_club_id)) {
+            // find choosed team
+            $team_info = Team::getTeam($connection, $player_club_id);
+            $player_club = $team_info["team_name"];
+            $player_club_id = $team_info["team_id"];
+        } else {
+            // create new team
+            $player_club_id = Team::createTeam($connection, $player_club, "no-photo-player", $country);
+        }
+        if (Player::updatePlayer($connection, $user_email, $first_name, $second_name, $country, $player_club, $player_club_id, $player_Image, $player_cue, $player_break_cue, $player_jump_cue, $player_Id)){
             Url::redirectUrl("/z-scoreboard/admin/player-profil.php?player_Id=$player_Id");
         } else {
             $not_added_player = "Hráča sa nepodarilo upraviť";

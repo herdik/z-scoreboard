@@ -6,6 +6,7 @@ require "../classes/Player.php";
 require "../classes/League.php";
 require "../classes/LeaguePlayer.php";
 require "../classes/LeaguePlayerDoubles.php";
+require "../classes/LeagueTeam.php";
 
 
 
@@ -29,7 +30,6 @@ if (isset($_GET["league_id"]) and is_numeric($_GET["league_id"])){
     $league_infos = League::getLeague($connection, $_GET["league_id"]);
     $league_id = $league_infos["league_id"];
 
-    $registered_players = LeaguePlayer::getAllLeaguePlayers($connection, $league_infos["league_id"], true);
 
     if ($league_infos["playing_format"] === "single") {
         $all_players = LeaguePlayer::getAllLeaguePlayersNotRegistered($connection, $league_id);
@@ -58,6 +58,21 @@ if (isset($_GET["league_id"]) and is_numeric($_GET["league_id"])){
                 $reg_button = "Registrovať";
             }
         }
+    } elseif ($league_infos["playing_format"] === "teams") {
+        $all_players = LeagueTeam::getAllLeagueTeamsNotRegistered($connection, $league_id);
+        $registered_players = LeagueTeam::getAllLeagueTeams($connection, $league_id, true);
+        $total_players = count($registered_players);
+        
+        $loged_in_player = Player::getPlayer($connection, $_SESSION["logged_in_user_id"]);
+
+        foreach($registered_players as $one_reg_player){
+            if($loged_in_player["player_club_id"] === $one_reg_player["team_id"]){
+                $reg_button = "Odregistrovať";
+                break;
+            } else {
+                $reg_button = "Registrovať";
+            }
+        } 
     }
 
         
@@ -123,6 +138,8 @@ if (isset($_GET["league_id"]) and is_numeric($_GET["league_id"])){
                     <h5 id="total-reg-players">Počet registrovaných hráčov</h5>
                 <?php elseif ($league_infos["playing_format"] === "doubles"): ?> 
                     <h5 id="total-reg-players">Počet registrovaných dvojíc</h5>
+                <?php elseif ($league_infos["playing_format"] === "teams"): ?>
+                    <h5 id="total-reg-players">Počet registrovaných družstiev</h5>
                 <?php endif ?>
                     <p><?= htmlspecialchars($total_players) ?></p>
 
@@ -371,6 +388,83 @@ if (isset($_GET["league_id"]) and is_numeric($_GET["league_id"])){
                     <!-- js script for select only one choice for player 1 or player 2 in doubles -->
                     <script src="../js/select-options-doubles.js"></script>
                 <!-- league players for registration to current league DOUBLES -finish -->
+            
+                <!-- league players for registration to current league TEAMS -start -->
+                <?php elseif ($league_infos["playing_format"] === "teams"): ?>
+                    <?php if (($league_infos["manager_id"] === $_SESSION["logged_in_user_id"]) || ($_SESSION["role"] === "admin")): ?>
+                    <form id="reg-players-in-league-form" action="./create-league-players.php" method="POST">
+
+                        <label for="reg-players">Registrácia družstva/družstiev</label>
+            
+                        <div class="main-container-select">
+
+                        
+                            <div class="select-container single">
+                                
+                            <input type="hidden" name="league_id" value="<?= htmlspecialchars($league_infos["league_id"]) ?>" readonly>
+
+                                <?php foreach ($all_players as $one_player): ?>
+                                    <div class="player-line">
+                                        <input type="checkbox" id="player-<?= $one_player["team_id"] ?>" name="selected_teams_id[]" value="<?= $one_player["team_id"] ?>">
+                                        <label for="player-<?= $one_player["team_id"] ?>"><?= $one_player["team_name"] ?></label>
+                                    </div>
+                                    
+                                <?php endforeach; ?>
+
+                                
+                            </div>
+
+                        </div>
+                            <h6>Zoznam hráčov</h6>
+                        <div class="selected-players-league">
+                            
+                        </div>
+
+                        <div class="sumbit-btn">
+                            <input type="submit" value="Registrovať">
+                        </div>
+                        
+                    </form>  
+                    <!-- js script to show all selected team in div list to registration for current league -->
+                    <script src="../js/select-options.js"></script>
+                    <?php else: ?>
+                        
+                        <?php if ($reg_button === "Registrovať"): ?>
+                        <form id="reg-league-form" action="./create-league-player.php" method="POST">
+
+                        <?php elseif ($reg_button === "Odregistrovať"): ?>
+                        <form id="reg-league-form" action="./delete-team-in-league.php" method="POST">
+
+                        <?php endif; ?> 
+                        
+                        <div class="form-content">
+                            <h1>Registrácia</h1>
+                            <div class="form-info">
+
+                                <input type="hidden" name="league_id" value="<?= htmlspecialchars($league_infos["league_id"]) ?>" readonly>
+                                <input type="hidden" name="team_id" value="<?= htmlspecialchars($user_info["player_club_id"]) ?>" readonly>
+
+                                <div class="player-names">
+                                    <label for="team_name">Názov družstva:</label>
+                                    <!-- $user_info get from admin-organizer-header -->
+                                    <input type="text" name="team_name"  value="<?= htmlspecialchars($user_info["player_club"]) ?>" readonly>
+                                </div>
+
+                                <div class="sumbit-btn">
+                                    <input type="submit" value="<?= htmlspecialchars($reg_button) ?>">
+                                </div>
+
+                            </div>
+
+                        </div>
+                    
+                    </form>
+
+                    <?php endif; ?> 
+
+                    
+                <!-- league players for registration to current league TEAMS -finish -->
+
                 <?php endif; ?>      
                                            
             </div>
@@ -470,6 +564,54 @@ if (isset($_GET["league_id"]) and is_numeric($_GET["league_id"])){
                             <?php if (($league_infos["manager_id"] === $_SESSION["logged_in_user_id"]) || ($_SESSION["role"] === "admin")): ?>
 
                                 <a class="player-profilX" href="delete-doubles-in-league.php?league_id=<?= htmlspecialchars($league_infos["league_id"]) ?>&doubles_in_league_id=<?= htmlspecialchars($reg_doubles_player["doubles_in_league_id"]) ?>">X</a>
+
+                            <?php endif; ?>
+                        </article>
+                    <?php endforeach ?>
+
+                </div>
+
+            
+            <?php elseif ($league_infos["playing_format"] === "teams"): ?>
+                <h2>Registrované družstvá</h2>
+                
+
+                <div class="players">
+
+                    <?php foreach($registered_players as $reg_player): ?>
+                        <article class="player-profil">
+
+                        <?php if (htmlspecialchars($reg_player["team_image"]) === "no-photo-player"): ?>
+                            <div class="picture-part" style="
+                                    background: url(../img/<?= htmlspecialchars($reg_player["team_image"]) ?>.png);
+                                    background-size: cover;
+                                    background-position: center;
+                                    background-repeat: no-repeat;
+                                    ">
+                        <?php else: ?>
+                            <div class="picture-part" style="
+                                    background: url(../uploads/<?= htmlspecialchars($reg_player["team_id"]) ?>/<?= htmlspecialchars($reg_player["team_image"]) ?>);
+                                    background-size: cover;
+                                    background-position: center;
+                                    background-repeat: no-repeat;
+                                    ">
+                        <?php endif; ?>
+                    
+                                <div class="flag-part" style="
+                                    background: url(../img/countries/<?= htmlspecialchars($reg_player["team_country"]) ?>.png);
+                                    background-size: cover;
+                                    background-position: center;
+                                    background-repeat: no-repeat;
+                                    ">
+                                </div>
+                            </div>
+                            <h6 class="profil-name"><?php echo htmlspecialchars($reg_player["team_name"]) ?></h6>
+                            
+                            <a class="player-infos" href="./player-profil.php?team_id=<?= htmlspecialchars($reg_player["team_id"]) ?>">Informácie</a>
+
+                            <?php if (($league_infos["manager_id"] === $_SESSION["logged_in_user_id"]) || ($_SESSION["role"] === "admin")): ?>
+                                
+                                <a class="player-profilX" href="delete-team-in-league.php?league_id=<?= htmlspecialchars($league_infos["league_id"]) ?>&team_id=<?= htmlspecialchars($reg_player["team_id"]) ?>">X</a>
 
                             <?php endif; ?>
                         </article>
