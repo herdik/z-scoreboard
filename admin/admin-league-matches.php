@@ -46,7 +46,6 @@ if ($_SERVER["REQUEST_METHOD"] === "GET"){
             $players_in_group = LeagueTeam::getAllLeagueTeams($connection, $league_id, false);
             $players_without_group = LeagueTeam::getTeamGroupInLeague($connection, $league_id);
         }
-        
     } else {
         $league_infos = null;
         $registered_players = null;
@@ -56,17 +55,6 @@ if ($_SERVER["REQUEST_METHOD"] === "GET"){
         $active_league = false;
         $league_group = null;
     }
-
-    if ((isset($_SESSION["open_dialog"]) && $_SESSION["open_dialog"]) && (isset($_SESSION["match_id"]) && $_SESSION["match_id"])) {
-        $match_id = $_SESSION["match_id"];
-        $selected_league_match = LeagueMatch::getLeagueMatch($connection, $match_id, $league_infos["playing_format"]);
-        $open_dialog = true;
-        unset($_SESSION["open_dialog"]);
-        unset($_SESSION["match_id"]);
-    } else {
-        $open_dialog = false;
-    }
-
 } else {
     echo "Nepovolený prístup";
 }
@@ -103,33 +91,30 @@ $counter = 1;
 </head>
 <body>
 
-    <?php if ($open_dialog): ?>
-
-        <?php $open_dialog = false; ?>
-        
-        <!-- Modal okno pre editácia ligového zápasu -->
-        <dialog id="modal">
-            <script>
-                function closeModal() {
-                    document.querySelector("#modal").close()
-                }
-            </script>
-            <form id="matchForm" action="" method="post">
-                <h1>Ligový zápas</h1>
-                <input type="checkbox" id="checkFinish" name="checkFinish">
-                <label for="checkFinish">Ukončiť zápas</label>
+    <!-- Modal okno pre editácia ligového zápasu -->
+    <dialog id="modal">
+        <!-- <script>
+            function closeModal() {
+                document.querySelector("#modal").close()
+            }
+        </script> -->
+        <form id="matchForm" action="change-status-match.php" method="post">
+            <h1>Ligový zápas</h1>
+            <input type="checkbox" id="checkFinish" name="checkFinish">
+            <label for="checkFinish">Ukončiť zápas</label>
+            <div id="main-match">
                 <div class="matchInfo">
                     <div class="modal-players">
-                        <span class="pl1-span"><?= htmlspecialchars($selected_league_match["player1_firstname"]) . " " . htmlspecialchars($selected_league_match["player1_second_name"]) ?></span>
-                        <input type="number" class="pl1-label" min="0" value="<?= htmlspecialchars($selected_league_match["score_1"]) ?>" step="1" name="score1">
+                        <span id="player1-name" class="pl1-span">Jurino</span>
+                        <input id="player1-score" type="number" class="pl1-label" min="0" value="20" step="1" name="score_1">
                     </div>
                     
-                    <input type="hidden" name="match_id" value="<?= htmlspecialchars($match_id) ?>">
-                    <input type="submit" id="saveBtn"n value="Uložiť" name="saveMatch" onclick="return closeModal();">
+                    <input id="match-id" type="hidden" class="modal_match_id" name="match_id" value="0">
+                    <input type="submit" id="saveBtn" value="Uložiť" name="saveMatch">
 
                     <div class="modal-players">
-                        <input type="number" class="pl2-label" min="0" value="<?= htmlspecialchars($selected_league_match["score_2"]) ?>" step="1" name="score2">
-                        <span class="pl2-span"><?= htmlspecialchars($selected_league_match["player2_firstname"]) . " " . htmlspecialchars($selected_league_match["player2_second_name"]) ?></span>
+                        <input id="player2-score" type="number" class="pl2-label" min="0" value="0" step="1" name="score_2">
+                        <span id="player2-name" class="pl2-span">Lucka</span>
                     </div>
                 </div>
                 <div class="chooseTable">
@@ -156,21 +141,20 @@ $counter = 1;
                     </div>
 
                 </div>
-                
-            </form>
-        </dialog>
+            </div>
+        </form>
+    </dialog>
+    
+    <!-- <script>
+        openModal()
+        function openModal() {
+            document.querySelector("#modal").showModal()
+            // let target = event.target;
+            // console.log(target.parentElement)
+        }
         
-        <script>
-            openModal()
-            function openModal() {
-                document.querySelector("#modal").showModal()
-                // let target = event.target;
-                // console.log(target.parentElement)
-            }
-            
-        </script>
-        <!-- Modal okno pre editácia ligového zápasu -->
-    <?php endif ?>
+    </script> -->
+    <!-- Modal okno pre editácia ligového zápasu -->
 
     <?php require "../assets/admin-organizer-header.php" ?>
 
@@ -195,7 +179,7 @@ $counter = 1;
             <!-- Structure for active league if all settings are used and league match are created -->
             <?php if ($active_league): ?>
             
-                <div class="league-match-container">
+                <!-- <div class="league-match-container"> -->
 
                 <!-- OVERVIEW WHEN IS MORE THAN ONE GROUP IN CURRENT LEAGUE -->
                 <?php if ($count_groups["count_groups"] > 1): ?>
@@ -313,7 +297,7 @@ $counter = 1;
                         </div>
                        
                 <?php endif; ?>
-                </div>
+                <!-- </div> -->
 
             <!-- Structure for CREATING LEAGUE - STEP BY STEP TO CREATE LEAGUE MATCHES && Structure for *NOT* active league -->
             <?php else: ?>
@@ -504,5 +488,123 @@ $counter = 1;
     <?php require "../assets/footer.php" ?>
     <script src="../js/header.js"></script>
     <!-- <script src="../js/league-matches.js"></script> -->
+
+    <script>
+    $(document).ready(function () {
+        
+        $('.match_button').click(function (e) { 
+            e.preventDefault();
+
+            
+            if ($(this).val() === "Čaká"){
+                // console.log("ahoj");
+                let match_id = $(this).closest('.btnAndGame').find('.match_id').val();
+                let league_id = $(this).closest('.btnAndGame').find('.league_id').val();
+                // let league_group = $(this).closest('.btnAndGame').find('.league_group').val();
+
+                // console.log(match_id);
+                // console.log(league_id);
+                // console.log(league_group);
+                // console.log($('#player2-name').text());
+
+                $.ajax({
+                    method: "POST",
+                    url: "change-status-match.php",
+                    data: {
+                        'click_view_btn': true,
+                        'match_id': match_id,
+                        'league_id': league_id,
+                    },
+                    success: function (response) {
+                        // console.log(response);
+
+                        $.each(response, function (Key, value) { 
+
+                            $('#match-id').val((value['match_id']));
+                            $('#player1-name').text((value['player1_firstname']) + " " + (value['player1_second_name']));
+                            $('#player1-score').val((value['score_1']));
+                            $('#player2-name').text((value['player2_firstname']) + " " + (value['player2_second_name']));
+                            $('#player2-score').val((value['score_2']));
+
+                        });
+                        // $('#main-match').html(response);
+                        document.querySelector("#modal").showModal();
+                        
+                        
+                            
+                    }
+                });
+            };
+            
+            
+        });
+
+
+        // $('#saveBtn').click(function (e) { 
+        //     e.preventDefault();
+
+            
+            
+        //     let match_id = $(this).closest('.matchInfo').find('.modal_match_id').val();
+
+        //     // let league_id = $(this).closest('.btnAndGame').find('.league_id').val();
+        //     // let league_group = $(this).closest('.btnAndGame').find('.league_group').val();
+
+        //     // console.log(match_id);
+        //     // console.log(league_id);
+        //     // console.log(league_group);
+        //     // console.log($('#player2-name').text());
+
+        //     let match_id_to_change = $('.match_id').filter(function() { return this.value == match_id });
+            
+            
+
+        //     // $.ajax({
+        //     //     method: "POST",
+        //     //     url: "change-status-match.php",
+        //     //     data: {
+        //     //         'save_data_btn': true,
+        //     //         'match_id': match_id,
+        //     //     },
+        //     //     success: function (response) {
+        //     //         console.log(response);
+
+        //     //         console.log($('.match_id').filter(function() { return this.value == match_id }));
+
+        //     //         // $.each(response, function (Key, value) { 
+
+        //     //         //     $('#match-id').val((value['match_id']));
+        //     //         //     $('#player1-name').text((value['player1_firstname']) + " " + (value['player1_second_name']));
+        //     //         //     $('#player1-score').val((value['score_1']));
+        //     //         //     $('#player2-name').text((value['player2_firstname']) + " " + (value['player2_second_name']));
+        //     //         //     $('#player2-score').val((value['score_2']));
+
+        //     //         // });
+                        
+        //     //     }
+        //     // });
+            
+            
+        // });
+
+    });
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", function(event) { 
+        var scrollpos = localStorage.getItem('scrollpos');
+        if (scrollpos) window.scrollTo(0, scrollpos);
+    });
+
+    window.onbeforeunload = function(e) {
+        localStorage.setItem('scrollpos', window.scrollY);
+    };
+</script>
+
+<!-- <script>
+    function closeModal() {
+        document.querySelector("#modal").close()
+    }
+</script> -->
+
 </body>
 </html>

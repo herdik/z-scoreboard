@@ -332,11 +332,23 @@ main {
     opacity: 1;
 }
 
+.leagueHeading h1 {
+    font-size: 50px;
+    text-align: center;
+    color: white;
+    background: #be9524;
+    border: 5px solid white;
+    box-shadow: 0 0 10px 3px #be9524;
+    padding: 8px 12px;
+    border-radius: 20px;
+} 
+
 .leagueRound {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    background-color: #fff;
 }
 
 .leagueRound h1 {

@@ -233,15 +233,20 @@ class LeagueMatch {
      * 
      * @return boolean if update is successful
      */
-    public static function updateLeagueMatch($connection, $match_id, $btn_value){
+    public static function updateLeagueMatch($connection, $match_id, $score_1){
 
-        if ($btn_value === "Zapnúť"){
-            $match_status = "match_waiting";
-            $match_status_value = true;
-        }
+        // if ($btn_value === "Zapnúť"){
+        //     $sql_query = "match_waiting"
+        //     $match_status = "match_waiting";
+        //     $match_status_value = true;
+        //     SET $match_status = $match_status_value
+        // } elseif ($btn_value === "Uložiť"){
+        //     $match_status = "match_waiting";
+        //     $match_status_value = true;
+        // }
 
         $sql = "UPDATE league_match_single
-                SET $match_status = $match_status_value
+                SET score_1 = :score_1
                 WHERE match_id = :match_id";
         
 
@@ -251,6 +256,7 @@ class LeagueMatch {
         // all parameters to send to Database
         // filling and bind values will be execute to Database
         $stmt->bindValue(":match_id", $match_id, PDO::PARAM_INT);
+        $stmt->bindValue(":score_1", $score_1, PDO::PARAM_INT);
         // $stmt->bindValue(":match_status", $match_status, PDO::PARAM_STR);
         // $stmt->bindValue(":match_status_value", $match_status_value, PDO::PARAM_BOOL);
 

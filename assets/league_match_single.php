@@ -31,18 +31,19 @@
 
         <?php if ($button_text === "Zapnúť"): ?>
 
-            <form id="status-match" action="./change-status-match.php" method="post">
+            <!-- <form id="status-match" action="./change-status-match.php" method="post"> -->
                 <!-- <button name="match_button" type="submit" value="Zapnúť"></button> -->
     
         <?php elseif ($button_text === "Čaká"): ?>
-            <form id="status-match" action="./change-status-match.php" method="post">
+            <!-- <form id="status-match" action="./change-status-match.php" method="post"> -->
                 
         <?php endif ?>
-                <input type="hidden" name="match_id" value="<?= htmlspecialchars($league_match["match_id"]) ?>" readonly>
-                <input type="hidden" name="league_id" value="<?= htmlspecialchars($league_infos["league_id"]) ?>" readonly>
-                <input type="hidden" name="league_group" value="<?= htmlspecialchars($league_group) ?>" readonly>
+                <input type="hidden" class="match_id" name="match_id" value="<?= htmlspecialchars($league_match["match_id"]) ?>" readonly>
+                <input type="hidden" class="league_id" name="league_id" value="<?= htmlspecialchars($league_infos["league_id"]) ?>" readonly>
+                <input type="hidden" class="league_group" name="league_group" value="<?= htmlspecialchars($league_group) ?>" readonly>
                 <input class="match_button <?php if($league_match["match_finished"]) { echo 'fisnishedLeagueMatchHide'; } ?>" name="btn_value" type="submit" value="<?= htmlspecialchars($button_text) ?>">
-            </form>
+                <a href="#"></a>
+            <!-- </form> -->
     </div>
 
     <label class="pl2-label"><?= htmlspecialchars($league_match["score_2"]) ?></label>

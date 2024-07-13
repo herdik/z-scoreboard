@@ -18,48 +18,83 @@ if (!Auth::isLoggedIn()){
 
 
 if ($_SERVER["REQUEST_METHOD"] === "POST"){
+
     // database connection
     $database = new Database();
     $connection = $database->connectionDB();
 
-    $btn_value = $_POST["btn_value"];
-    $match_id = $_POST["match_id"];
-    $league_id = $_POST["league_id"];
-    $league_group = $_POST["league_group"];
+    if (isset($_POST['click_view_btn'])){
 
-    $league_infos = League::getLeague($connection, $league_id);
+        $arrayresult = [];
 
-    if ($btn_value === "Čaká"){
-        $_SESSION["open_dialog"] = true;
-        $_SESSION["match_id"] = $match_id;
-        // $selected_league_match = LeagueMatch::getLeagueMatch($connection, $match_id, $columns = "*");
-        // $open_dialog = true;
-    } elseif ($btn_value === "Zapnúť"){
-        $match_status = "match_waiting";
-        $match_status_value = true;
+        $match_id = $_POST["match_id"];
+        $league_id = $_POST["league_id"];
 
-        if ($league_infos["playing_format"] === "single"){
-            $update_done = LeagueMatch::updateLeagueMatch($connection, $match_id, $btn_value);
-        } elseif ($league_infos["playing_format"] === "doubles"){
-            
-        } elseif ($league_infos["playing_format"] === "teams"){
-            
-        }
+        $league_infos = League::getLeague($connection, $league_id);
+
+        $selected_league_match = LeagueMatch::getLeagueMatch($connection, $match_id, $league_infos["playing_format"]);
+
+        array_push($arrayresult, $selected_league_match);
+        header('content-type: appliacation/json');
+        echo json_encode($arrayresult);
+
+
+        
+        
     }
 
-    
-    
-    
+    if (isset($_POST['saveMatch'])){
 
-    if ($update_done || ((isset($_SESSION["open_dialog"]) && $_SESSION["open_dialog"]) && (isset($_SESSION["match_id"]) && $_SESSION["match_id"]))) {
-        if (is_numeric($league_group) && $league_group == true){
-            Url::redirectUrl("/z-scoreboard/admin/admin-league-matches-by-group.php?league_id=$league_id&league_group=$league_group");
-        } else {
+        $match_id = $_POST["match_id"];
+        $league_id = 43;
+        $score_1 = $_POST["score_1"];
+        
+        $league_infos = League::getLeague($connection, $league_id);
+        
+        if ($league_infos["playing_format"] === "single"){
+            $update_done = LeagueMatch::updateLeagueMatch($connection, $match_id, $score_1);
+        } elseif ($league_infos["playing_format"] === "doubles"){
+                
+        } elseif ($league_infos["playing_format"] === "teams"){
+                
+        }
+
+        if ($update_done){
             Url::redirectUrl("/z-scoreboard/admin/admin-league-matches.php?league_id=$league_id"); 
-        }   
-    } else {
-    echo "Zápas sa nenašiel!!!";
-    }    
+        }
+
+    }
+
+    // if (isset($_POST['save_data_btn'])){
+
+    //     $arrayresult = [];
+
+    //     $match_id = $_POST["match_id"];
+    //     $league_id = 43;
+    //     $score_1 = 11;
+        
+    //     $league_infos = League::getLeague($connection, $league_id);
+        
+    //     if ($league_infos["playing_format"] === "single"){
+    //         $update_done = LeagueMatch::updateLeagueMatch($connection, $match_id, $score_1);
+
+    //         $selected_league_match = LeagueMatch::getLeagueMatch($connection, $match_id, $league_infos["playing_format"]);
+
+    //         array_push($arrayresult, $selected_league_match);
+    //         header('content-type: appliacation/json');
+    //         echo json_encode($arrayresult);
+    //     } elseif ($league_infos["playing_format"] === "doubles"){
+                
+    //     } elseif ($league_infos["playing_format"] === "teams"){
+                
+    //     }
+
+    //     // if ($update_done){
+    //     //     Url::redirectUrl("/z-scoreboard/admin/admin-league-matches.php?league_id=$league_id"); 
+    //     // }
+
+    // }
+  
 
 } else {
     echo "Nepovolený prístup";
