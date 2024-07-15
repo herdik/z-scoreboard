@@ -643,3 +643,28 @@ main {
     width: 70%;
     padding: 5px;
 }
+
+/* modal select table options for single */
+.chooseTable {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+.wrapper {
+    padding: 20px;
+    max-height: 150px;
+}
+.tableName {
+    white-space: nowrap;
+    font-weight: 700;
+    text-align: center;
+}
+
+.table-options, .table-options-teams {
+    width: 100%;
+    cursor: pointer;
+    text-align-last:center;
+}
+/* modal select table options for single */
