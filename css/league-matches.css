@@ -339,7 +339,7 @@ main {
     background: #be9524;
     border: 5px solid white;
     box-shadow: 0 0 10px 3px #be9524;
-    padding: 8px 12px;
+    padding: 5px 30px;
     border-radius: 20px;
 } 
 
@@ -377,13 +377,13 @@ main {
     padding: 12px;
     text-align: center;
     margin-left: 0.75%;
-    color: rgb(255, 255, 255);
-}
-
-.tableNr h3 {
-    width: 100%;
     color: rgb(0, 0, 0);
 }
+
+/* .tableNr h3 {
+    color: rgb(0, 0, 0);
+} */
+
 
 /* One match line */
 .general-match {
