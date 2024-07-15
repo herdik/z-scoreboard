@@ -219,4 +219,119 @@ class LeagueMatch {
         }
     }
 
+
+
+    /**
+     *
+     * RETURN BOOLEAN IF MATCH GROUP IS UPDATED IN LEAGUE - DATABASE
+     *
+     * @param object $connection - connection to database
+     
+     * @param integer $match_id - match_id for one match
+     * @param integer $match_status - match_started/match_waiting/match_finished
+     * @param boolean $match_status_value - true or false
+     * 
+     * @return boolean if update is successful
+     */
+    public static function updateLeagueMatch($connection, $match_id, $score_1){
+
+        // if ($btn_value === "Zapnúť"){
+        //     $sql_query = "match_waiting"
+        //     $match_status = "match_waiting";
+        //     $match_status_value = true;
+        //     SET $match_status = $match_status_value
+        // } elseif ($btn_value === "Uložiť"){
+        //     $match_status = "match_waiting";
+        //     $match_status_value = true;
+        // }
+
+        $sql = "UPDATE league_match_single
+                SET score_1 = :score_1
+                WHERE match_id = :match_id";
+        
+
+        // connect sql amend to database
+        $stmt = $connection->prepare($sql);
+
+        // all parameters to send to Database
+        // filling and bind values will be execute to Database
+        $stmt->bindValue(":match_id", $match_id, PDO::PARAM_INT);
+        $stmt->bindValue(":score_1", $score_1, PDO::PARAM_INT);
+        // $stmt->bindValue(":match_status", $match_status, PDO::PARAM_STR);
+        // $stmt->bindValue(":match_status_value", $match_status_value, PDO::PARAM_BOOL);
+
+        try {
+            if($stmt->execute()){
+                return true;
+            } else {
+                throw Exception ("Príkaz pre update league_group v konkrétnej lige sa nepodaril");
+            }
+        } catch (Exception $e){
+            // 3 je že vyberiem vlastnú cestu k súboru
+            error_log("Chyba pri funkcii updateLeagueMatch, získanie informácií z databázy zlyhalo\n", 3, "../errors/error.log");
+            echo "Výsledná chyba je: " . $e->getMessage();
+        }
+    }
+
+
+    /**
+     *
+     * RETURN ONE SELECTED REGISTERED LEAGUE FROM DATABASE
+     *
+     * @param object $connection - connection to database
+     * @param string $league_id - league_id
+     *
+     * @return array array of match
+     */
+    public static function getLeagueMatch($connection, $match_id, $playing_format){
+
+        if ($playing_format === "single"){
+            $sql_columns = "league_match_single.*, t1.first_name AS player1_firstname, t1.second_name AS player1_second_name, t1.country AS player1_country, t1.player_club AS player1_club, t1.player_Image as player1_image, t2.first_name AS player2_firstname, t2.second_name AS player2_second_name, t2.country AS player2_country, t2.player_club AS player2_club, t2.player_Image as player2_image
+            FROM league_match_single
+            INNER JOIN player_user AS t1
+                ON t1.player_Id = league_match_single.player_id_1
+            INNER JOIN player_user AS t2
+                ON t2.player_Id = league_match_single.player_id_2";
+
+        } elseif ($playing_format === "doubles"){
+            $sql_columns = "league_match_doubles.*, t1A.first_name AS player1A_firstname, t1A.second_name AS player1A_second_name, t1A.country AS player1A_country, t1A.player_club AS player1A_club, t1A.player_Image as player1A_image, t1B.first_name AS player1B_firstname, t1B.second_name AS player1B_second_name, t1B.country AS player1B_country, t1B.player_club AS player1B_club, t1B.player_Image as player1B_image, t2A.first_name AS player2A_firstname, t2A.second_name AS player2A_second_name, t2A.country AS player2A_country, t2A.player_club AS player2A_club, t2A.player_Image as player2A_image, t2B.first_name AS player2B_firstname, t2B.second_name AS player2B_second_name, t2B.country AS player2B_country, t2B.player_club AS player2B_club, t2B.player_Image as player2B_image
+            FROM league_match_doubles
+            INNER JOIN player_user AS t1A
+                ON t1A.player_Id = league_match_doubles.player_id_1A
+            INNER JOIN player_user AS t1B
+                ON t1B.player_Id = league_match_doubles.player_id_1B
+            INNER JOIN player_user AS t2A
+                ON t2A.player_Id = league_match_doubles.player_id_2A
+            INNER JOIN player_user AS t2B
+                ON t2B.player_Id = league_match_doubles.player_id_2B";
+        } elseif ($playing_format === "teams"){
+            $sql_columns = "league_match_teams.*, t1.team_name AS team1_name, t1.team_country AS team1_country, t1.team_image as team1_image, t2.team_name AS team2_name, t2.team_country AS team2_country, t2.team_image as team2_image
+            FROM league_match_teams
+            INNER JOIN team_user AS t1
+                ON t1.team_id = league_match_teams.team_id_1
+            INNER JOIN team_user AS t2
+                ON t2.team_id = league_match_teams.team_id_2";
+        }
+
+        $sql = "SELECT $sql_columns
+                WHERE match_id = :match_id";
+
+        $stmt = $connection->prepare($sql);
+
+        $stmt->bindValue(":match_id", $match_id, PDO::PARAM_INT);
+
+        try {
+            if($stmt->execute()){
+                // asscoc array for one league
+                return $stmt->fetch();
+            } else {
+                throw new Exception ("Príkaz pre získanie ligového zápasu sa nepodaril");
+            }
+        } catch (Exception $e){
+            // 3 je že vyberiem vlastnú cestu k súboru
+            error_log("Chyba pri funckii getLeagueMatch, príkaz pre získanie informácií z databázy zlyhal\n", 3, "./errors/error.log");
+            echo "Výsledná chyba je: " . $e->getMessage();
+        }
+    }
+
 }

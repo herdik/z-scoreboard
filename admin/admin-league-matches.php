@@ -86,6 +86,71 @@ $counter = 1;
 </head>
 <body>
 
+    <!-- Modal okno pre editácia ligového zápasu -->
+    <dialog id="modal">
+        <!-- <script>
+            function closeModal() {
+                document.querySelector("#modal").close()
+            }
+        </script> -->
+        <form id="matchForm" action="change-status-match.php" method="post">
+            <h1>Ligový zápas</h1>
+            <input type="checkbox" id="checkFinish" name="checkFinish">
+            <label for="checkFinish">Ukončiť zápas</label>
+            <div id="main-match">
+                <div class="matchInfo">
+                    <div class="modal-players">
+                        <span id="player1-name" class="pl1-span">Jurino</span>
+                        <input id="player1-score" type="number" class="pl1-label" min="0" value="20" step="1" name="score_1">
+                    </div>
+                    
+                    <input id="match-id" type="hidden" class="modal_match_id" name="match_id" value="0">
+                    <input type="submit" id="saveBtn" value="Uložiť" name="saveMatch">
+
+                    <div class="modal-players">
+                        <input id="player2-score" type="number" class="pl2-label" min="0" value="0" step="1" name="score_2">
+                        <span id="player2-name" class="pl2-span">Lucka</span>
+                    </div>
+                </div>
+                <div class="chooseTable">
+                    <div class="tableName">
+                        Výber stola
+                    </div>
+                    
+                    <div class="wrapper">
+                        <select name="tableOptions" id="" class="table-options" onfocus='this.size=3;'
+                        onblur='this.size=1;' onchange='this.size=1; this.blur();'>
+                            <option value="">1</option>
+                            <option value="">2</option>
+                            <option value="">3</option>
+                            <option value="">4</option>
+                            <option value="">5</option>
+                            <option value="">6</option>
+                            <option value="">7</option>
+                            <option value="">8</option>
+                            <option value="">9</option>
+                            <option value="">10</option>
+                            <option value="">11</option>
+                            <option value="">12</option>
+                        </select>
+                    </div>
+
+                </div>
+            </div>
+        </form>
+    </dialog>
+    
+    <!-- <script>
+        openModal()
+        function openModal() {
+            document.querySelector("#modal").showModal()
+            // let target = event.target;
+            // console.log(target.parentElement)
+        }
+        
+    </script> -->
+    <!-- Modal okno pre editácia ligového zápasu -->
+
     <?php require "../assets/admin-organizer-header.php" ?>
 
     <main>
@@ -175,8 +240,34 @@ $counter = 1;
 
                                 <div class="matchInformation">
                                     
-                                    <div class="tableNr">
-                                        <h3 style= "color:white">-</h3>
+                                <!-- Affects background-color, font color, table nr and button text according match status based on Database -->
+
+                                <?php if ($league_match["match_finished"]): ?>
+
+                                    <?php $button_text = "Ukončiť" ?>
+                                    <?php $match_color = "fisnishedLeagueMatch" ?>
+                                    <?php $table_font_color = "color:rgb(255, 255, 255)" ?>
+                                    <?php $table_nr = "X" ?>
+
+                                <?php elseif ($league_match["match_waiting"]): ?>
+
+                                    <?php $button_text = "Čaká" ?>
+                                    <?php $match_color = "waitingLeagueMatch" ?>
+                                    <?php $table_font_color = "color:rgb(255, 255, 255)" ?>
+                                    <?php $table_nr = "-" ?>
+
+                                <?php elseif (!$league_match["match_started"]): ?> 
+
+                                    <?php $button_text = "Zapnúť" ?>
+                                    <?php $match_color = "" ?>
+                                    <?php $table_font_color = "color:rgb(0, 0, 0)" ?>
+
+                                    <?php $table_nr = "-" ?>
+
+                                <?php endif ?>    
+
+                                    <div class="tableNr <?= htmlspecialchars($match_color) ?>">
+                                        <h3 style= "<?= htmlspecialchars($table_font_color) ?>"><?= htmlspecialchars($table_nr) ?></h3>
                                     </div>
 
                                     <?php if ($league_infos["playing_format"] === "single"): ?>
@@ -390,5 +481,123 @@ $counter = 1;
     <?php require "../assets/footer.php" ?>
     <script src="../js/header.js"></script>
     <!-- <script src="../js/league-matches.js"></script> -->
+
+    <script>
+    $(document).ready(function () {
+        
+        $('.match_button').click(function (e) { 
+            e.preventDefault();
+
+            
+            if ($(this).val() === "Čaká"){
+                // console.log("ahoj");
+                let match_id = $(this).closest('.btnAndGame').find('.match_id').val();
+                let league_id = $(this).closest('.btnAndGame').find('.league_id').val();
+                // let league_group = $(this).closest('.btnAndGame').find('.league_group').val();
+
+                // console.log(match_id);
+                // console.log(league_id);
+                // console.log(league_group);
+                // console.log($('#player2-name').text());
+
+                $.ajax({
+                    method: "POST",
+                    url: "change-status-match.php",
+                    data: {
+                        'click_view_btn': true,
+                        'match_id': match_id,
+                        'league_id': league_id,
+                    },
+                    success: function (response) {
+                        // console.log(response);
+
+                        $.each(response, function (Key, value) { 
+
+                            $('#match-id').val((value['match_id']));
+                            $('#player1-name').text((value['player1_firstname']) + " " + (value['player1_second_name']));
+                            $('#player1-score').val((value['score_1']));
+                            $('#player2-name').text((value['player2_firstname']) + " " + (value['player2_second_name']));
+                            $('#player2-score').val((value['score_2']));
+
+                        });
+                        // $('#main-match').html(response);
+                        document.querySelector("#modal").showModal();
+                        
+                        
+                            
+                    }
+                });
+            };
+            
+            
+        });
+
+
+        // $('#saveBtn').click(function (e) { 
+        //     e.preventDefault();
+
+            
+            
+        //     let match_id = $(this).closest('.matchInfo').find('.modal_match_id').val();
+
+        //     // let league_id = $(this).closest('.btnAndGame').find('.league_id').val();
+        //     // let league_group = $(this).closest('.btnAndGame').find('.league_group').val();
+
+        //     // console.log(match_id);
+        //     // console.log(league_id);
+        //     // console.log(league_group);
+        //     // console.log($('#player2-name').text());
+
+        //     let match_id_to_change = $('.match_id').filter(function() { return this.value == match_id });
+            
+            
+
+        //     // $.ajax({
+        //     //     method: "POST",
+        //     //     url: "change-status-match.php",
+        //     //     data: {
+        //     //         'save_data_btn': true,
+        //     //         'match_id': match_id,
+        //     //     },
+        //     //     success: function (response) {
+        //     //         console.log(response);
+
+        //     //         console.log($('.match_id').filter(function() { return this.value == match_id }));
+
+        //     //         // $.each(response, function (Key, value) { 
+
+        //     //         //     $('#match-id').val((value['match_id']));
+        //     //         //     $('#player1-name').text((value['player1_firstname']) + " " + (value['player1_second_name']));
+        //     //         //     $('#player1-score').val((value['score_1']));
+        //     //         //     $('#player2-name').text((value['player2_firstname']) + " " + (value['player2_second_name']));
+        //     //         //     $('#player2-score').val((value['score_2']));
+
+        //     //         // });
+                        
+        //     //     }
+        //     // });
+            
+            
+        // });
+
+    });
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", function(event) { 
+        var scrollpos = localStorage.getItem('scrollpos');
+        if (scrollpos) window.scrollTo(0, scrollpos);
+    });
+
+    window.onbeforeunload = function(e) {
+        localStorage.setItem('scrollpos', window.scrollY);
+    };
+</script>
+
+<!-- <script>
+    function closeModal() {
+        document.querySelector("#modal").close()
+    }
+</script> -->
+
 </body>
 </html>
