@@ -25,33 +25,38 @@ if (!Auth::isLoggedIn()){
 $database = new Database();
 $connection = $database->connectionDB();
 
-if (isset($_GET["league_id"]) and is_numeric($_GET["league_id"])){
-    $league_infos = League::getLeague($connection, $_GET["league_id"]);
-    $league_id = $league_infos["league_id"];
-    $active_league = $league_infos["active_league"];
-    // if count groups are false, settings for league are not saved to database
-    $count_groups = LeagueSettings::getLeagueSettings($connection, $league_id, "count_groups");
-    $league_matches = LeagueMatch::getAllLeagueMatches($connection, $league_id, 1, $league_infos["playing_format"]);
+if ($_SERVER["REQUEST_METHOD"] === "GET"){
+    if (isset($_GET["league_id"]) and is_numeric($_GET["league_id"])){
+        $league_infos = League::getLeague($connection, $_GET["league_id"]);
+        $league_id = $_GET["league_id"];
+        $league_group = 0;
+        $active_league = $league_infos["active_league"];
+        // if count groups are false, settings for league are not saved to database
+        $count_groups = LeagueSettings::getLeagueSettings($connection, $league_id, "count_groups");
+        $league_matches = LeagueMatch::getAllLeagueMatches($connection, $league_id, 1, $league_infos["playing_format"]);
 
-    
-    if ($league_infos["playing_format"] === "single"){
-        $players_in_group = LeaguePlayer::getAllLeaguePlayers($connection, $league_id, false);
-        $players_without_group = LeaguePlayer::getPlayerGroupInLeague($connection, $league_id);
-    } elseif ($league_infos["playing_format"] === "doubles"){
-        $players_in_group = LeaguePlayerDoubles::getAllLeagueDoubles($connection, $league_id, false);
-        $players_without_group = LeaguePlayerDoubles::getDoublesGroupInLeague($connection, $league_id);
-    } elseif ($league_infos["playing_format"] === "teams"){
-        $players_in_group = LeagueTeam::getAllLeagueTeams($connection, $league_id, false);
-        $players_without_group = LeagueTeam::getTeamGroupInLeague($connection, $league_id);
+        
+        if ($league_infos["playing_format"] === "single"){
+            $players_in_group = LeaguePlayer::getAllLeaguePlayers($connection, $league_id, false);
+            $players_without_group = LeaguePlayer::getPlayerGroupInLeague($connection, $league_id);
+        } elseif ($league_infos["playing_format"] === "doubles"){
+            $players_in_group = LeaguePlayerDoubles::getAllLeagueDoubles($connection, $league_id, false);
+            $players_without_group = LeaguePlayerDoubles::getDoublesGroupInLeague($connection, $league_id);
+        } elseif ($league_infos["playing_format"] === "teams"){
+            $players_in_group = LeagueTeam::getAllLeagueTeams($connection, $league_id, false);
+            $players_without_group = LeagueTeam::getTeamGroupInLeague($connection, $league_id);
+        }
+    } else {
+        $league_infos = null;
+        $registered_players = null;
+        $count_groups = null;
+        $players_without_group = null;
+        $players_in_group = null;
+        $active_league = false;
+        $league_group = null;
     }
-    
 } else {
-    $league_infos = null;
-    $registered_players = null;
-    $count_groups = null;
-    $players_without_group = null;
-    $players_in_group = null;
-    $active_league = false;
+    echo "Nepovolený prístup";
 }
 
 $group_nr = 0;
@@ -93,7 +98,8 @@ $counter = 1;
                 document.querySelector("#modal").close()
             }
         </script> -->
-        <form id="matchForm" action="change-status-match.php" method="post">
+        <div id="matchForm">
+        <!-- <form id="matchForm" action="change-status-match.php" method="post"> -->
             <h1>Ligový zápas</h1>
             <input type="checkbox" id="checkFinish" name="checkFinish">
             <label for="checkFinish">Ukončiť zápas</label>
@@ -104,6 +110,7 @@ $counter = 1;
                         <input id="player1-score" type="number" class="pl1-label" min="0" value="20" step="1" name="score_1">
                     </div>
                     
+                    <input id="modal-league-id" type="hidden" class="modal_league_id" name="league_id" value="0">
                     <input id="match-id" type="hidden" class="modal_match_id" name="match_id" value="0">
                     <input type="submit" id="saveBtn" value="Uložiť" name="saveMatch">
 
@@ -118,26 +125,27 @@ $counter = 1;
                     </div>
                     
                     <div class="wrapper">
-                        <select name="tableOptions" id="" class="table-options" onfocus='this.size=3;'
+                        <select name="tableOptions" id="table-number" class="table-options" onfocus='this.size=3;'
                         onblur='this.size=1;' onchange='this.size=1; this.blur();'>
-                            <option value="">1</option>
-                            <option value="">2</option>
-                            <option value="">3</option>
-                            <option value="">4</option>
-                            <option value="">5</option>
-                            <option value="">6</option>
-                            <option value="">7</option>
-                            <option value="">8</option>
-                            <option value="">9</option>
-                            <option value="">10</option>
-                            <option value="">11</option>
-                            <option value="">12</option>
+                            <option value="1">Stôl č.1</option>
+                            <option value="2">Stôl č.2</option>
+                            <option value="3">Stôl č.3</option>
+                            <option value="4">Stôl č.4</option>
+                            <option value="5">Stôl č.5</option>
+                            <option value="6">Stôl č.6</option>
+                            <option value="7">Stôl č.7</option>
+                            <option value="8">Stôl č.8</option>
+                            <option value="9">Stôl č.9</option>
+                            <option value="10">Stôl č.10</option>
+                            <option value="11">Stôl č.11</option>
+                            <option value="12">Stôl č.12</option>
                         </select>
                     </div>
 
                 </div>
             </div>
-        </form>
+        </div>
+        <!-- </form> -->
     </dialog>
     
     <!-- <script>
@@ -154,7 +162,7 @@ $counter = 1;
     <?php require "../assets/admin-organizer-header.php" ?>
 
     <main>
-
+        <!-- SIDE NAV BAR -->
         <section class="navigation-bar">
             <ul>
                 <li><a href="./current-league.php?league_id=<?= htmlspecialchars($league_infos["league_id"]) ?>">Informácie</a></li>
@@ -167,13 +175,14 @@ $counter = 1;
             </ul>
 
         </section>
-
+        
+        <!-- MAIN LEAGUE CONTENT -->
         <section class="league-content">
             
             <!-- Structure for active league if all settings are used and league match are created -->
             <?php if ($active_league): ?>
             
-                <div class="league-match-container">
+                <!-- <div class="league-match-container"> -->
 
                 <!-- OVERVIEW WHEN IS MORE THAN ONE GROUP IN CURRENT LEAGUE -->
                 <?php if ($count_groups["count_groups"] > 1): ?>
@@ -249,27 +258,36 @@ $counter = 1;
                                     <?php $table_font_color = "color:rgb(255, 255, 255)" ?>
                                     <?php $table_nr = "X" ?>
 
+                                <?php elseif ($league_match["match_started"]): ?> 
+
+                                    <?php $button_text = "Upraviť" ?>
+                                    <?php $match_color = "activeLeagueMatch" ?>
+                                    <?php $table_font_color = "color:rgb(255, 255, 255)" ?>
+
+                                    <?php $table_nr = "T " . strval(htmlspecialchars($league_match["table_number"])) ?>
+
                                 <?php elseif ($league_match["match_waiting"]): ?>
 
                                     <?php $button_text = "Čaká" ?>
                                     <?php $match_color = "waitingLeagueMatch" ?>
                                     <?php $table_font_color = "color:rgb(255, 255, 255)" ?>
                                     <?php $table_nr = "-" ?>
-
-                                <?php elseif (!$league_match["match_started"]): ?> 
+                                
+                                <?php else: ?>
 
                                     <?php $button_text = "Zapnúť" ?>
                                     <?php $match_color = "" ?>
                                     <?php $table_font_color = "color:rgb(0, 0, 0)" ?>
 
                                     <?php $table_nr = "-" ?>
-
+                                
                                 <?php endif ?>    
 
                                     <div class="tableNr <?= htmlspecialchars($match_color) ?>">
-                                        <h3 style= "<?= htmlspecialchars($table_font_color) ?>"><?= htmlspecialchars($table_nr) ?></h3>
+                                        <h3 class="tableNrText" style= "<?= htmlspecialchars($table_font_color) ?>"><?= htmlspecialchars($table_nr) ?></h3>
                                     </div>
 
+                                    <!-- DISPLAY -> match rules and settings based on single double and teams-->
                                     <?php if ($league_infos["playing_format"] === "single"): ?>
                                         <?php require "../assets/league_match_single.php" ?> 
 
@@ -290,7 +308,7 @@ $counter = 1;
                         </div>
                        
                 <?php endif; ?>
-                </div>
+                <!-- </div> -->
 
             <!-- Structure for CREATING LEAGUE - STEP BY STEP TO CREATE LEAGUE MATCHES && Structure for *NOT* active league -->
             <?php else: ?>
@@ -488,17 +506,63 @@ $counter = 1;
         $('.match_button').click(function (e) { 
             e.preventDefault();
 
-            
-            if ($(this).val() === "Čaká"){
-                // console.log("ahoj");
+
+            if ($(this).val() === "Zapnúť"){
+                
                 let match_id = $(this).closest('.btnAndGame').find('.match_id').val();
                 let league_id = $(this).closest('.btnAndGame').find('.league_id').val();
-                // let league_group = $(this).closest('.btnAndGame').find('.league_group').val();
+                
+                let match_button = $(this);
 
-                // console.log(match_id);
-                // console.log(league_id);
-                // console.log(league_group);
-                // console.log($('#player2-name').text());
+                $.ajax({
+                    method: "POST",
+                    url: "change-status-match.php",
+                    data: {
+                        'click_start_btn': true,
+                        'match_id': match_id,
+                        'league_id': league_id,
+                    },
+                    success: function (response) {
+
+                        if (response) {
+                            
+                            $.each(response, function (Key, value) { 
+
+                                
+                                // added color for current league match Table number text
+                                match_button.parents('div').parent().eq(3).find('.tableNr h3').css(value['csstext'], value['csscolor']);
+
+                                // added color for current league match Table number background
+                                match_button.parents('div').parent().eq(3).find('.tableNr').addClass(value['addedclass']);
+
+                                // added color for current league match - match info
+                                match_button.parents('div').eq(1).addClass(value['addedclass']);
+
+                                // change value for match button after current match is started
+                                match_button.val(value['match_button']);
+
+                            }); 
+
+                        }        
+                                    
+                    }
+                });
+
+            }
+
+            
+            if ($(this).val() === "Čaká"){
+                
+                let match_id = $(this).closest('.btnAndGame').find('.match_id').val();
+                let league_id = $(this).closest('.btnAndGame').find('.league_id').val();
+                $('#checkFinish').hide();
+                $('#checkFinish').prop('checked',false);
+                $('#player1-score').prop("readonly", true);
+                $('#player2-score').prop("readonly", true);
+                $('#saveBtn').val("Potvrdiť");
+
+                $('.chooseTable').show();
+
 
                 $.ajax({
                     method: "POST",
@@ -509,10 +573,50 @@ $counter = 1;
                         'league_id': league_id,
                     },
                     success: function (response) {
-                        // console.log(response);
 
                         $.each(response, function (Key, value) { 
 
+                            $('#modal-league-id').val((value['league_id']));
+                            $('#match-id').val((value['match_id']));
+                            $('#player1-name').text((value['player1_firstname']) + " " + (value['player1_second_name']));
+                            $('#player1-score').val((value['score_1']))
+                            $('#player2-name').text((value['player2_firstname']) + " " + (value['player2_second_name']));
+                            $('#player2-score').val((value['score_2']))
+
+                        });
+
+                        document.querySelector("#modal").showModal();
+                        
+                            
+                    }
+                });
+            };
+            if ($(this).val() === "Upraviť"){
+                
+                let match_id = $(this).closest('.btnAndGame').find('.match_id').val();
+                let league_id = $(this).closest('.btnAndGame').find('.league_id').val();
+
+                $('#checkFinish').show();
+                $('#checkFinish').prop('checked',false);
+                $('#player1-score').prop("readonly", false);
+                $('#player2-score').prop("readonly", false);
+                $('#saveBtn').val("Uložiť");
+
+                $('.chooseTable').hide();
+                
+                $.ajax({
+                    method: "POST",
+                    url: "change-status-match.php",
+                    data: {
+                        'click_view_btn': true,
+                        'match_id': match_id,
+                        'league_id': league_id,
+                    },
+                    success: function (response) {
+
+                        $.each(response, function (Key, value) { 
+
+                            $('#modal-league-id').val((value['league_id']));
                             $('#match-id').val((value['match_id']));
                             $('#player1-name').text((value['player1_firstname']) + " " + (value['player1_second_name']));
                             $('#player1-score').val((value['score_1']));
@@ -533,56 +637,140 @@ $counter = 1;
         });
 
 
-        // $('#saveBtn').click(function (e) { 
-        //     e.preventDefault();
+        $('#saveBtn').click(function (e) { 
+            e.preventDefault();
+
 
             
-            
-        //     let match_id = $(this).closest('.matchInfo').find('.modal_match_id').val();
 
-        //     // let league_id = $(this).closest('.btnAndGame').find('.league_id').val();
-        //     // let league_group = $(this).closest('.btnAndGame').find('.league_group').val();
+            if ($(this).val() === "Uložiť"){
+                
+                let modal_match_id = $(this).closest('.matchInfo').find('.modal_match_id').val();
+                let modal_league_id = $(this).closest('.matchInfo').find('.modal_league_id').val();
+                let modal_score_1 = $(this).closest('.matchInfo').find('#player1-score').val();
+                let modal_score_2 = $(this).closest('.matchInfo').find('#player2-score').val();
+                let checked = $('input[name=checkFinish]:checked');
+                
 
-        //     // console.log(match_id);
-        //     // console.log(league_id);
-        //     // console.log(league_group);
-        //     // console.log($('#player2-name').text());
+                if(checked.length){
+                    checked = true;
+                } else {
+                    checked = false;
+                };
 
-        //     let match_id_to_change = $('.match_id').filter(function() { return this.value == match_id });
-            
-            
+                $.ajax({
+                    method: "POST",
+                    url: "change-status-match.php",
+                    data: {
+                        'save_data_btn': true,
+                        'match_id': modal_match_id,
+                        'league_id': modal_league_id,
+                        'score_1': modal_score_1,
+                        'score_2': modal_score_2,
+                        'match_finished': checked,
+                    },
+                    success: function (response) {
 
-        //     // $.ajax({
-        //     //     method: "POST",
-        //     //     url: "change-status-match.php",
-        //     //     data: {
-        //     //         'save_data_btn': true,
-        //     //         'match_id': match_id,
-        //     //     },
-        //     //     success: function (response) {
-        //     //         console.log(response);
+                        let match_id_to_change = $('.match_id').filter(function() { return this.value == modal_match_id });
 
-        //     //         console.log($('.match_id').filter(function() { return this.value == match_id }));
+                        let score_1 = match_id_to_change.parents('div').eq(1).find('.pl1-label');
+                        let score_2 = match_id_to_change.parents('div').eq(1).find('.pl2-label');
 
-        //     //         // $.each(response, function (Key, value) { 
+                        $.each(response, function (Key, value) { 
 
-        //     //         //     $('#match-id').val((value['match_id']));
-        //     //         //     $('#player1-name').text((value['player1_firstname']) + " " + (value['player1_second_name']));
-        //     //         //     $('#player1-score').val((value['score_1']));
-        //     //         //     $('#player2-name').text((value['player2_firstname']) + " " + (value['player2_second_name']));
-        //     //         //     $('#player2-score').val((value['score_2']));
+                            score_1.text((value['score_1']));
+                            score_2.text((value['score_2']));
 
-        //     //         // });
+                            if (checked) {
+
+                                match_id_to_change.parents('div').parent().eq(3).find('.tableNr h3').text((value['closeMatch']));
+
+                                // added color for current league match Table number background
+                                match_id_to_change.parents('div').parent().eq(3).find('.tableNr').removeClass(value['removeclass']).addClass(value['addedclass']);
                         
-        //     //     }
-        //     // });
+                                
+                                // added color for current league match - match info
+                                match_id_to_change.parents('div').eq(1).removeClass(value['removeclass']).addClass(value['addedclass']);
+                                
+
+                                // change visibility for match button after current match is finished
+                                match_id_to_change.closest('.btnAndGame').find('.match_button').hide();
+                            }
+
+                        });
+
+                        document.querySelector("#modal").close();
+                            
+                    }
+                });
+
+            }
+
+
+            if ($(this).val() === "Potvrdiť"){
+
+                let modal_match_id = $(this).closest('.matchInfo').find('.modal_match_id').val();
+                let modal_league_id = $(this).closest('.matchInfo').find('.modal_league_id').val();
+                let modal_score_1 = $(this).closest('.matchInfo').find('#player1-score').val();
+                let modal_score_2 = $(this).closest('.matchInfo').find('#player2-score').val();
+                let modal_table_number = $('#table-number').find(":selected").val();
+
+
+                $.ajax({
+                    method: "POST",
+                    url: "change-status-match.php",
+                    data: {
+                        'conf_table_and_match': true,
+                        'match_id': modal_match_id,
+                        'league_id': modal_league_id,
+                        'score_1': modal_score_1,
+                        'score_2': modal_score_2,
+                        'table_number': modal_table_number,
+                    },
+                    success: function (response) {
+                        
+                        let match_id_to_change = $('.match_id').filter(function() { return this.value == modal_match_id });
+
+                        let score_1 = match_id_to_change.parents('div').eq(1).find('.pl1-label');
+                        let score_2 = match_id_to_change.parents('div').eq(1).find('.pl2-label');
+                        let table_nr_match = match_id_to_change.parents('div').parent().eq(3).find('.tableNr h3')
+
+                        $.each(response, function (Key, value) { 
+                            
+                            score_1.text((value['score_1']));
+                            score_2.text((value['score_2']));
+                            table_nr_match.text("T " + (value['table_number']));
+
+                            // added color for current league match Table number text
+                            table_nr_match.css(value['csstext'], value['csscolor']);
+
+                            // added color for current league match Table number background
+                            match_id_to_change.parents('div').parent().eq(3).find('.tableNr').removeClass(value['removeclass']).addClass(value['addedclass']);
+                            
+                            
+
+                            // added color for current league match - match info
+                            match_id_to_change.parents('div').eq(1).removeClass(value['removeclass']).addClass(value['addedclass']);
+                            
+
+                            // change value for match button after current match is started
+                            // match_id_to_change.val(value['match_button']);
+                            match_id_to_change.closest('.btnAndGame').find('.match_button').val(value['match_button']);
+
+                        });
+
+                        document.querySelector("#modal").close();
+                            
+                    }
+                });
+            }
             
-            
-        // });
+
+        });
 
     });
 </script>
-<script>
+<!-- <script>
     document.addEventListener("DOMContentLoaded", function(event) { 
         var scrollpos = localStorage.getItem('scrollpos');
         if (scrollpos) window.scrollTo(0, scrollpos);
@@ -591,7 +779,7 @@ $counter = 1;
     window.onbeforeunload = function(e) {
         localStorage.setItem('scrollpos', window.scrollY);
     };
-</script>
+</script> -->
 
 <!-- <script>
     function closeModal() {

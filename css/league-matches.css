@@ -339,7 +339,7 @@ main {
     background: #be9524;
     border: 5px solid white;
     box-shadow: 0 0 10px 3px #be9524;
-    padding: 8px 12px;
+    padding: 5px 30px;
     border-radius: 20px;
 } 
 
@@ -348,6 +348,7 @@ main {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    background-color: #fff;
 }
 
 .leagueRound h1 {
@@ -404,7 +405,7 @@ main {
     color: #fff;
 }
 .waitingLeagueMatch {
-    background-color: #8db6bd;
+    background-color: #be9524;
     color: #fff;
 }
 /* Ukončený ligový zápas */
@@ -434,18 +435,39 @@ main {
     box-shadow: 0 0 3px 3px #888888;
 }
 
+
+.btnAndGame {
+    min-width: 90px;
+    gap: 3px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
 /* Button in one match line */
-.general-match button {
+
+/* .general-match button {
     cursor: pointer;
     font-weight: 600;
     font-size: 14px;
     border-radius: 20px;
     margin: 0 10px;
     padding: 5px 10px;
+} */
+
+.match_button {
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+    border-radius: 20px;
+    margin: 0 10px;
+    padding: 5px;
+    width: 80px;
 }
+
 /* Button in one match line Ukončený ligový zápas */
-.fisnishedLeagueMatch button {
-    visibility: hidden;
+.fisnishedLeagueMatchHide {
+    display: none;
 }
 
 /* typ hry obrázok v zápasoch */
@@ -555,3 +577,94 @@ main {
 
 
 /*************** SHOW League matches ACCORDNING TO GROUPS - finish *************/
+
+
+/* modal dialog window */
+#modal {
+    width: 100%;
+    max-width: 640px;
+    min-width: 480px;
+    z-index: 2;
+    position: fixed;
+    top: 50%;
+    left: 62%;
+    transform: translateX(-62%) translateY(-50%);
+    border-radius: 20px;
+    border: 5px solid rgba(0, 0, 0, 0.608);
+    box-shadow: 0 0 3px 3px #888888;
+}
+#matchForm {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin: 10px;
+    padding: 5px;
+}
+.matchInfo {
+    width: 98%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    margin: 10px;
+    border: 5px solid rgba(0, 0, 0, 0.608);
+    border-radius: 20px;
+    box-shadow: 0 0 3px 3px #888888;
+    padding: 5px;
+}
+.modal-players {
+    width: 40%;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+#modal input[type="number"]{
+    width: 30%;
+    padding: 6px 5px;
+    font-size: 18px;
+    text-align: center;
+    border-radius: 20px;
+    border: 5px solid rgba(0, 0, 0, 0.608);
+    box-shadow: 0 0 3px 3px #888888;
+}
+#modal input[type="submit"]{
+    padding: 8px 25px;
+    text-align: center;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+    margin: 5px 10px;
+}
+.modal-players span {
+    width: 70%;
+    padding: 5px;
+}
+
+/* modal select table options for single */
+.chooseTable {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+.wrapper {
+    padding: 20px;
+    max-height: 150px;
+}
+.tableName {
+    white-space: nowrap;
+    font-weight: 700;
+    text-align: center;
+}
+
+.table-options, .table-options-teams {
+    width: 100%;
+    cursor: pointer;
+    text-align-last:center;
+}
+/* modal select table options for single */

@@ -19,14 +19,14 @@ if (!Auth::isLoggedIn()){
     die ("nepovolený prístup");
 }
 
-if ($_SERVER["REQUEST_METHOD"] === "GET"){
-    // database connection
-    $database = new Database();
-    $connection = $database->connectionDB();
+// database connection
+$database = new Database();
+$connection = $database->connectionDB();
 
-    if (isset($_GET["league_id"]) and is_numeric($_GET["league_group"])){
+if ($_SERVER["REQUEST_METHOD"] === "GET"){
+    if ((isset($_GET["league_id"]) and is_numeric($_GET["league_id"])) and (isset($_GET["league_group"]) and is_numeric($_GET["league_group"]))) {
         $league_infos = League::getLeague($connection, $_GET["league_id"]);
-        $league_id = $league_infos["league_id"];
+        $league_id = $_GET["league_id"];
         $league_name = $league_infos["league_name"];
         $league_group = $_GET["league_group"];
         $active_league = $league_infos["active_league"];
@@ -41,6 +41,17 @@ if ($_SERVER["REQUEST_METHOD"] === "GET"){
         $count_groups = null;
         $league_matches = null;
     }
+
+    if ((isset($_SESSION["open_dialog"]) && $_SESSION["open_dialog"]) && (isset($_SESSION["match_id"]) && $_SESSION["match_id"])) {
+        $match_id = $_SESSION["match_id"];
+        $selected_league_match = LeagueMatch::getLeagueMatch($connection, $match_id, $league_infos["playing_format"]);
+        $open_dialog = true;
+        unset($_SESSION["open_dialog"]);
+        unset($_SESSION["match_id"]);
+    } else {
+        $open_dialog = false;
+    }
+    
 } else {
     echo "Nepovolený prístup";
 }
@@ -76,6 +87,75 @@ $counter = 1;
 </head>
 <body>
 
+    <?php if ($open_dialog): ?>
+
+        <?php $open_dialog = false; ?>
+
+        <!-- Modal okno pre editácia ligového zápasu -->
+        <dialog id="modal">
+        <script>
+                function closeModal() {
+                    document.querySelector("#modal").close()
+                }
+            </script>
+            <form id="matchForm" action="" method="post">
+                <h1>Ligový zápas</h1>
+                <input type="checkbox" id="checkFinish" name="checkFinish">
+                <label for="checkFinish">Ukončiť zápas</label>
+                <div class="matchInfo">
+                    <div class="modal-players">
+                        <span class="pl1-span"><?= htmlspecialchars($selected_league_match["player1_firstname"]) . " " . htmlspecialchars($selected_league_match["player1_second_name"]) ?></span>
+                        <input type="number" class="pl1-label" min="0" value="<?= htmlspecialchars($selected_league_match["score_1"]) ?>" step="1" name="score1">
+                    </div>
+                    
+                    <input type="hidden" name="match_id" value="<?= htmlspecialchars($match_id) ?>">
+                    <input type="submit" id="saveBtn"n value="Uložiť" name="saveMatch" onclick="return closeModal();">
+
+                    <div class="modal-players">
+                        <input type="number" class="pl2-label" min="0" value="<?= htmlspecialchars($selected_league_match["score_2"]) ?>" step="1" name="score2">
+                        <span class="pl2-span"><?= htmlspecialchars($selected_league_match["player2_firstname"]) . " " . htmlspecialchars($selected_league_match["player2_second_name"]) ?></span>
+                    </div>
+                </div>
+                <div class="chooseTable">
+                    <div class="tableName">
+                        Výber stola
+                    </div>
+                    
+                    <div class="wrapper">
+                        <select name="tableOptions" id="" class="table-options" onfocus='this.size=3;'
+                        onblur='this.size=1;' onchange='this.size=1; this.blur();'>
+                            <option value="">1</option>
+                            <option value="">2</option>
+                            <option value="">3</option>
+                            <option value="">4</option>
+                            <option value="">5</option>
+                            <option value="">6</option>
+                            <option value="">7</option>
+                            <option value="">8</option>
+                            <option value="">9</option>
+                            <option value="">10</option>
+                            <option value="">11</option>
+                            <option value="">12</option>
+                        </select>
+                    </div>
+
+                </div>
+                
+            </form>
+        </dialog>
+        
+        <script>
+            openModal()
+            function openModal() {
+                document.querySelector("#modal").showModal()
+                // let target = event.target;
+                // console.log(target.parentElement)
+            }
+            
+        </script>
+        <!-- Modal okno pre editácia ligového zápasu -->
+    <?php endif ?>
+    
     <?php require "../assets/admin-organizer-header.php" ?>
 
     <main>
@@ -125,11 +205,38 @@ $counter = 1;
                         
 
                         <div class="matchInformation">
+
+                        <!-- Affects background-color, font color, table nr and button text according match status based on Database -->
+
+                        <?php if ($league_match["match_finished"]): ?>
+
+                            <?php $button_text = "Ukončiť" ?>
+                            <?php $match_color = "fisnishedLeagueMatch" ?>
+                            <?php $table_font_color = "color:rgb(255, 255, 255)" ?>
+                            <?php $table_nr = "X" ?>
+
+                        <?php elseif ($league_match["match_waiting"]): ?>
+
+                            <?php $button_text = "Čaká" ?>
+                            <?php $match_color = "waitingLeagueMatch" ?>
+                            <?php $table_font_color = "color:rgb(255, 255, 255)" ?>
+                            <?php $table_nr = "-" ?>
+
+                        <?php elseif (!$league_match["match_started"]): ?> 
+
+                            <?php $button_text = "Zapnúť" ?>
+                            <?php $match_color = "" ?>
+                            <?php $table_font_color = "color:rgb(0, 0, 0)" ?>
+
+                            <?php $table_nr = "-" ?>
+
+                        <?php endif ?>
                             
-                            <div class="tableNr">
-                                <h3 style= "color:white">-</h3>
+                            <div class="tableNr <?= htmlspecialchars($match_color) ?>">
+                                <h3 style= "<?= htmlspecialchars($table_font_color) ?>"><?= htmlspecialchars($table_nr) ?></h3>
                             </div>
 
+                            <!-- DISPLAY -> match rules and settings based on single double and teams-->
                             <?php if ($league_infos["playing_format"] === "single"): ?>
                                 <?php require "../assets/league_match_single.php" ?> 
 

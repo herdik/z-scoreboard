@@ -233,7 +233,19 @@ class LeagueMatch {
      * 
      * @return boolean if update is successful
      */
-    public static function updateLeagueMatch($connection, $match_id, $score_1){
+    /**
+     *
+     * RETURN BOOLEAN IF MATCH GROUP IS UPDATED IN LEAGUE - DATABASE
+     *
+     * @param object $connection - connection to database
+     
+     * @param integer $match_id - match_id for one match
+     * @param integer $match_status - match_started/match_waiting/match_finished
+     * @param boolean $match_status_value - true or false
+     * 
+     * @return boolean if update is successful
+     */
+    public static function updateLeagueMatch($connection, $match_id, $score_1, $score_2, $match_waiting, $match_started, $match_finished, $table_number){
 
         // if ($btn_value === "Zapnúť"){
         //     $sql_query = "match_waiting"
@@ -246,7 +258,12 @@ class LeagueMatch {
         // }
 
         $sql = "UPDATE league_match_single
-                SET score_1 = :score_1
+                SET score_1 = :score_1,
+                    score_2 = :score_2, 
+                    match_waiting = :match_waiting,
+                    match_started = :match_started,
+                    match_finished = :match_finished,
+                    table_number = :table_number
                 WHERE match_id = :match_id";
         
 
@@ -257,6 +274,11 @@ class LeagueMatch {
         // filling and bind values will be execute to Database
         $stmt->bindValue(":match_id", $match_id, PDO::PARAM_INT);
         $stmt->bindValue(":score_1", $score_1, PDO::PARAM_INT);
+        $stmt->bindValue(":score_2", $score_2, PDO::PARAM_INT);
+        $stmt->bindValue(":match_waiting", $match_waiting, PDO::PARAM_BOOL);
+        $stmt->bindValue(":match_started", $match_started, PDO::PARAM_BOOL);
+        $stmt->bindValue(":match_finished", $match_finished, PDO::PARAM_BOOL);
+        $stmt->bindValue(":table_number", $table_number, PDO::PARAM_INT);
         // $stmt->bindValue(":match_status", $match_status, PDO::PARAM_STR);
         // $stmt->bindValue(":match_status_value", $match_status_value, PDO::PARAM_BOOL);
 
