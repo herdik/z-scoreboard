@@ -8,6 +8,7 @@ require "../classes/LeagueTeam.php";
 require "../classes/LeagueSettings.php";
 require "../classes/LeagueMatch.php";
 require "../classes/League.php";
+require "../classes/LeagueTable.php";
 require "../classes/Url.php";
 
 
@@ -156,7 +157,32 @@ if ($_SERVER["REQUEST_METHOD"] === "POST"){
         // true
         if(current($league_done)){
             $active_league = League::updateLeague($connection, $league_id, true);
+
+            $league_table_done = array();
+
+            // if league is active - create results table for current league according groups
+            if ($league_infos["playing_format"] === "single"){
+                $all_active_players = LeaguePlayer::getAllLeaguePlayers($connection, $league_id, true);
+
+                // create league table for current league - start
+                foreach ($all_active_players as $one_active_player){
+                    $row_league_table = LeagueTable::createLeagueTable($connection, $one_active_player["league_id"], $one_active_player["league_group"], $one_active_player["player_Id"]);
+                    $league_table_done[] = $row_league_table;
+                }
+
+                // create league table false - print error message
+                if(count(array_unique($league_table_done)) > 1){
+                    $create_league_table_error = "Ligová tabuľka sa nevytvorila";
+                    Url::redirectUrl("/z-scoreboard/errors/error-page.php?in_error=$create_league_table_error");
+                } else {
+                    if(!current($league_done)){
+                        $create_league_table_error = "Ligová tabuľka sa nevytvorila";
+                        Url::redirectUrl("/z-scoreboard/errors/error-page.php?in_error=$create_league_table_error");
+                    }
+                }
+            }
         }
+        
     } else {
         $create_league_matches_error = "Ligové zápasy sa nevytvorili";
         Url::redirectUrl("/z-scoreboard/errors/error-page.php?in_error=$create_league_matches_error");
