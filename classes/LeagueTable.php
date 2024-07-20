@@ -48,4 +48,64 @@ class LeagueTable {
         }
     }
 
+
+    /**
+     *
+     * RETURN ALL REGISTERED PLAYERS TO LEAGUE TABLE FROM LEAGUE BY SPECIPIC GROUP FROM DATABASE
+     *
+     * @param object $connection - connection to database
+     *
+     * @return array array of objects, one object mean one player
+     */
+    public static function getAllFromLeagueTable($connection, $league_id, $league_group, $playing_format){
+
+        if ($playing_format === "single"){
+            $sql_columns = "league_table.*, t1.first_name AS player_firstname, t1.second_name AS player_second_name, t1.country AS player_country, t1.player_club AS player_club, t1.player_Image as player_image
+            FROM league_table
+            INNER JOIN player_user AS t1
+                ON t1.player_Id = league_table.player_id";
+
+        } elseif ($playing_format === "doubles"){
+            $sql_columns = "league_match_doubles.*, t1A.first_name AS player1A_firstname, t1A.second_name AS player1A_second_name, t1A.country AS player1A_country, t1A.player_club AS player1A_club, t1A.player_Image as player1A_image, t1B.first_name AS player1B_firstname, t1B.second_name AS player1B_second_name, t1B.country AS player1B_country, t1B.player_club AS player1B_club, t1B.player_Image as player1B_image, t2A.first_name AS player2A_firstname, t2A.second_name AS player2A_second_name, t2A.country AS player2A_country, t2A.player_club AS player2A_club, t2A.player_Image as player2A_image, t2B.first_name AS player2B_firstname, t2B.second_name AS player2B_second_name, t2B.country AS player2B_country, t2B.player_club AS player2B_club, t2B.player_Image as player2B_image
+            FROM league_match_doubles
+            INNER JOIN player_user AS t1A
+                ON t1A.player_Id = league_match_doubles.player_id_1A
+            INNER JOIN player_user AS t1B
+                ON t1B.player_Id = league_match_doubles.player_id_1B
+            INNER JOIN player_user AS t2A
+                ON t2A.player_Id = league_match_doubles.player_id_2A
+            INNER JOIN player_user AS t2B
+                ON t2B.player_Id = league_match_doubles.player_id_2B";
+        } elseif ($playing_format === "teams"){
+            $sql_columns = "league_match_teams.*, t1.team_name AS team1_name, t1.team_country AS team1_country, t1.team_image as team1_image, t2.team_name AS team2_name, t2.team_country AS team2_country, t2.team_image as team2_image
+            FROM league_match_teams
+            INNER JOIN team_user AS t1
+                ON t1.team_id = league_match_teams.team_id_1
+            INNER JOIN team_user AS t2
+                ON t2.team_id = league_match_teams.team_id_2";
+        }
+
+        $sql = "SELECT $sql_columns
+                WHERE league_id = :league_id AND league_group = :league_group
+                ORDER BY points DESC, mutual_match_points DESC, difference DESC, score_game_win DESC, player_second_name ASC, player_firstname ASC";
+
+        $stmt = $connection->prepare($sql);
+
+        // all parameters to send to Database
+        $stmt->bindValue(":league_id", $league_id, PDO::PARAM_INT);
+        $stmt->bindValue(":league_group", $league_group, PDO::PARAM_INT);
+
+        try {
+            if($stmt->execute()){
+                return $stmt->fetchAll(PDO::FETCH_ASSOC);
+            } else {
+                throw new Exception ("Príkaz pre získanie všetkých dát o hráčovi z tabuľky výsledkov z konkrétnej ligy príslušné k špecifickej skupine sa nepodaril");
+            }
+        } catch (Exception $e){
+            // 3 je že vyberiem vlastnú cestu k súboru
+            error_log("Chyba pri funckii getAllFromLeagueTable, príkaz pre získanie informácií z databázy zlyhal\n", 3, "./errors/error.log");
+            echo "Výsledná chyba je: " . $e->getMessage();
+        }
+    }
+
 }

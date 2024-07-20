@@ -93,7 +93,7 @@ $counter = 1;
                     <li><a href="./league-settings.php?league_id=<?= htmlspecialchars($league_infos["league_id"]) ?>">Nastavenia</a></li>
                 <?php endif; ?>
                 <li><a href="./admin-league-matches.php?league_id=<?= htmlspecialchars($league_infos["league_id"]) ?>">Ligové zápasy</a></li>
-                <li><a href="./results.php?league_id=<?= htmlspecialchars($league_infos["league_id"]) ?>">Výsledky</a></li>
+                <li><a href="./results.php?league_id=<?= htmlspecialchars($league_infos["league_id"]) ?>&league_group=1">Výsledky</a></li>
             </ul>
 
         </section>

@@ -145,3 +145,7 @@ main {
     border-bottom: none;
     
 }
+
+.player-name-table{
+    text-align: left;
+}

@@ -4,6 +4,7 @@
 require "../classes/Database.php";
 require "../classes/Player.php";
 require "../classes/League.php";
+require "../classes/LeagueTable.php";
 
 
 
@@ -16,16 +17,31 @@ if (!Auth::isLoggedIn()){
     die ("nepovolený prístup");
 }
 
-// database connection
-$database = new Database();
-$connection = $database->connectionDB();
+    
 
-if (isset($_GET["league_id"]) and is_numeric($_GET["league_id"])){
-    $league_infos = League::getLeague($connection, $_GET["league_id"]);
+if ($_SERVER["REQUEST_METHOD"] === "GET"){
+
+    // database connection
+    $database = new Database();
+    $connection = $database->connectionDB();
+
+    if (isset($_GET["league_id"]) and is_numeric($_GET["league_id"])){
+        $league_id = $_GET["league_id"];
+        $league_group = $_GET["league_group"];
+        $league_infos = League::getLeague($connection, $_GET["league_id"]);
+
+        $results_table = LeagueTable::getAllFromLeagueTable($connection, $league_id, $league_group, $league_infos["playing_format"]);
+    } else {
+        $league_id = null;
+        $league_group = null;
+        $league_infos = null;
+
+        $results_table = null;
+    }
+
 } else {
-    $league_infos = null;
+    echo "Nepovolený prístup";
 }
-
 ?>
 
 <!DOCTYPE html>
@@ -64,7 +80,7 @@ if (isset($_GET["league_id"]) and is_numeric($_GET["league_id"])){
                     <li><a href="./league-settings.php?league_id=<?= htmlspecialchars($league_infos["league_id"]) ?>">Nastavenia</a></li>
                 <?php endif; ?>
                 <li><a href="./admin-league-matches.php?league_id=<?= htmlspecialchars($league_infos["league_id"]) ?>">Ligové zápasy</a></li>
-                <li><a href="./results.php?league_id=<?= htmlspecialchars($league_infos["league_id"]) ?>">Výsledky</a></li>
+                <li><a href="./results.php?league_id=<?= htmlspecialchars($league_infos["league_id"]) ?>&league_group=1">Výsledky</a></li>
             </ul>
 
         </section>
@@ -83,8 +99,7 @@ if (isset($_GET["league_id"]) and is_numeric($_GET["league_id"])){
                     <thead>
                         <tr>
                             <th>Poradie</th>
-                            <th>Štát</th>
-                            <th>Hráč</th>
+                            <th class="player-name-table">Hráč</th>
                             <th>Zápasy</th>
                             <th>Výhry</th>
                             <th>Prehry</th>
@@ -94,63 +109,19 @@ if (isset($_GET["league_id"]) and is_numeric($_GET["league_id"])){
                         </tr>
                     </thead>
                     <tbody>
+                        <?php for ($i=0; $i<count($results_table);$i++): ?>
                         <tr>
-                            <td>1.</td>
-                            <td>Ján Bracho</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
+                            <td><?= $i + 1 ."." ?></td>
+                            <td class="player-name-table"><img src="../img/countries/<?= htmlspecialchars($results_table[$i]["player_country"]) ?>.png" alt="<?= htmlspecialchars($results_table[$i]["player_country"]) ?>"><?= htmlspecialchars($results_table[$i]["player_firstname"]) . " " . htmlspecialchars($results_table[$i]["player_second_name"])?></td>
+                            <td><?= htmlspecialchars($results_table[$i]["played_matches"])?></td>
+                            <td><?= htmlspecialchars($results_table[$i]["winnings_matches"]) ?></td>
+                            <td><?= htmlspecialchars($results_table[$i]["lost_matches"]) ?></td>
+                            <td><?= htmlspecialchars($results_table[$i]["score_game_win"]) . ":" . htmlspecialchars($results_table[$i]["score_game_loss"])?></td>
+                            <td><?= htmlspecialchars($results_table[$i]["difference"]) ?></td>
+                            <td><?= htmlspecialchars($results_table[$i]["points"]) ?></td>
                         </tr>
-
-                        <tr>
-                            <td>2.</td>
-                            <td>Juraj Herda</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                        </tr>
-                        <tr>
-                            <td>3.</td>
-                            <td>Tomáš Bracho</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                        </tr>
-                        <tr>
-                            <td>4.</td>
-                            <td>Rune Johnsen</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                        </tr>
-                        <tr>
-                            <td>5.</td>
-                            <td>Jožko Mrkvička</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                            <td>0</td>
-                        </tr>
-                        
+                    <?php endfor ?>
+                       
                     </tbody>
                 </table>
 
@@ -158,8 +129,7 @@ if (isset($_GET["league_id"]) and is_numeric($_GET["league_id"])){
             
             
 
-        <!-- </div> -->
-
+        <!-- </div> -->                 
         </section>
 
         
