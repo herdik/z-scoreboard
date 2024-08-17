@@ -1,4 +1,4 @@
-<div class="general-match">
+<div class="general-match <?= htmlspecialchars($match_color) ?>">
                                 
     <!-- print profil image for player1A -->
     <?php if ($league_match["player1A_image"] === "no-photo-player"): ?>
@@ -50,7 +50,23 @@
 
     <div class="btnAndGame">
         <img src=<?="../img/" . htmlspecialchars($league_match["choosed_game"]). "-ball.png" ?> alt=<?= htmlspecialchars($league_match["choosed_game"]). "-ball" ?>>
-        <button>Zapnúť</button>
+
+        <?php if ($button_text === "Zapnúť"): ?>
+
+            <!-- <form id="status-match" action="./change-status-match.php" method="post"> -->
+                <!-- <button name="match_button" type="submit" value="Zapnúť"></button> -->
+    
+        <?php elseif ($button_text === "Čaká"): ?>
+            <!-- <form id="status-match" action="./change-status-match.php" method="post"> -->
+                
+        <?php endif ?>
+                <input type="hidden" class="league-format" name="league-format" value="<?= htmlspecialchars($league_infos["playing_format"]) ?>" readonly>
+                <input type="hidden" class="match_id" name="match_id" value="<?= htmlspecialchars($league_match["match_id"]) ?>" readonly>
+                <input type="hidden" class="league_id" name="league_id" value="<?= htmlspecialchars($league_infos["league_id"]) ?>" readonly>
+                <input type="hidden" class="league_group" name="league_group" value="<?= htmlspecialchars($league_group) ?>" readonly>
+                <input class="match_button <?php if($league_match["match_finished"]) { echo 'fisnishedLeagueMatchHide'; } ?>" name="btn_value" type="submit" value="<?= htmlspecialchars($button_text) ?>">
+                <a href="#"></a>
+            <!-- </form> -->
     </div>
 
     <label class="dl2-label"><?= htmlspecialchars($league_match["score_2"]) ?></label>

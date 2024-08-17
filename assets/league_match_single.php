@@ -38,6 +38,7 @@
             <!-- <form id="status-match" action="./change-status-match.php" method="post"> -->
                 
         <?php endif ?>
+                <input type="hidden" class="league-format" name="league-format" value="<?= htmlspecialchars($league_infos["playing_format"]) ?>" readonly>
                 <input type="hidden" class="match_id" name="match_id" value="<?= htmlspecialchars($league_match["match_id"]) ?>" readonly>
                 <input type="hidden" class="league_id" name="league_id" value="<?= htmlspecialchars($league_infos["league_id"]) ?>" readonly>
                 <input type="hidden" class="league_group" name="league_group" value="<?= htmlspecialchars($league_group) ?>" readonly>

@@ -198,17 +198,23 @@ $counter = 1;
 <?php require "../assets/footer.php" ?>
 <script src="../js/header.js"></script>
 <script>
-     $(document).ready(function () {
+    $(document).ready(function () {
         
+        let league_format;
+
         $('.match_button').click(function (e) { 
             e.preventDefault();
-    
+
+            // league format to show correct player/player/teams in modal
+            league_format = $(this).closest('.btnAndGame').find('.league-format').val();
+            
+            
     
             if ($(this).val() === "Zapnúť"){
                 
                 let match_id = $(this).closest('.btnAndGame').find('.match_id').val();
                 let league_id = $(this).closest('.btnAndGame').find('.league_id').val();
-                
+
                 let match_button = $(this);
     
                 $.ajax({
@@ -218,6 +224,7 @@ $counter = 1;
                         'click_start_btn': true,
                         'match_id': match_id,
                         'league_id': league_id,
+                        'league_format': league_format,
                     },
                     success: function (response) {
     
@@ -260,7 +267,7 @@ $counter = 1;
     
                 $('.chooseTable').show();
     
-    
+                
                 $.ajax({
                     method: "POST",
                     url: "change-status-match.php",
@@ -268,6 +275,7 @@ $counter = 1;
                         'click_view_btn': true,
                         'match_id': match_id,
                         'league_id': league_id,
+                        'league_format': league_format,
                     },
                     success: function (response) {
     
@@ -275,9 +283,18 @@ $counter = 1;
     
                             $('#modal-league-id').val((value['league_id']));
                             $('#match-id').val((value['match_id']));
-                            $('#player1-name').text((value['player1_firstname']) + " " + (value['player1_second_name']));
+                            if (league_format === "single"){
+
+                                $('#player1-name').text((value['player1_firstname']) + " " + (value['player1_second_name']));
+
+                                $('#player2-name').text((value['player2_firstname']) + " " + (value['player2_second_name']));
+                            } else if (league_format === "doubles"){
+                                $('#player1-name').text((value['player1A_second_name']) + " " + (value['player1A_firstname']) + " - " + (value['player1B_second_name']) + " " + (value['player1B_firstname']));
+
+                                $('#player2-name').text((value['player2A_second_name']) + " " + (value['player2A_firstname']) + " - " + (value['player2B_second_name']) + " " + (value['player2B_firstname']));
+                            }
+                            
                             $('#player1-score').val((value['score_1']))
-                            $('#player2-name').text((value['player2_firstname']) + " " + (value['player2_second_name']));
                             $('#player2-score').val((value['score_2']))
     
                         });
@@ -308,6 +325,7 @@ $counter = 1;
                         'click_view_btn': true,
                         'match_id': match_id,
                         'league_id': league_id,
+                        'league_format': league_format,
                     },
                     success: function (response) {
     
@@ -315,9 +333,20 @@ $counter = 1;
     
                             $('#modal-league-id').val((value['league_id']));
                             $('#match-id').val((value['match_id']));
-                            $('#player1-name').text((value['player1_firstname']) + " " + (value['player1_second_name']));
+                            
+                            if (league_format === "single"){
+
+                                $('#player1-name').text((value['player1_firstname']) + " " + (value['player1_second_name']));
+
+                                $('#player2-name').text((value['player2_firstname']) + " " + (value['player2_second_name']));
+                            } else if (league_format === "doubles"){
+                                $('#player1-name').text((value['player1A_second_name']) + " " + (value['player1A_firstname']) + " - " + (value['player1B_second_name']) + " " + (value['player1B_firstname']));
+
+                                $('#player2-name').text((value['player2A_second_name']) + " " + (value['player2A_firstname']) + " - " + (value['player2B_second_name']) + " " + (value['player2B_firstname']));
+                            }
+
                             $('#player1-score').val((value['score_1']));
-                            $('#player2-name').text((value['player2_firstname']) + " " + (value['player2_second_name']));
+                            
                             $('#player2-score').val((value['score_2']));
     
                         });
@@ -341,14 +370,18 @@ $counter = 1;
             
     
             if ($(this).val() === "Uložiť"){
+
+                let score_1;
+                let score_2;
                 
                 let modal_match_id = $(this).closest('.matchInfo').find('.modal_match_id').val();
                 let modal_league_id = $(this).closest('.matchInfo').find('.modal_league_id').val();
                 let modal_score_1 = $(this).closest('.matchInfo').find('#player1-score').val();
                 let modal_score_2 = $(this).closest('.matchInfo').find('#player2-score').val();
                 let checked = $('input[name=checkFinish]:checked');
+
                 
-    
+                
                 if(checked.length){
                     checked = true;
                 } else {
@@ -365,14 +398,20 @@ $counter = 1;
                         'score_1': modal_score_1,
                         'score_2': modal_score_2,
                         'match_finished': checked,
+                        'league_format': league_format,
                     },
                     success: function (response) {
-    
+                        
                         let match_id_to_change = $('.match_id').filter(function() { return this.value == modal_match_id });
-    
-                        let score_1 = match_id_to_change.parents('div').eq(1).find('.pl1-label');
-                        let score_2 = match_id_to_change.parents('div').eq(1).find('.pl2-label');
-    
+                        
+                        if (league_format === "single"){
+                            score_1 = match_id_to_change.parents('div').eq(1).find('.pl1-label');
+                            score_2 = match_id_to_change.parents('div').eq(1).find('.pl2-label');
+                        } else if (league_format === "doubles"){
+                            score_1 = match_id_to_change.parents('div').eq(1).find('.dl1-label');
+                            score_2 = match_id_to_change.parents('div').eq(1).find('.dl2-label');
+                        }
+
                         $.each(response, function (Key, value) { 
     
                             score_1.text((value['score_1']));
@@ -412,7 +451,7 @@ $counter = 1;
                 let modal_score_2 = $(this).closest('.matchInfo').find('#player2-score').val();
                 let modal_table_number = $('#table-number').find(":selected").val();
     
-    
+                
                 $.ajax({
                     method: "POST",
                     url: "change-status-match.php",
@@ -423,6 +462,7 @@ $counter = 1;
                         'score_1': modal_score_1,
                         'score_2': modal_score_2,
                         'table_number': modal_table_number,
+                        'league_format': league_format,
                     },
                     success: function (response) {
                         

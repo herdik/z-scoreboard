@@ -36,25 +36,18 @@ if ($_SERVER["REQUEST_METHOD"] === "POST"){
         $match_finished = false;
         $table_number = 0;
         
-        $league_infos = League::getLeague($connection, $league_id);
+        $league_format = $_POST["league_format"];
         
-        if ($league_infos["playing_format"] === "single"){
-            $update_done = LeagueMatch::updateLeagueMatch($connection, $match_id, $score_1, $score_2, $match_waiting, $match_started, $match_finished, $table_number);
+        $update_done = LeagueMatch::updateLeagueMatch($connection, $match_id, $score_1, $score_2, $match_waiting, $match_started, $match_finished, $table_number, $league_format);
 
-
-            if ($update_done){
-                // $selected_league_match = LeagueMatch::getLeagueMatch($connection, $match_id, $league_infos["playing_format"]);
-                $result_data = array("csstext"=>"color", "csscolor"=>"#fff", "addedclass"=>"waitingLeagueMatch", "match_button"=>"Čaká");
-                array_push($arrayresult, $result_data);
-                header('content-type: application/json');
-                echo json_encode($arrayresult);
-            }
-
-        } elseif ($league_infos["playing_format"] === "doubles"){
-                
-        } elseif ($league_infos["playing_format"] === "teams"){
-                
+        if ($update_done){
+            // $selected_league_match = LeagueMatch::getLeagueMatch($connection, $match_id, $league_format);
+            $result_data = array("csstext"=>"color", "csscolor"=>"#fff", "addedclass"=>"waitingLeagueMatch", "match_button"=>"Čaká");
+            array_push($arrayresult, $result_data);
+            header('content-type: application/json');
+            echo json_encode($arrayresult);
         }
+ 
         
     }
 
@@ -67,9 +60,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST"){
         $match_id = $_POST["match_id"];
         $league_id = $_POST["league_id"];
 
-        $league_infos = League::getLeague($connection, $league_id);
+        $league_format = $_POST["league_format"];
 
-        $selected_league_match = LeagueMatch::getLeagueMatch($connection, $match_id, $league_infos["playing_format"]);
+        $selected_league_match = LeagueMatch::getLeagueMatch($connection, $match_id, $league_format);
 
         array_push($arrayresult, $selected_league_match);
         header('content-type: application/json');
@@ -113,29 +106,23 @@ if ($_SERVER["REQUEST_METHOD"] === "POST"){
         $match_started = true;
         $match_finished = false;
         $table_number = $_POST["table_number"];
-        
-        $league_infos = League::getLeague($connection, $league_id);
-        
-        if ($league_infos["playing_format"] === "single"){
-            $update_done = LeagueMatch::updateLeagueMatch($connection, $match_id, $score_1, $score_2, $match_waiting, $match_started, $match_finished, $table_number);
 
-            if ($update_done){
-                $selected_league_match = LeagueMatch::getLeagueMatch($connection, $match_id, $league_infos["playing_format"]);
-                
-                $selected_league_match += ["csstext" => "color", "csscolor" => "#fff", "addedclass" => "activeLeagueMatch", "match_button" => "Upraviť", "removeclass" => "waitingLeagueMatch"];
-                // $result_data = array("csstext"=>"color", "csscolor"=>"#fff", "addedclass"=>"activeLeagueMatch", "match_button"=>"Upraviť");
+        $league_format = $_POST["league_format"];
+        // $league_infos = League::getLeague($connection, $league_id);
+    
+        $update_done = LeagueMatch::updateLeagueMatch($connection, $match_id, $score_1, $score_2, $match_waiting, $match_started, $match_finished, $table_number, $league_format);
 
-                array_push($arrayresult, $selected_league_match);
-                // array_push($arrayresult, $result_data);
-                
-                header('content-type: application/json');
-                echo json_encode($arrayresult);
-            }
+        if ($update_done){
+            $selected_league_match = LeagueMatch::getLeagueMatch($connection, $match_id, $league_format);
+            
+            $selected_league_match += ["csstext" => "color", "csscolor" => "#fff", "addedclass" => "activeLeagueMatch", "match_button" => "Upraviť", "removeclass" => "waitingLeagueMatch"];
+            // $result_data = array("csstext"=>"color", "csscolor"=>"#fff", "addedclass"=>"activeLeagueMatch", "match_button"=>"Upraviť");
 
-        } elseif ($league_infos["playing_format"] === "doubles"){
-                
-        } elseif ($league_infos["playing_format"] === "teams"){
-                
+            array_push($arrayresult, $selected_league_match);
+            // array_push($arrayresult, $result_data);
+            
+            header('content-type: application/json');
+            echo json_encode($arrayresult);
         }
 
         // if ($update_done){
@@ -153,7 +140,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST"){
         $match_waiting = false;
         $match_started = true;
 
-        $league_infos = League::getLeague($connection, $league_id);
+        $league_format = $_POST["league_format"];
 
         
 
@@ -162,26 +149,19 @@ if ($_SERVER["REQUEST_METHOD"] === "POST"){
             $table_number = 0;
         } else {
             $match_finished = false;
-            $table_number = LeagueMatch::getLeagueMatch($connection, $match_id, $league_infos["playing_format"])["table_number"];
+            $table_number = LeagueMatch::getLeagueMatch($connection, $match_id, $league_format)["table_number"];
         }
         
-        if ($league_infos["playing_format"] === "single"){
-            $update_done = LeagueMatch::updateLeagueMatch($connection, $match_id, $score_1, $score_2, $match_waiting, $match_started, $match_finished, $table_number);
+        $update_done = LeagueMatch::updateLeagueMatch($connection, $match_id, $score_1, $score_2, $match_waiting, $match_started, $match_finished, $table_number, $league_format);
 
-            if ($update_done){
-                $selected_league_match = LeagueMatch::getLeagueMatch($connection, $match_id, $league_infos["playing_format"]);
+        if ($update_done){
+            $selected_league_match = LeagueMatch::getLeagueMatch($connection, $match_id, $league_format);
 
-                $selected_league_match += ["csstext" => "color", "csscolor" => "#fff", "addedclass" => "fisnishedLeagueMatch", "closeMatch" => "X", "removeclass" => "activeLeagueMatch"];
+            $selected_league_match += ["csstext" => "color", "csscolor" => "#fff", "addedclass" => "fisnishedLeagueMatch", "closeMatch" => "X", "removeclass" => "activeLeagueMatch"];
 
-                array_push($arrayresult, $selected_league_match);
-                header('content-type: application/json');
-                echo json_encode($arrayresult);
-            }
-
-        } elseif ($league_infos["playing_format"] === "doubles"){
-                
-        } elseif ($league_infos["playing_format"] === "teams"){
-                
+            array_push($arrayresult, $selected_league_match);
+            header('content-type: application/json');
+            echo json_encode($arrayresult);
         }
 
         // if ($update_done){

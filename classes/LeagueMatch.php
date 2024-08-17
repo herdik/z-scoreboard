@@ -245,7 +245,7 @@ class LeagueMatch {
      * 
      * @return boolean if update is successful
      */
-    public static function updateLeagueMatch($connection, $match_id, $score_1, $score_2, $match_waiting, $match_started, $match_finished, $table_number){
+    public static function updateLeagueMatch($connection, $match_id, $score_1, $score_2, $match_waiting, $match_started, $match_finished, $table_number, $league_format){
 
         // if ($btn_value === "Zapnúť"){
         //     $sql_query = "match_waiting"
@@ -257,7 +257,7 @@ class LeagueMatch {
         //     $match_status_value = true;
         // }
 
-        $sql = "UPDATE league_match_single
+        $sql = "UPDATE league_match_$league_format
                 SET score_1 = :score_1,
                     score_2 = :score_2, 
                     match_waiting = :match_waiting,
