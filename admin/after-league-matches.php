@@ -9,6 +9,7 @@ require "../classes/LeagueSettings.php";
 require "../classes/LeagueMatch.php";
 require "../classes/League.php";
 require "../classes/LeagueTable.php";
+require "../classes/LeagueTableDoubles.php";
 require "../classes/Url.php";
 
 
@@ -169,16 +170,24 @@ if ($_SERVER["REQUEST_METHOD"] === "POST"){
                     $row_league_table = LeagueTable::createLeagueTable($connection, $one_active_player["league_id"], $one_active_player["league_group"], $one_active_player["player_Id"]);
                     $league_table_done[] = $row_league_table;
                 }
+            } elseif ($league_infos["playing_format"] === "doubles"){
+                $all_active_players = LeaguePlayerDoubles::getAllLeagueDoubles($connection, $league_id, true);
 
-                // create league table false - print error message
-                if(count(array_unique($league_table_done)) > 1){
+                // create league table for current league - start
+                foreach ($all_active_players as $one_active_player){
+                    $row_league_table = LeagueTableDoubles::createLeagueTableDoubles($connection, $one_active_player["league_id"], $one_active_player["league_group"], $one_active_player["player_Id_doubles_1"], $one_active_player["player_Id_doubles_2"]);
+                    $league_table_done[] = $row_league_table;
+                }
+            }
+
+            // create league table false - print error message
+            if(count(array_unique($league_table_done)) > 1){
+                $create_league_table_error = "Ligová tabuľka sa nevytvorila";
+                Url::redirectUrl("/z-scoreboard/errors/error-page.php?in_error=$create_league_table_error");
+            } else {
+                if(!current($league_done)){
                     $create_league_table_error = "Ligová tabuľka sa nevytvorila";
                     Url::redirectUrl("/z-scoreboard/errors/error-page.php?in_error=$create_league_table_error");
-                } else {
-                    if(!current($league_done)){
-                        $create_league_table_error = "Ligová tabuľka sa nevytvorila";
-                        Url::redirectUrl("/z-scoreboard/errors/error-page.php?in_error=$create_league_table_error");
-                    }
                 }
             }
         }

@@ -5,6 +5,7 @@ require "../classes/Database.php";
 require "../classes/Player.php";
 require "../classes/League.php";
 require "../classes/LeagueTable.php";
+require "../classes/LeagueTableDoubles.php";
 
 
 
@@ -30,7 +31,13 @@ if ($_SERVER["REQUEST_METHOD"] === "GET"){
         $league_group = $_GET["league_group"];
         $league_infos = League::getLeague($connection, $_GET["league_id"]);
 
-        $results_table = LeagueTable::getAllFromLeagueTable($connection, $league_id, $league_group, $league_infos["playing_format"]);
+        // get all players from current league to the results table
+        if ($league_infos["playing_format"] === "single"){
+            $results_table = LeagueTable::getAllFromLeagueTable($connection, $league_id, $league_group);
+        } elseif ($league_infos["playing_format"] === "doubles"){
+            $results_table = LeagueTableDoubles::getAllFromLeagueTableDoubles($connection, $league_id, $league_group);
+        }
+        
     } else {
         $league_id = null;
         $league_group = null;
@@ -87,14 +94,14 @@ if ($_SERVER["REQUEST_METHOD"] === "GET"){
 
         <section class="league-content">
 
-             <!-- Tabuľka výsledkov -->
+             <!-- Results table -->
 
         <!-- <div class="result-container"> -->
             <h1>Tabuľka výsledkov</h1>
 
             <div class="show-table-results">
 
-                <!-- Zoznam registrovaných hráčov -->
+                <!-- Results table for all registered players/doubles/teams -->
                 <table class="results-table ">
                     <thead>
                         <tr>
@@ -112,7 +119,13 @@ if ($_SERVER["REQUEST_METHOD"] === "GET"){
                         <?php for ($i=0; $i<count($results_table);$i++): ?>
                         <tr>
                             <td><?= $i + 1 ."." ?></td>
-                            <td class="player-name-table"><img src="../img/countries/<?= htmlspecialchars($results_table[$i]["player_country"]) ?>.png" alt="<?= htmlspecialchars($results_table[$i]["player_country"]) ?>"><?= htmlspecialchars($results_table[$i]["player_firstname"]) . " " . htmlspecialchars($results_table[$i]["player_second_name"])?></td>
+
+                            <?php if ($league_infos["playing_format"] === "single"): ?>
+                                <td class="player-name-table"><img src="../img/countries/<?= htmlspecialchars($results_table[$i]["player_country"]) ?>.png" alt="<?= htmlspecialchars($results_table[$i]["player_country"]) ?>"> <?= htmlspecialchars($results_table[$i]["player_firstname"]) . " " . htmlspecialchars($results_table[$i]["player_second_name"])?></td>
+                            <?php elseif ($league_infos["playing_format"] === "doubles"): ?>
+                                <td class="player-name-table"><img src="../img/countries/<?= htmlspecialchars($results_table[$i]["player1_country"]) ?>.png" alt="<?= htmlspecialchars($results_table[$i]["player1_country"]) ?>"> <?= htmlspecialchars($results_table[$i]["player1_second_name"]) . " " . htmlspecialchars($results_table[$i]["player1_firstname"][0]) . "." . " - " . htmlspecialchars($results_table[$i]["player2_second_name"]) . " " . htmlspecialchars($results_table[$i]["player2_firstname"][0]) . "." ?> <img src="../img/countries/<?= htmlspecialchars($results_table[$i]["player1_country"]) ?>.png" alt="<?= htmlspecialchars($results_table[$i]["player1_country"]) ?>"></td>
+                            <?php endif; ?>
+
                             <td><?= htmlspecialchars($results_table[$i]["played_matches"])?></td>
                             <td><?= htmlspecialchars($results_table[$i]["winnings_matches"]) ?></td>
                             <td><?= htmlspecialchars($results_table[$i]["lost_matches"]) ?></td>
