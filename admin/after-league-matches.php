@@ -10,6 +10,10 @@ require "../classes/LeagueMatch.php";
 require "../classes/League.php";
 require "../classes/LeagueTable.php";
 require "../classes/LeagueTableDoubles.php";
+require "../classes/UndermatchSingle.php";
+require "../classes/UndermatchDoubles.php";
+require "../classes/OptionSingle.php";
+require "../classes/OptionDoubles.php";
 require "../classes/Url.php";
 
 
@@ -33,6 +37,43 @@ if ($_SERVER["REQUEST_METHOD"] === "POST"){
     $league_infos = League::getLeague($connection, $league_id);
     $rematch = LeagueSettings::getLeagueSettings($connection, $league_id, "rematch");
     $choosed_game = $league_infos["discipline"];
+
+    
+    // $current_league_teams = LeagueTeam::getAllLeagueTeams($connection, $league_id, true);
+    // // var_dump($current_league_teams);
+    // foreach ($current_league_teams as $current_league_team){
+    //     $current_team_id = $current_league_team["team_id"];
+    //     $players_according_team = Player::getAllPlayersByTeam($connection, $current_team_id, "player_Id, first_name, second_name, country, player_club");
+    //     for ($i=0; $i < count($players_according_team); $i++){
+    //         // creating one single option for team in team match
+    //         var_dump($players_according_team[$i]["player_Id"]);
+    //         var_dump("jednotlivec");
+    //         for ($y=0; $y < count($players_according_team); $y++){
+    //             if ($y > $i){
+    //                 if ($i != $y){
+    //                     // creating one doubles option for team in team match
+    //                     var_dump($players_according_team[$i]["player_Id"]);
+    //                     var_dump($players_according_team[$y]["player_Id"]);
+    //                     var_dump("dvojica");
+    //                 }
+    //             }
+    //         }
+    //     };
+    // }
+
+
+
+    // $league_matches_by_group = LeagueMatch::getAllLeagueMatches($connection, 51, 1, $league_infos["playing_format"]);
+    // var_dump($league_matches_by_group[0]);
+
+
+
+    // $current_match_id = $league_matches_by_group[0]["match_id"];
+    // $current_league_group = $league_matches_by_group[0]["league_group"];
+    // $current_team_id_1 = $league_matches_by_group[0]["team_id_1"];
+    // $current_team_id_2 = $league_matches_by_group[0]["team_id_2"];
+    
+    
 
     if ($league_infos["playing_format"] === "single"){
         LeaguePlayer::deleteLeaguePlayer($connection, $league_id, 0);
@@ -158,6 +199,67 @@ if ($_SERVER["REQUEST_METHOD"] === "POST"){
         // true
         if(current($league_done)){
             $active_league = League::updateLeague($connection, $league_id, true);
+
+            // ********undermatches for teams********* 
+            if ($league_infos["playing_format"] === "teams"){
+                for ($i = 0; $i < $number_of_groups_in_league; $i++){
+                    $group = $i + 1;
+                    $league_matches_by_group = LeagueMatch::getAllLeagueMatches($connection, $league_id, $group, $league_infos["playing_format"]);
+
+                    // loop all team leagumatches accordiing group to set every team match - 9 basic undermatches/team_matches 
+                    for ($team_match = 0; $team_match < count($league_matches_by_group); $team_match++){
+
+                        for ($team_index=0; $team_index < 2; $team_index++){
+                            
+                            $current_id = $team_index + 1;
+
+                            $current_match_id = $league_matches_by_group[$team_match]["match_id"];
+                            $current_league_group = $league_matches_by_group[$team_match]["league_group"];
+                            // loop take team_id_1 and 2 from every team match
+                            $current_team_id = $league_matches_by_group[$team_match]["team_id_$current_id"];
+                            
+                            $players_according_team = Player::getAllPlayersByTeam($connection, $current_team_id, "player_Id, first_name, second_name, country, player_club");
+
+                            // creatinig options single and doubles for team in team match
+                            for ($i=0; $i < count($players_according_team); $i++){
+                                // creating one single option for team in team match
+                                $current_option_single = OptionSingle::createOptionSingle($connection, $current_match_id, $league_id, $current_league_group, $players_according_team[$i]["player_Id"], $current_team_id, true);
+                                
+                                for ($y=0; $y < count($players_according_team); $y++){
+                                    if ($y > $i){
+                                        if ($i != $y){
+                                            // creating one doubles option for team in team match
+                                            $current_option_doubles = OptionDoubles::createOptionDoubles($connection, $current_match_id, $league_id, $current_league_group, $players_according_team[$i]["player_Id"], $players_according_team[$y]["player_Id"], $current_team_id, true);
+                                            
+                                        }
+                                    }
+                                }
+                            };
+                        }
+
+                        // creating 9 undermatches for every match in league
+                        for ($sub_match = 0; $sub_match < 9; $sub_match++) {
+            
+                            $playerInMatch = $sub_match % 2 === 0 || $sub_match > 5 ? "single" : "doubles";
+                            if (($sub_match >= 2 && $sub_match < 4) || $sub_match >= 6) {
+                                $typeOfGame = 8;
+                            } elseif ($sub_match >= 4) {
+                                $typeOfGame = 9;
+                            } else {
+                                $typeOfGame = 10;
+                            }
+            
+                            // basic undermatches/team_matches
+                            if ($playerInMatch === "single") {
+                            $teams_undermatch = UndermatchSingle::createLeagueUnderMatch($connection, $sub_match + 1, $league_matches_by_group[$team_match]["match_id"], $league_matches_by_group[$team_match]["league_id"], $league_matches_by_group[$team_match]["league_group"], 0, 0, 0, 0, $typeOfGame, 0, false, false, false, false, "single");
+                            } elseif ($playerInMatch === "doubles") {
+                                $teams_undermatch = UndermatchDoubles::createLeagueUnderMatch($connection, $sub_match + 1, $league_matches_by_group[$team_match]["match_id"], $league_matches_by_group[$team_match]["league_id"], $league_matches_by_group[$team_match]["league_group"], 0, 0, 0, 0, 0, 0, $typeOfGame, 0, false, false, false, false, "doubles");
+                            }
+                        }
+                    }
+                }        
+            }
+            // ********undermatches for teams********* 
 
             $league_table_done = array();
 
